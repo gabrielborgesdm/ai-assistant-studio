@@ -25,7 +25,8 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "axios": "^1.9.0",
-    "electron-updater": "^6.3.9"
+    "electron-updater": "^6.3.9",
+    "ollama": "^0.5.15"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

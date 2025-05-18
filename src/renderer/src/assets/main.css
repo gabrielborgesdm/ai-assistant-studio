@@ -1,19 +1,29 @@
 @import './base.css';
+@import './custom-scrollbar.css';
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 body {
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
+  min-height: 100vh;
+  min-width: 100vw;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-
 
 #root {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin-bottom: 80px;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
 }

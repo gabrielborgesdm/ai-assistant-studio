@@ -1,6 +1,6 @@
 import { generate } from '@renderer/features/ollama/ollama.service'
 import { FormEvent, ReactElement, useState } from 'react'
-import { Structure } from './components/Structure'
+import { Layout } from './components/Layout'
 import { Chat } from './components/Chat'
 import { Form } from './components/Form'
 
@@ -30,9 +30,9 @@ export default function App(): ReactElement {
   }
 
   return (
-    <Structure>
+    <Layout>
       <Chat response={response} isLoading={isLoading} />
       <Form onSubmit={handleSubmit} input={input} setInput={setInput} isLoading={isLoading} />
-    </Structure>
+    </Layout>
   )
 }

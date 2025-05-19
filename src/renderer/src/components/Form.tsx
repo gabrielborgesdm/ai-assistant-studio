@@ -26,7 +26,7 @@ export const Form = ({ onSubmit, input, setInput, isLoading }: FormProps): React
         type="submit"
         className={`w-20 h-full flex items-center justify-center content-center bg-blue-600 text-white rounded shadow ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-blue-700'} transition-opacity duration-300`}
       >
-        {!isLoading ? <AnimatedLoader /> : 'Submit'}
+        {isLoading ? <AnimatedLoader /> : 'Submit'}
       </button>
     </form>
   )

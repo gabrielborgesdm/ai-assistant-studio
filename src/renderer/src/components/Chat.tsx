@@ -25,7 +25,7 @@ export const Chat = ({ response, isLoading }: ChatProps): ReactElement => {
         tabIndex={0}
       >
         {response}
-        {!isLoading && (
+        {response && !isLoading && (
           <div className="pt-2 position-absolute bottom-2 right-2">
             <button
               type="button"

@@ -1,20 +1,21 @@
-import ollama, { GenerateRequest, GenerateResponse } from 'ollama'
+import { Action } from '@renderer/types/action'
+import ollama, { GenerateResponse } from 'ollama'
 
 export const generate = async (
-  text: string,
-  callback: (response: GenerateResponse | undefined) => void,
-  options: GenerateRequest = {
-    model: 'llama3.1:8b',
-    prompt: `proofread: ${text}\nReturn only the proofread text, nothing else.`
-    // format removed for streaming compatibility
-  }
+  input: string,
+  action: Action,
+  callback: (response: GenerateResponse | undefined) => void
 ): Promise<void> => {
   try {
-    const response = await ollama.generate({ ...options, stream: true })
-    console.log('test 0')
+    console.log('Generating response for action:', action.title)
+    const response = await ollama.generate({
+      prompt: action.prompt.replace('{{text}}', input),
+      model: action.model,
+      ...action.options,
+      stream: true
+    })
 
     for await (const part of response) {
-      console.log('test 1')
       callback(part)
     }
   } catch (error) {

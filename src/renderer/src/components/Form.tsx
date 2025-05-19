@@ -1,4 +1,4 @@
-import { Loader } from 'lucide-react'
+import { AnimatedLoader } from './shared/Loader'
 
 export interface FormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
@@ -24,9 +24,9 @@ export const Form = ({ onSubmit, input, setInput, isLoading }: FormProps): React
       <button
         disabled={isLoading}
         type="submit"
-        className={`w-20 h-full flex align-center justify-center py-2 bg-blue-600 text-white rounded shadow ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-blue-700'} transition-opacity duration-300`}
+        className={`w-20 h-full flex items-center justify-center content-center bg-blue-600 text-white rounded shadow ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-blue-700'} transition-opacity duration-300`}
       >
-        {isLoading ? <Loader className="animate-spin [animation-duration:3s]" /> : 'Submit'}
+        {!isLoading ? <AnimatedLoader /> : 'Submit'}
       </button>
     </form>
   )

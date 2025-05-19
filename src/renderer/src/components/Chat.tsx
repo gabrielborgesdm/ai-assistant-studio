@@ -1,5 +1,5 @@
 import { useDataContext } from '@renderer/context/DataContext'
-import { ClipboardCopy, Loader } from 'lucide-react'
+import { ClipboardCopy } from 'lucide-react'
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import { AnimatedLoader } from './shared/Loader'
 

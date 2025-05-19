@@ -1,3 +1,5 @@
+import { Loader } from 'lucide-react'
+
 export interface FormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
   input: string
@@ -7,7 +9,10 @@ export interface FormProps {
 
 export const Form = ({ onSubmit, input, setInput, isLoading }: FormProps): React.ReactElement => {
   return (
-    <form onSubmit={onSubmit} className="w-full flex items-center justify-between gap-2">
+    <form
+      onSubmit={onSubmit}
+      className="w-full flex items-center justify-between gap-2 p-4 bg-gray-800  border-gray-700 rounded-md"
+    >
       <input
         autoFocus
         disabled={isLoading}
@@ -17,10 +22,11 @@ export const Form = ({ onSubmit, input, setInput, isLoading }: FormProps): React
         placeholder="Type something..."
       />
       <button
+        disabled={isLoading}
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow"
+        className={`w-20 h-full flex align-center justify-center py-2 bg-blue-600 text-white rounded shadow ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-blue-700'} transition-opacity duration-300`}
       >
-        Submit
+        {isLoading ? <Loader className="animate-spin [animation-duration:3s]" /> : 'Submit'}
       </button>
     </form>
   )

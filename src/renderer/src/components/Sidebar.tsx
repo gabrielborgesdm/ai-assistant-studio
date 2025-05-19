@@ -17,7 +17,7 @@ const actions: Action[] = new Array(5).fill(null).map((_, index) => ({
 
 export const Sidebar = (): ReactElement => {
   return (
-    <aside className="h-full w-35 flex flex-col bg-gray-800 text-gray-100 border-r border-gray-700 transition-all duration-300 ease-in-out relative">
+    <aside className=" rounded w-35 flex flex-col bg-gray-800 text-gray-100 border-gray-700 mr-4  truncate">
       <div className="flex-1 flex flex-col h-full w-full">
         <section className="flex-col flex-grow-1 p-4 overflow-y-auto h-full custom-scrollbar">
           <h2 className="text-lg font-semibold mb-2">Actions</h2>

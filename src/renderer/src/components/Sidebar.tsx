@@ -17,15 +17,14 @@ const actions: Action[] = new Array(5).fill(null).map((_, index) => ({
 
 export const Sidebar = (): ReactElement => {
   return (
-    <aside className=" rounded w-35 flex flex-col bg-gray-800 text-gray-100 border-gray-700 mr-4  truncate">
+    <aside className=" rounded w-35 flex flex-col bg-gray-800 text-gray-100 border-gray-700 mr-4">
       <div className="flex-1 flex flex-col h-full w-full">
         <section className="flex-col flex-grow-1 p-4 overflow-y-auto h-full custom-scrollbar">
-          <h2 className="text-lg font-semibold mb-2">Actions</h2>
           <ul className="flex flex-col gap-2 max-h-full">
             {actions.map((item) => (
               <li key={item.id}>
                 <button
-                  className="w-full text-left px-3 py-2 rounded bg-gray-700 hover:bg-gray-600 transition-colors"
+                  className="w-full text-left px-3 py-2 rounded bg-gray-700 hover:bg-gray-600 transition-colors overflow-hidden text-ellipsis whitespace-nowrap"
                   onClick={item.onClick}
                   title={item.label}
                 >

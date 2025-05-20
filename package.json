@@ -26,6 +26,7 @@
     "@tailwindcss/vite": "^4.0.0",
     "axios": "^1.9.0",
     "electron-updater": "^6.3.9",
+    "lowdb": "^7.0.1",
     "lucide-react": "^0.511.0",
     "ollama": "^0.5.15"
   },

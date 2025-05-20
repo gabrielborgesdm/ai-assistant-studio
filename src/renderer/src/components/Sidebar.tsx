@@ -1,5 +1,5 @@
 import { useDataContext } from '@renderer/context/DataContext'
-import { Action } from '@renderer/types/action'
+import { Action } from '@global/types/action'
 import { ReactElement } from 'react'
 
 export const Sidebar = (): ReactElement => {

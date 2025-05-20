@@ -1,6 +1,5 @@
-import actionsFile from '@renderer/assets/actions.json'
-import { Action } from '@renderer/types/action'
-import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
+import { Action } from '@global/types/action'
+import { createContext, ReactElement, ReactNode, useContext, useState } from 'react'
 
 interface DataContextType {
   actions: Action[]
@@ -12,16 +11,8 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined)
 
 export const DataProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [actions, setActions] = useState<Action[]>(actionsFile)
+  const [actions, setActions] = useState<Action[]>([])
   const [selectedAction, setSelectedAction] = useState<Action | undefined>(undefined)
-
-  useEffect(() => {
-    // set the first action as selected by default
-    if (actions.length > 0 && !selectedAction) {
-      setSelectedAction(actions[0])
-      console.log('Selected action as default action:', actions[0].title)
-    }
-  }, [actions, selectedAction])
 
   return (
     <DataContext.Provider value={{ actions, setActions, selectedAction, setSelectedAction }}>

@@ -23,26 +23,26 @@ export const Chat = ({ response, isLoading }: ChatProps): ReactElement => {
 
   return (
     <section className="w-full h-full flex-1 overflow-hidden" aria-label="Chat response">
-      <div className="flex items-center justify-between p-2 bg-gray-700 text-gray-200 rounded-t">
+      <header className="flex items-center justify-between p-4 border-b-1">
         <h2 className="text-lg font-semibold">{selectedAction?.title}</h2>
-        {isLoading && <AnimatedLoader className="text-gray-400" />}
-      </div>
+        {isLoading && <AnimatedLoader />}
+      </header>
 
       <pre
         ref={preRef}
-        className="p-2 text-gray-200 bg-gray-800 rounded select-text overflow-y-auto h-full w-full shadow-inner whitespace-pre-wrap break-words custom-scrollbar"
+        className="p-4 rounded select-text overflow-y-auto h-full w-full whitespace-pre-wrap break-words custom-scrollbar"
         tabIndex={0}
       >
         {selectedAction?.description && !response && (
-          <div className="text-gray-400 text-xs mb-2">{selectedAction.description}</div>
+          <div className="text-muted text-sm">{selectedAction.description}</div>
         )}
         {response}
         {response && !isLoading && (
-          <div className="pb-11">
+          <div className="pb-12">
             <button
               type="button"
               disabled={copied}
-              className={`cursor-pointer flex items-center gap-1 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition select-none`}
+              className={`cursor-pointer flex items-center justify-center gap-1 min-w-25 my-4 text-sm select-none`}
               onClick={() => {
                 if (response) {
                   navigator.clipboard.writeText(response)

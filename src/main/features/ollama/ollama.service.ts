@@ -10,7 +10,6 @@ export const generate = async (
   const channel = 'generate-reply'
   try {
     console.log('Generating response for action:', action.title)
-    console.log('ollama:', ollama)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await (ollama as any).default.generate({
       prompt: action.prompt.replace('{{text}}', input),
@@ -20,7 +19,6 @@ export const generate = async (
     })
 
     for await (const part of response) {
-      console.log('Response part:', part)
       event.reply(channel, part)
     }
   } catch (error) {

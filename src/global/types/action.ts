@@ -24,5 +24,5 @@ export interface ActionMessage {
 
 export interface ActionHistory {
   actionId: string
-  messages?: ActionMessage[]
+  messages: ActionMessage[]
 }

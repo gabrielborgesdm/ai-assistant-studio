@@ -1,21 +1,93 @@
 import { SendHorizonal } from 'lucide-react'
 import { AnimatedLoader } from './shared/Loader'
+import { FormEvent, use, useEffect, useState } from 'react'
+import { useDataContext } from '@renderer/context/DataContext'
 
-export interface FormProps {
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
-  input: string
-  setInput: (input: string) => void
-  isLoading: boolean
-}
+export const Form = (): React.ReactElement => {
+  const {
+    selectedAction,
+    setIsLoading,
+    setTextInput,
+    textInput,
+    isLoading,
+    setHistory,
+    currentAssistantMessage,
+    setCurrentAssistantMessage
+  } = useDataContext()
 
-export const Form = ({ onSubmit, input, setInput, isLoading }: FormProps): React.ReactElement => {
+  const [response, setResponse] = useState<string>('')
+  const [isFetching, setIsFetching] = useState<boolean>(false)
+
+  const loading = isLoading || isFetching
+
+  useEffect(() => {
+    if (!isFetching && response) {
+      updateChatResponse()
+    }
+  }, [loading])
+
+  useEffect(() => {
+    if (response) {
+      setCurrentAssistantMessage(response)
+    }
+  }, [response])
+
+  const updateChatResponse = async (): Promise<void> => {
+    if (!selectedAction) {
+      console.error('No action selected')
+      return
+    }
+    const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
+      role: 'assistant',
+      content: response
+    })
+    console.log(history, newHistory)
+    setHistory(newHistory)
+    setCurrentAssistantMessage('')
+    setResponse('')
+    setIsLoading(false)
+  }
+
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
+    if (!selectedAction) {
+      console.error('No action selected')
+      return
+    }
+
+    e.preventDefault()
+    setIsLoading(true)
+    const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
+      role: 'user',
+      content: textInput
+    })
+    setHistory({ ...newHistory })
+
+    const prompt = textInput
+    console.log('Prompt:', prompt)
+    setTextInput('')
+    setIsLoading(false)
+    setIsFetching(true)
+    window.api.ollama.generate(prompt, selectedAction, async (res) => {
+      if (!res) {
+        setResponse('Error: An error occurred while generating the response.')
+        setIsFetching(false)
+        return
+      }
+      setResponse((old) => `${old}${res.response}`)
+
+      if (res.done) {
+        setIsFetching(false)
+      }
+    })
+  }
+
   return (
-    <form onSubmit={onSubmit} className="w-full py-5 px-4 border-t flex items-center gap-4">
+    <form onSubmit={handleSubmit} className="w-full py-5 px-4 border-t flex items-center gap-4">
       <input
         autoFocus
         disabled={isLoading}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={textInput}
+        onChange={(e) => setTextInput(e.target.value)}
         className=" flex-grow"
         placeholder="Type something..."
       />

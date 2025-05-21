@@ -10,6 +10,7 @@
   --color-primary: #2563eb;
   --color-dark-primary: #1e40af;
   --color-danger: #dc2626;
+  --color-dark-danger: #991b1b;
   --color-warning: #facc15;
   --color-muted: #9ca3af;
 }
@@ -66,11 +67,19 @@ button {
   color: var(--color-white);
   padding: 0.5rem;
   border-radius: 0.25rem;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.1s ease-in-out;
   cursor: pointer;
 }
 
 button:hover {
   background-color: var(--color-dark-primary);
+  color: var(--color-white);
+}
+
+button.danger {
+  background-color: var(--color-danger);
+}
+button.danger:hover {
+  background-color: var(--color-dark-danger);
   color: var(--color-white);
 }

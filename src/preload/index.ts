@@ -19,15 +19,13 @@ const api = {
       }
 
       ipcRenderer.on('generate-reply', listener)
-    },
-    downloadModel: (modelName) => ipcRenderer.invoke('download-model', modelName)
+    }
   },
   db: {
     getActions: () => ipcRenderer.invoke('get-actions'),
-    getHistory: (actionId) => ipcRenderer.invoke('get-history', actionId),
-    deleteHistory: (actionId) => ipcRenderer.invoke('delete-history', actionId),
-    addAction: (action) => ipcRenderer.invoke('add-action', action),
-    deleteAction: (action) => ipcRenderer.invoke('delete-action', action)
+    addActionMessage: (actionId, message) =>
+      ipcRenderer.invoke('add-action-message', actionId, message),
+    clearHistory: (actionId) => ipcRenderer.invoke('clear-history', actionId)
   }
 }
 

@@ -8,7 +8,7 @@ interface DataContextType {
   isLoading: boolean
   history?: ActionHistory
   currentAssistantMessage: string
-  setCurrentAssistantMessage: (value: string) => void
+  setCurrentAssistantMessage: React.Dispatch<React.SetStateAction<string>>
   setHistory: (value: ActionHistory | undefined) => void
   setTextInput: (value: string) => void
   setIsLoading: (value: boolean) => void

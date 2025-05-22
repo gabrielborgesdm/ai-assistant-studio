@@ -23,6 +23,7 @@ const api = {
   },
   db: {
     getActions: () => ipcRenderer.invoke('get-actions'),
+    getHistory: (actionId) => ipcRenderer.invoke('get-history', actionId),
     addActionMessage: (actionId, message) =>
       ipcRenderer.invoke('add-action-message', actionId, message),
     clearHistory: (actionId) => ipcRenderer.invoke('clear-history', actionId)

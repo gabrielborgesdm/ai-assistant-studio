@@ -1,10 +1,10 @@
-import { JSONFilePreset } from 'lowdb/node'
-import defaultActions from '../../../../resources/default-actions.json'
-import { Low } from 'lowdb/lib'
-import path from 'path'
-import { app, ipcMain } from 'electron'
-import { addActionMessage, clearHistory, getActions } from './actions.service'
 import { Action, ActionHistory, ActionMessage } from '@global/types/action'
+import { app, ipcMain } from 'electron'
+import { Low } from 'lowdb/lib'
+import { JSONFilePreset } from 'lowdb/node'
+import path from 'path'
+import defaultActions from '../../../../resources/default-actions.json'
+import { addActionMessage, clearHistory, getActions, getHistory } from './actions.service'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -28,6 +28,8 @@ export async function initDB(): Promise<void> {
 }
 
 ipcMain.handle('get-actions', () => getActions(db))
+
+ipcMain.handle('get-history', (_event, actionId) => getHistory(db, actionId))
 
 ipcMain.handle('add-action-message', (_event, actionId: string, message: ActionMessage) =>
   addActionMessage(db, actionId, message)

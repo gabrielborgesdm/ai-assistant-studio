@@ -1,5 +1,4 @@
 @import './base.css';
-@import './custom-scrollbar.css';
 
 @import 'tailwindcss';
 
@@ -18,7 +17,6 @@
 * {
   box-sizing: border-box;
   border-color: var(--color-muted);
-  font-size: 1.03rem;
 }
 
 #root {
@@ -26,6 +24,26 @@
   width: 100vw;
   margin: 0;
   padding: 0;
+}
+
+/* Custom scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-dark) var(--color-black);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-dark);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-black);
+  border-radius: 8px;
 }
 
 body {
@@ -82,4 +100,14 @@ button.danger {
 button.danger:hover {
   background-color: var(--color-dark-danger);
   color: var(--color-white);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:active {
+  transition: scale 0.1s ease-in-out;
+  transform: scale(1.1);
+  user-select: none;
 }

@@ -16,8 +16,14 @@ export interface Action {
   mode?: ActionMode
 }
 
+export enum MessageRole {
+  SYSTEM = 'system',
+  USER = 'user',
+  ASSISTANT = 'assistant'
+}
+
 export interface ActionMessage {
-  role: 'system' | 'user' | 'assistant'
+  role: MessageRole
   content: string
   images?: string[]
 }

@@ -1,7 +1,8 @@
-import { SendHorizonal } from 'lucide-react'
-import { AnimatedLoader } from './shared/Loader'
-import { FormEvent, use, useEffect, useState } from 'react'
+import { MessageRole } from '@global/types/action'
 import { useDataContext } from '@renderer/context/DataContext'
+import { SendHorizonal } from 'lucide-react'
+import { FormEvent, useEffect } from 'react'
+import { AnimatedLoader } from './shared/Loader'
 
 export const Form = (): React.ReactElement => {
   const {
@@ -15,39 +16,6 @@ export const Form = (): React.ReactElement => {
     setCurrentAssistantMessage
   } = useDataContext()
 
-  const [response, setResponse] = useState<string>('')
-  const [isFetching, setIsFetching] = useState<boolean>(false)
-
-  const loading = isLoading || isFetching
-
-  useEffect(() => {
-    if (!isFetching && response) {
-      updateChatResponse()
-    }
-  }, [loading])
-
-  useEffect(() => {
-    if (response) {
-      setCurrentAssistantMessage(response)
-    }
-  }, [response])
-
-  const updateChatResponse = async (): Promise<void> => {
-    if (!selectedAction) {
-      console.error('No action selected')
-      return
-    }
-    const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
-      role: 'assistant',
-      content: response
-    })
-    console.log(history, newHistory)
-    setHistory(newHistory)
-    setCurrentAssistantMessage('')
-    setResponse('')
-    setIsLoading(false)
-  }
-
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     if (!selectedAction) {
       console.error('No action selected')
@@ -57,7 +25,7 @@ export const Form = (): React.ReactElement => {
     e.preventDefault()
     setIsLoading(true)
     const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
-      role: 'user',
+      role: MessageRole.USER,
       content: textInput
     })
     setHistory({ ...newHistory })
@@ -65,21 +33,49 @@ export const Form = (): React.ReactElement => {
     const prompt = textInput
     console.log('Prompt:', prompt)
     setTextInput('')
-    setIsLoading(false)
-    setIsFetching(true)
     window.api.ollama.generate(prompt, selectedAction, async (res) => {
+      // If we get the stream response, we need to update the chat state
+      if (res.response) {
+        setCurrentAssistantMessage((old: string) => `${old}${res.response}`)
+      }
+
+      // Not supposed to happen, but show a generic error message if the response is empty
       if (!res) {
-        setResponse('Error: An error occurred while generating the response.')
-        setIsFetching(false)
+        setCurrentAssistantMessage('Error: An error occurred while generating the response.')
+        setIsLoading(false)
         return
       }
-      setResponse((old) => `${old}${res.response}`)
 
+      // When the stream is done, we need to update the chat state, so that the useEffect can store the completed message
       if (res.done) {
-        setIsFetching(false)
+        setIsLoading(false)
       }
     })
   }
+
+  const persistMessage = async (): Promise<void> => {
+    if (!selectedAction) {
+      return
+    }
+
+    const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
+      role: MessageRole.ASSISTANT,
+      content: currentAssistantMessage
+    })
+    setHistory(newHistory)
+    setCurrentAssistantMessage('')
+  }
+
+  /**
+   * We don't want to persist the message until the assistant message is done generating, so when It's done the useEffect will trigger and persist the message.
+   * We couldn't call the persistMessage function directly because the callback holds the closure of when the function was created,
+   * instead, we use the useEffect to trigger the persistMessage function when the loading state changes.
+   */
+  useEffect(() => {
+    if (!isLoading && currentAssistantMessage) {
+      persistMessage()
+    }
+  }, [isLoading])
 
   return (
     <form onSubmit={handleSubmit} className="w-full py-5 px-4 border-t flex items-center gap-4">

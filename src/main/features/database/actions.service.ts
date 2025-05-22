@@ -1,5 +1,6 @@
 import { Action, ActionHistory, ActionMessage } from '@global/types/action'
 import { DB } from '.'
+import { HistoryFactory } from '@global/factories/action.factory'
 
 /*
  * Retrieves all actions from the database.
@@ -11,10 +12,17 @@ export const getActions = async (db: DB): Promise<Action[]> => {
   return db.data?.actions || []
 }
 
-const historyFactory = (actionId: string, messages: ActionMessage[] = []): ActionHistory => ({
-  actionId,
-  messages
-})
+/*
+ * Retrieves a specific action from the database by its ID.
+ * @param db - The database instance.
+ * @param actionId - The ID of the action to retrieve.
+ * @returns The action object if found, otherwise undefined.
+ */
+export const getHistory = async (db: DB, actionId: string): Promise<ActionHistory | undefined> => {
+  const histories: ActionHistory[] = db.data?.history
+
+  return histories.find((history) => history.actionId === actionId)
+}
 
 /*
  * Adds a message to the action history.
@@ -31,10 +39,10 @@ export const addActionMessage = async (
 ): Promise<ActionHistory> => {
   await db.read()
   const histories: ActionHistory[] = db.data?.history
-  let filteredHistory = histories.find((history) => history.actionId === actionId)
+  let filteredHistory = await getHistory(db, actionId)
 
   if (!filteredHistory) {
-    filteredHistory = historyFactory(actionId, [message])
+    filteredHistory = HistoryFactory(actionId, [message])
   } else {
     filteredHistory.messages.push(message)
   }

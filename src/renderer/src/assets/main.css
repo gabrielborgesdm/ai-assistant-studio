@@ -1,5 +1,4 @@
 @import './base.css';
-
 @import 'tailwindcss';
 
 @theme {
@@ -81,15 +80,22 @@ input:focus {
 }
 
 button {
-  background-color: var(--color-primary);
-  color: var(--color-white);
   padding: 0.5rem;
   border-radius: 0.25rem;
   transition: all 0.1s ease-in-out;
   cursor: pointer;
 }
 
-button:hover {
+button.transparent:hover {
+  transform: scale(1.05);
+}
+
+button.primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+button.primary:hover {
   background-color: var(--color-dark-primary);
   color: var(--color-white);
 }
@@ -110,4 +116,9 @@ button.danger:hover {
   transition: scale 0.1s ease-in-out;
   transform: scale(1.1);
   user-select: none;
+}
+
+.loading {
+  opacity: 0.5;
+  cursor: wait;
 }

@@ -1,34 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { electronAPI } from '@electron-toolkit/preload'
-import { contextBridge, ipcRenderer } from 'electron'
-
-// Custom APIs for renderer
-const api = {
-  ollama: {
-    generate: (prompt, action, callback) => {
-      console.log('Sending generate request to main process:', prompt, action)
-      ipcRenderer.send('generate', prompt, action)
-
-      const listener = (_event: Electron.IpcRendererEvent, result) => {
-        console.log('Received response from main process:', result)
-        callback(result)
-        // Clean up the listener after responding (optional but recommended)
-        if (result.done === true) {
-          ipcRenderer.removeListener('generate-reply', listener)
-        }
-      }
-
-      ipcRenderer.on('generate-reply', listener)
-    }
-  },
-  db: {
-    getActions: () => ipcRenderer.invoke('get-actions'),
-    getHistory: (actionId) => ipcRenderer.invoke('get-history', actionId),
-    addActionMessage: (actionId, message) =>
-      ipcRenderer.invoke('add-action-message', actionId, message),
-    clearHistory: (actionId) => ipcRenderer.invoke('clear-history', actionId)
-  }
-}
+import { contextBridge } from 'electron'
+import { api } from './api'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

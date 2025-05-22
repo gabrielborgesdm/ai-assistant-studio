@@ -31,8 +31,8 @@ ipcMain.handle('get-actions', () => getActions(db))
 
 ipcMain.handle('get-history', (_event, actionId) => getHistory(db, actionId))
 
-ipcMain.handle('add-action-message', (_event, actionId: string, message: ActionMessage) =>
-  addActionMessage(db, actionId, message)
+ipcMain.handle('add-action-message', (_event, actionId: string, messages: ActionMessage[]) =>
+  addActionMessage(db, actionId, messages)
 )
 
 ipcMain.handle('clear-history', (_event, actionId: string) => clearHistory(db, actionId))

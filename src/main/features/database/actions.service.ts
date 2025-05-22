@@ -35,16 +35,16 @@ export const getHistory = async (db: DB, actionId: string): Promise<ActionHistor
 export const addActionMessage = async (
   db: DB,
   actionId: string,
-  message: ActionMessage
+  messages: ActionMessage[]
 ): Promise<ActionHistory> => {
   await db.read()
   const histories: ActionHistory[] = db.data?.history
   let filteredHistory = await getHistory(db, actionId)
 
   if (!filteredHistory) {
-    filteredHistory = HistoryFactory(actionId, [message])
+    filteredHistory = HistoryFactory(actionId, [...messages])
   } else {
-    filteredHistory.messages.push(message)
+    filteredHistory.messages = [...filteredHistory.messages, ...messages]
   }
 
   histories.push(filteredHistory)

@@ -8,6 +8,8 @@ interface DataContextType {
   isLoading: boolean
   history?: ActionHistory
   currentAssistantMessage: string
+  canceled: boolean
+  setCanceled: React.Dispatch<React.SetStateAction<boolean>>
   setCurrentAssistantMessage: React.Dispatch<React.SetStateAction<string>>
   setHistory: (value: ActionHistory | undefined) => void
   setTextInput: (value: string) => void
@@ -25,6 +27,7 @@ export const DataProvider = ({ children }: { children: ReactNode }): ReactElemen
   const [textInput, setTextInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [currentAssistantMessage, setCurrentAssistantMessage] = useState('')
+  const [canceled, setCanceled] = useState(false)
 
   return (
     <DataContext.Provider
@@ -40,7 +43,9 @@ export const DataProvider = ({ children }: { children: ReactNode }): ReactElemen
         history,
         setHistory,
         currentAssistantMessage,
-        setCurrentAssistantMessage
+        setCurrentAssistantMessage,
+        canceled,
+        setCanceled
       }}
     >
       {children}

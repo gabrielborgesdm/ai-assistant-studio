@@ -1,9 +1,10 @@
 import { MessageRole } from '@global/types/action'
 import { useDataContext } from '@renderer/context/DataContext'
-import { BookA, Captions, Trash2 } from 'lucide-react'
-import { ReactElement, useEffect, useRef } from 'react'
-import { AnimatedLoader } from '../shared/Loader'
+import { Captions, CircleStop, Trash, Trash2, X } from 'lucide-react'
+import { FormEvent, ReactElement, useEffect, useRef } from 'react'
 import { ChatMessage } from './ChatMessage'
+import { AnimatedLoader } from '../shared/Loader'
+import { GenerateEvent } from '@global/const/ollama.event'
 
 export const Chat = (): ReactElement => {
   const preRef = useRef<HTMLPreElement>(null)
@@ -12,11 +13,13 @@ export const Chat = (): ReactElement => {
 
   const {
     selectedAction,
+    isLoading,
     history,
     setHistory,
-    isLoading,
     currentAssistantMessage,
-    setCurrentAssistantMessage
+    setCurrentAssistantMessage,
+    setIsLoading,
+    setCanceled
   } = useDataContext()
 
   const handleCopy = (text: string): void => {
@@ -40,6 +43,12 @@ export const Chat = (): ReactElement => {
     setCurrentAssistantMessage('')
   }
 
+  const handleCancel = (): void => {
+    window.api.cancel(GenerateEvent)
+    setCanceled(true)
+    setIsLoading(false)
+  }
+
   // Scroll to the bottom of the chat when the response or loading state changes
   useEffect(() => {
     if (preRef.current) {
@@ -56,13 +65,19 @@ export const Chat = (): ReactElement => {
           </span>
           <h2 className="text-lg font-semibold">{selectedAction?.title}</h2>
         </div>
-        <span title="Clear History" aria-label="Clear History">
-          <Trash2
-            className="cursor-pointer clickable active:text-danger hover:text-muted"
-            onClick={handleClearHistory}
-          />
-        </span>
-        {isLoading && <AnimatedLoader />}
+        {isLoading ? (
+          <button title="Cancel Generation" aria-label="Cancel Generation" className="transparent">
+            <CircleStop className="cursor-pointer  text-danger" onClick={handleCancel} />
+          </button>
+        ) : (
+          <button title="Clear History" aria-label="Clear History" className="transparent">
+            <Trash
+              className="cursor-pointer clickable active:text-danger hover:text-muted"
+              onClick={handleClearHistory}
+              size={20}
+            />
+          </button>
+        )}
       </header>
 
       <pre
@@ -87,6 +102,7 @@ export const Chat = (): ReactElement => {
         {currentAssistantMessage && (
           <ChatMessage
             message={{ content: currentAssistantMessage, role: MessageRole.ASSISTANT }}
+            shouldShowCopy={false}
             handleCopy={handleCopy}
           />
         )}

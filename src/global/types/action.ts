@@ -19,7 +19,8 @@ export interface Action {
 export enum MessageRole {
   SYSTEM = 'system',
   USER = 'user',
-  ASSISTANT = 'assistant'
+  ASSISTANT = 'assistant',
+  CUSTOM_UI = 'custom_ui' // This will be filtered out in the ollama input, but used to show the UI
 }
 
 export interface ActionMessage {

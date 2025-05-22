@@ -3,7 +3,8 @@ import { Action } from '@global/types/action'
 import { ReactElement, useEffect } from 'react'
 
 export const Sidebar = (): ReactElement => {
-  const { actions, setSelectedAction, setActions, selectedAction, setHistory } = useDataContext()
+  const { actions, isLoading, setSelectedAction, setActions, selectedAction, setHistory } =
+    useDataContext()
 
   useEffect(() => {
     window.api.db.getActions().then(setActions)
@@ -26,6 +27,9 @@ export const Sidebar = (): ReactElement => {
   }, [actions, selectedAction])
 
   const handleActionClick = (action: Action): void => {
+    if (isLoading) {
+      return
+    }
     setSelectedAction(action)
     console.log('Selected action:', action.title)
   }
@@ -44,7 +48,10 @@ export const Sidebar = (): ReactElement => {
                 key={action.title + action.description}
                 onClick={() => handleActionClick(action)}
                 title={action.title}
-                className={` p-2 mx-2 rounded-sm cursor-pointer hover:text-warning overflow-hidden text-ellipsis whitespace-nowrap ${isActionSelected(action) && 'bg-primary text-white'}`}
+                className={`p-2 mx-2 rounded-sm cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap 
+                  ${isActionSelected(action) && 'bg-primary text-white'}
+                  ${isLoading ? 'loading' : 'hover:text-warning'}  
+                `}
               >
                 {action.title}
               </li>

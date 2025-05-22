@@ -1,4 +1,5 @@
 import './assets/main.css'
+
 import { DataProvider } from './context/DataContext'
 
 import { StrictMode } from 'react'

@@ -13,7 +13,9 @@ export const Form = (): React.ReactElement => {
     isLoading,
     setHistory,
     currentAssistantMessage,
-    setCurrentAssistantMessage
+    setCurrentAssistantMessage,
+    canceled,
+    setCanceled
   } = useDataContext()
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
@@ -24,10 +26,12 @@ export const Form = (): React.ReactElement => {
 
     e.preventDefault()
     setIsLoading(true)
-    const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
-      role: MessageRole.USER,
-      content: textInput
-    })
+    const newHistory = await window.api.db.addActionMessage(selectedAction.id, [
+      {
+        role: MessageRole.USER,
+        content: textInput
+      }
+    ])
     setHistory({ ...newHistory })
 
     const prompt = textInput
@@ -57,11 +61,23 @@ export const Form = (): React.ReactElement => {
     if (!selectedAction) {
       return
     }
+    const messagesToInclude = [
+      {
+        role: MessageRole.ASSISTANT,
+        content: currentAssistantMessage
+      }
+    ]
 
-    const newHistory = await window.api.db.addActionMessage(selectedAction.id, {
-      role: MessageRole.ASSISTANT,
-      content: currentAssistantMessage
-    })
+    if (canceled) {
+      messagesToInclude.push({
+        role: MessageRole.CUSTOM_UI,
+        content: 'Action was canceled by the user'
+      })
+      setCanceled(false)
+    }
+
+    const newHistory = await window.api.db.addActionMessage(selectedAction.id, messagesToInclude)
+
     setHistory(newHistory)
     setCurrentAssistantMessage('')
   }
@@ -84,17 +100,21 @@ export const Form = (): React.ReactElement => {
         disabled={isLoading}
         value={textInput}
         onChange={(e) => setTextInput(e.target.value)}
-        className=" flex-grow"
-        placeholder="Type something..."
+        className={`flex-grow ${isLoading && 'disabled'}`}
+        placeholder="Enter your message"
       />
       <button
         disabled={isLoading}
         type="submit"
         title="Send"
-        className={`w-15 h-full flex items-center justify-center content-center ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        className={`w-15 h-full flex items-center justify-center content-center transparent
+          ${isLoading ? 'loading' : 'cursor-pointer'}
+        `}
       >
         {isLoading ? (
-          <AnimatedLoader className="text-white" />
+          <>
+            <AnimatedLoader className="text-white" />
+          </>
         ) : (
           <SendHorizonal className="text-white" />
         )}

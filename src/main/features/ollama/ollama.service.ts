@@ -1,3 +1,4 @@
+import { GenerateEvent, GenerateEventCancel, GenerateEventReply } from '@global/const/ollama.event'
 import { Action } from '@global/types/action'
 import { ipcMain, IpcMainEvent } from 'electron'
 import ollama from 'ollama'
@@ -5,9 +6,9 @@ import ollama from 'ollama'
 export const generate = async (
   input: string,
   action: Action,
-  event: IpcMainEvent
+  event: IpcMainEvent,
+  abort: AbortController
 ): Promise<void> => {
-  const channel = 'generate-reply'
   try {
     console.log('Generating response for action:', action.title)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,11 +20,16 @@ export const generate = async (
     })
 
     for await (const part of response) {
-      event.reply(channel, part)
+      // check if the event was cancelled, if so, break the loop
+      if (abort.signal.aborted) {
+        console.log('Generation aborted by user')
+        break
+      }
+      event.reply(GenerateEventReply, part)
     }
   } catch (error) {
     console.error('Error generating response:', error)
-    event.reply(channel, { error: 'Error generating response' })
+    event.reply(GenerateEventReply, { error: 'Error generating response' })
   }
 }
 
@@ -42,7 +48,14 @@ export const generate = async (
 //   return false
 // }
 
-ipcMain.on('generate', async (event, input: string, action: Action) => {
+ipcMain.on(GenerateEvent, async (event, input: string, action: Action) => {
+  const abort = new AbortController()
+  ipcMain.once(GenerateEventCancel, () => {
+    console.log('Received cancel request from renderer')
+    abort.abort()
+  })
   console.log('Received generate request from renderer')
-  await generate(input, action, event)
+
+  await generate(input, action, event, abort)
+  // Add a listener to the controller's signal that will be triggered when the user cancels the download
 })

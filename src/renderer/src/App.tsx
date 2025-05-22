@@ -13,9 +13,10 @@ declare global {
       db: {
         getActions: () => Promise<Action[]>
         getHistory: (actionId: string) => Promise<ActionHistory | undefined>
-        addActionMessage: (actionId: string, message: ActionMessage) => Promise<ActionHistory>
+        addActionMessage: (actionId: string, messages: ActionMessage[]) => Promise<ActionHistory>
         clearHistory: (actionId: string) => Promise<void>
       }
+      cancel: (eventName: string) => void
     }
   }
 }

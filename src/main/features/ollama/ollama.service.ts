@@ -1,35 +1,61 @@
-import { GenerateEvent, GenerateEventCancel, GenerateEventReply } from '@global/const/ollama.event'
-import { Action } from '@global/types/action'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ChatEvent, ChatEventCancel, ChatEventReply } from '@global/const/ollama.event'
+import { Action, ActionHistory } from '@global/types/action'
+import { OllamaMessageStreamResponse } from '@global/types/ollama'
+import { isCustomRole } from '@global/utils/role.utils'
 import { ipcMain, IpcMainEvent } from 'electron'
 import ollama from 'ollama'
 
-export const generate = async (
-  input: string,
+// Necessary workaround to import ollama in the main process
+const getOllama = (): any => (ollama as any).default
+
+export const streamOllamaChatResponse = async (
   action: Action,
+  history: ActionHistory,
   event: IpcMainEvent,
   abort: AbortController
 ): Promise<void> => {
   try {
     console.log('Generating response for action:', action.title)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await (ollama as any).default.generate({
-      prompt: action.prompt.replace('{{text}}', input),
+
+    // If it's ephemeral we keep only the last message
+    if (action.ephemeral) {
+      console.log('Ephemeral message, keeping only the last message')
+      history.messages = history.messages.slice(history.messages.length - 1)
+      console.log('History messages:', history.messages)
+    }
+
+    // If this is the first message (or ephemeral), we need to replace the message with the prompt
+    if (history.messages.length === 1) {
+      history.messages[0].content = action.prompt.replace('{{text}}', history.messages[0].content)
+      console.log('First message, replacing with prompt:', history.messages[0].content)
+    }
+
+    const response = await await getOllama().chat({
       model: action.model,
-      ...action.options,
-      stream: true
+      // Filter out custom roles from the history, as they are used for UI purposes only
+      messages: history.messages.filter((message) => !isCustomRole(message.role)),
+      stream: true,
+      ...action.options
     })
 
     for await (const part of response) {
       // check if the event was cancelled, if so, break the loop
       if (abort.signal.aborted) {
-        console.log('Generation aborted by user')
+        console.log('Chat request aborted by user')
         break
       }
-      event.reply(GenerateEventReply, part)
+
+      const replyPayload: OllamaMessageStreamResponse = {
+        done: part.done,
+        response: part.message.content
+      }
+
+      event.reply(ChatEventReply, replyPayload)
     }
-  } catch (error) {
-    console.error('Error generating response:', error)
-    event.reply(GenerateEventReply, { error: 'Error generating response' })
+  } catch (error: any) {
+    console.error('Error generating response:', error.message)
+    event.reply(ChatEventReply, { error: `Error: ${error.message}`, done: true })
   }
 }
 
@@ -48,14 +74,17 @@ export const generate = async (
 //   return false
 // }
 
-ipcMain.on(GenerateEvent, async (event, input: string, action: Action) => {
+ipcMain.on(ChatEvent, async (event, action: Action, history: ActionHistory) => {
+  // Initialize the abort controller
   const abort = new AbortController()
-  ipcMain.once(GenerateEventCancel, () => {
+
+  // Listen for the cancel event
+  ipcMain.once(ChatEventCancel, () => {
     console.log('Received cancel request from renderer')
     abort.abort()
   })
-  console.log('Received generate request from renderer')
+  console.log('Received streamOllamaChatResponse request from renderer')
 
-  await generate(input, action, event, abort)
-  // Add a listener to the controller's signal that will be triggered when the user cancels the download
+  // Call the function to stream the response passing the abort controller
+  await streamOllamaChatResponse(action, history, event, abort)
 })

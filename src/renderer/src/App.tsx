@@ -4,11 +4,20 @@ import { Chat } from './components/Chat/Chat'
 import { Form } from './components/Form'
 import { Layout } from './components/Layout'
 
+/**
+ * Global window object to expose API methods and data
+ * These methods are defined in /preload directory and use the Electron ipcRenderer to communicate with the main process
+ *
+ */
 declare global {
   interface Window {
     api: {
       ollama: {
-        generate: (input: string, action: Action, callback: (response) => void) => Promise<void>
+        streamOllamaChatResponse: (
+          action: Action,
+          history: ActionHistory,
+          callback: (response) => void
+        ) => Promise<void>
       }
       db: {
         getActions: () => Promise<Action[]>

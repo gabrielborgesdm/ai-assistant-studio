@@ -1,10 +1,5 @@
 import { GenerateRequest } from 'ollama'
 
-export enum ActionMode {
-  Generation = 'generation',
-  Chat = 'chat'
-}
-
 export interface Action {
   id: string
   title: string
@@ -13,14 +8,18 @@ export interface Action {
   model: string
   options?: GenerateRequest
   downloaded?: boolean
-  mode?: ActionMode
+  ephemeral?: boolean
 }
 
 export enum MessageRole {
   SYSTEM = 'system',
   USER = 'user',
   ASSISTANT = 'assistant',
-  CUSTOM_UI = 'custom_ui' // This will be filtered out in the ollama input, but used to show the UI
+
+  // Custom_ roles are filtered out in the ollama input, but used for other purposes
+  // like displaying a message in the UI
+  CUSTOM_UI = 'custom_ui',
+  CUSTOM_ERROR = 'custom_error'
 }
 
 export interface ActionMessage {

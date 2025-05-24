@@ -1,10 +1,9 @@
+import { ChatEvent } from '@global/const/ollama.event'
 import { MessageRole } from '@global/types/action'
 import { useDataContext } from '@renderer/context/DataContext'
-import { Captions, CircleStop, Trash, Trash2, X } from 'lucide-react'
-import { FormEvent, ReactElement, useEffect, useRef } from 'react'
+import { Captions, CircleStop, Trash } from 'lucide-react'
+import { ReactElement, useEffect, useRef } from 'react'
 import { ChatMessage } from './ChatMessage'
-import { AnimatedLoader } from '../shared/Loader'
-import { GenerateEvent } from '@global/const/ollama.event'
 
 export const Chat = (): ReactElement => {
   const preRef = useRef<HTMLPreElement>(null)
@@ -44,7 +43,7 @@ export const Chat = (): ReactElement => {
   }
 
   const handleCancel = (): void => {
-    window.api.cancel(GenerateEvent)
+    window.api.cancel(ChatEvent)
     setCanceled(true)
     setIsLoading(false)
   }
@@ -66,7 +65,11 @@ export const Chat = (): ReactElement => {
           <h2 className="text-lg font-semibold">{selectedAction?.title}</h2>
         </div>
         {isLoading ? (
-          <button title="Cancel Generation" aria-label="Cancel Generation" className="transparent">
+          <button
+            title="Cancel Generation"
+            aria-label="Cancel Generation"
+            className="transparent animate-pulse"
+          >
             <CircleStop className="cursor-pointer  text-danger" onClick={handleCancel} />
           </button>
         ) : (

@@ -1,5 +1,5 @@
 import { EventCancel, EventReply } from './event'
 
-export const GenerateEvent = 'ollama-generate'
-export const GenerateEventReply = EventReply(GenerateEvent)
-export const GenerateEventCancel = EventCancel(GenerateEvent)
+export const ChatEvent = 'ollama-chat'
+export const ChatEventReply = EventReply(ChatEvent)
+export const ChatEventCancel = EventCancel(ChatEvent)

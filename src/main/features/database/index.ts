@@ -5,6 +5,7 @@ import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
 import defaultActions from '../../../../resources/default-actions.json'
 import { addActionMessage, clearHistory, getActions, getHistory } from './actions.service'
+import fs from 'fs/promises'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -22,7 +23,10 @@ let db: Low<typeof initialData>
 export type DB = typeof db
 
 export async function initDB(): Promise<void> {
+  // for debug purposes, remove the db file
   const file = path.join(app.getPath('userData'), 'db.json')
+  await fs.rm(file).then(() => console.log('Database file removed'))
+
   db = await JSONFilePreset(file, initialData)
   await db.read()
 }

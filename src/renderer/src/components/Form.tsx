@@ -1,7 +1,8 @@
-import { MessageRole } from '@global/types/action'
+import { ActionMessage, MessageRole } from '@global/types/action'
+import { OllamaMessageStreamResponse } from '@global/types/ollama'
 import { useDataContext } from '@renderer/context/DataContext'
 import { SendHorizonal } from 'lucide-react'
-import { FormEvent, useEffect } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { AnimatedLoader } from './shared/Loader'
 
 export const Form = (): React.ReactElement => {
@@ -18,6 +19,8 @@ export const Form = (): React.ReactElement => {
     setCanceled
   } = useDataContext()
 
+  const [error, setError] = useState<string | undefined>(undefined)
+
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     if (!selectedAction) {
       console.error('No action selected')
@@ -33,53 +36,65 @@ export const Form = (): React.ReactElement => {
       }
     ])
     setHistory({ ...newHistory })
-
-    const prompt = textInput
-    console.log('Prompt:', prompt)
     setTextInput('')
-    window.api.ollama.generate(prompt, selectedAction, async (res) => {
-      // If we get the stream response, we need to update the chat state
-      if (res.response) {
-        setCurrentAssistantMessage((old: string) => `${old}${res.response}`)
-      }
+    window.api.ollama.streamOllamaChatResponse(
+      selectedAction,
+      newHistory,
+      async (res: OllamaMessageStreamResponse) => {
+        // If we get the stream response, we need to update the chat state
+        if (res.response) {
+          setCurrentAssistantMessage((old: string) => `${old}${res.response}`)
+        }
 
-      // Not supposed to happen, but show a generic error message if the response is empty
-      if (!res) {
-        setCurrentAssistantMessage('Error: An error occurred while generating the response.')
-        setIsLoading(false)
-        return
-      }
+        // Not supposed to happen, but show a generic error message if the response is empty
+        if (res.error) {
+          setError(res.error)
+          setIsLoading(false)
+          return
+        }
 
-      // When the stream is done, we need to update the chat state, so that the useEffect can store the completed message
-      if (res.done) {
-        setIsLoading(false)
+        // When the stream is done, we need to update the chat state, so that the useEffect can store the completed message
+        if (res.done) {
+          setIsLoading(false)
+        }
       }
-    })
+    )
   }
 
   const persistMessage = async (): Promise<void> => {
     if (!selectedAction) {
       return
     }
-    const messagesToInclude = [
-      {
+
+    const messagesToInclude: ActionMessage[] = []
+
+    if (currentAssistantMessage) {
+      messagesToInclude.push({
         role: MessageRole.ASSISTANT,
         content: currentAssistantMessage
-      }
-    ]
+      })
+    }
+
+    if (error) {
+      messagesToInclude.push({
+        role: MessageRole.CUSTOM_ERROR,
+        content: error
+      })
+    }
 
     if (canceled) {
       messagesToInclude.push({
         role: MessageRole.CUSTOM_UI,
         content: 'Action was canceled by the user'
       })
-      setCanceled(false)
     }
 
     const newHistory = await window.api.db.addActionMessage(selectedAction.id, messagesToInclude)
 
     setHistory(newHistory)
     setCurrentAssistantMessage('')
+    setError(undefined)
+    setCanceled(false)
   }
 
   /**
@@ -88,7 +103,7 @@ export const Form = (): React.ReactElement => {
    * instead, we use the useEffect to trigger the persistMessage function when the loading state changes.
    */
   useEffect(() => {
-    if (!isLoading && currentAssistantMessage) {
+    if ((!isLoading && currentAssistantMessage) || error) {
       persistMessage()
     }
   }, [isLoading])

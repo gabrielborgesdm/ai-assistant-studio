@@ -20,8 +20,12 @@ export const ChatMessage = ({
 
   if (isCustomRole(message.role)) {
     return (
-      <div className={`flex flex-col my-3 text-center text-xs text-muted bg-dark rounded`}>
-        <span className="my-3">{message.content}</span>
+      <div className={`flex flex-col my-3 text-center text-xs text-muted bg-dark rounded italic`}>
+        <span
+          className={`my-3 ${message.role === MessageRole.CUSTOM_ERROR && 'text-danger'} text-xs }`}
+        >
+          {message.content}
+        </span>
       </div>
     )
   }

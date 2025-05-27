@@ -1,6 +1,7 @@
 import { AnimatedLoader } from '@/components/shared/Loader'
 import { ChatInput } from '@/components/ui/chat/chat-input'
 import { Button } from '@renderer/components/ui/button'
+import { usePasteOnRightClick } from '@renderer/hooks/use-paste'
 import { SendHorizonal } from 'lucide-react'
 import { ReactElement, useEffect, useRef } from 'react'
 
@@ -17,6 +18,7 @@ export const ChatForm = ({
   handleSubmit
 }: ChatFormProps): ReactElement => {
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  usePasteOnRightClick(inputRef)
 
   useEffect(() => {
     if (!isLoading) {

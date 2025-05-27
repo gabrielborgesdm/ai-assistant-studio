@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChatEvent, ChatEventCancel, ChatEventReply } from '@global/const/ollama.event'
-import { Action, ActionHistory } from '@global/types/action'
+import { Assistant, ActionHistory } from 'src/global/types/assistant'
 import { OllamaMessageStreamResponse } from '@global/types/ollama'
 import { isCustomRole } from '@global/utils/role.utils'
 import { ipcMain, IpcMainEvent } from 'electron'
@@ -10,7 +10,7 @@ import ollama from 'ollama'
 const getOllama = (): any => (ollama as any).default
 
 export const streamOllamaChatResponse = async (
-  action: Action,
+  action: Assistant,
   history: ActionHistory,
   event: IpcMainEvent,
   abort: AbortController
@@ -74,7 +74,7 @@ export const streamOllamaChatResponse = async (
 //   return false
 // }
 
-ipcMain.on(ChatEvent, async (event, action: Action, history: ActionHistory) => {
+ipcMain.on(ChatEvent, async (event, action: Assistant, history: ActionHistory) => {
   // Initialize the abort controller
   const abort = new AbortController()
 

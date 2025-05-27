@@ -1,4 +1,4 @@
-import { Action, ActionHistory, ActionMessage } from '@global/types/action'
+import { Assistant, ActionHistory, AssistantMessage } from 'src/global/types/assistant'
 import { DB } from '.'
 import { HistoryFactory } from '@global/factories/action.factory'
 
@@ -7,7 +7,7 @@ import { HistoryFactory } from '@global/factories/action.factory'
  * @param db - The database instance.
  * @returns An array of actions.
  */
-export const getActions = async (db: DB): Promise<Action[]> => {
+export const getActions = async (db: DB): Promise<Assistant[]> => {
   await db.read()
   return db.data?.actions || []
 }
@@ -35,7 +35,7 @@ export const getHistory = async (db: DB, actionId: string): Promise<ActionHistor
 export const addActionMessage = async (
   db: DB,
   actionId: string,
-  messages: ActionMessage[]
+  messages: AssistantMessage[]
 ): Promise<ActionHistory> => {
   await db.read()
   const histories: ActionHistory[] = db.data?.history

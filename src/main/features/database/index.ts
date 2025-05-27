@@ -1,4 +1,4 @@
-import { Action, ActionHistory, ActionMessage } from '@global/types/action'
+import { Assistant, ActionHistory, AssistantMessage } from 'src/global/types/assistant'
 import { app, ipcMain } from 'electron'
 import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
@@ -14,7 +14,7 @@ import fs from 'fs/promises'
  * The database is stored in the user data directory of the app.
  */
 
-const initialData: { actions: Action[]; history: ActionHistory[] } = {
+const initialData: { actions: Assistant[]; history: ActionHistory[] } = {
   actions: defaultActions,
   history: []
 }
@@ -25,7 +25,11 @@ export type DB = typeof db
 export async function initDB(): Promise<void> {
   // for debug purposes, remove the db file
   const file = path.join(app.getPath('userData'), 'db.json')
-  await fs.rm(file).then(() => console.log('Database file removed'))
+  // try {
+  //   await fs.rm(file).then(() => console.log('Database file removed'))
+  // } catch (error) {
+  //   console.error('Error removing database file:', error)
+  // }
 
   db = await JSONFilePreset(file, initialData)
   await db.read()
@@ -35,7 +39,7 @@ ipcMain.handle('get-actions', () => getActions(db))
 
 ipcMain.handle('get-history', (_event, actionId) => getHistory(db, actionId))
 
-ipcMain.handle('add-action-message', (_event, actionId: string, messages: ActionMessage[]) =>
+ipcMain.handle('add-action-message', (_event, actionId: string, messages: AssistantMessage[]) =>
   addActionMessage(db, actionId, messages)
 )
 

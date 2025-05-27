@@ -1,8 +1,8 @@
-import { ActionMessage, ActionHistory } from '@global/types/action'
+import { AssistantMessage, ActionHistory } from 'src/global/types/assistant'
 
 export const HistoryFactory = (
   actionId: string,
-  messages: ActionMessage[] = []
+  messages: AssistantMessage[] = []
 ): ActionHistory => ({
   actionId,
   messages

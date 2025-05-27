@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChatEvent, ChatEventCancel, ChatEventReply } from '@global/const/ollama.event'
-import { Action, ActionHistory } from '@global/types/action'
+import { Assistant, AssistantHistory } from 'src/global/types/assistant'
 import { OllamaMessageStreamResponse } from '@global/types/ollama'
 import { isCustomRole } from '@global/utils/role.utils'
 import { ipcMain, IpcMainEvent } from 'electron'
@@ -10,16 +10,16 @@ import ollama from 'ollama'
 const getOllama = (): any => (ollama as any).default
 
 export const streamOllamaChatResponse = async (
-  action: Action,
-  history: ActionHistory,
+  assistant: Assistant,
+  history: AssistantHistory,
   event: IpcMainEvent,
   abort: AbortController
 ): Promise<void> => {
   try {
-    console.log('Generating response for action:', action.title)
+    console.log('Generating response for assistant:', assistant.title)
 
     // If it's ephemeral we keep only the last message
-    if (action.ephemeral) {
+    if (assistant.ephemeral) {
       console.log('Ephemeral message, keeping only the last message')
       history.messages = history.messages.slice(history.messages.length - 1)
       console.log('History messages:', history.messages)
@@ -27,16 +27,19 @@ export const streamOllamaChatResponse = async (
 
     // If this is the first message (or ephemeral), we need to replace the message with the prompt
     if (history.messages.length === 1) {
-      history.messages[0].content = action.prompt.replace('{{text}}', history.messages[0].content)
+      history.messages[0].content = assistant.prompt.replace(
+        '{{text}}',
+        history.messages[0].content
+      )
       console.log('First message, replacing with prompt:', history.messages[0].content)
     }
 
     const response = await await getOllama().chat({
-      model: action.model,
+      model: assistant.model,
       // Filter out custom roles from the history, as they are used for UI purposes only
       messages: history.messages.filter((message) => !isCustomRole(message.role)),
       stream: true,
-      ...action.options
+      ...assistant.options
     })
 
     for await (const part of response) {
@@ -74,7 +77,7 @@ export const streamOllamaChatResponse = async (
 //   return false
 // }
 
-ipcMain.on(ChatEvent, async (event, action: Action, history: ActionHistory) => {
+ipcMain.on(ChatEvent, async (event, assistant: Assistant, history: AssistantHistory) => {
   // Initialize the abort controller
   const abort = new AbortController()
 
@@ -86,5 +89,5 @@ ipcMain.on(ChatEvent, async (event, action: Action, history: ActionHistory) => {
   console.log('Received streamOllamaChatResponse request from renderer')
 
   // Call the function to stream the response passing the abort controller
-  await streamOllamaChatResponse(action, history, event, abort)
+  await streamOllamaChatResponse(assistant, history, event, abort)
 })

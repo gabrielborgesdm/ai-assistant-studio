@@ -23,7 +23,8 @@ export default defineConfig({
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
-        '@global': resolve('src/global')
+        '@global': resolve('src/global'),
+        '@': resolve('src/renderer/src')
       }
     },
     plugins: [react()]

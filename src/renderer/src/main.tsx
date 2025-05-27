@@ -1,15 +1,18 @@
-import './assets/main.css'
+import './styles/globals.css'
 
-import { DataProvider } from './context/DataContext'
+import { AssistantProvider } from './provider/AssistantProvider'
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { ThemeProvider } from './provider/ThemeProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <DataProvider>
-      <App />
-    </DataProvider>
+    <AssistantProvider>
+      <ThemeProvider storageKey="vite-ui-theme">
+        <App />
+      </ThemeProvider>
+    </AssistantProvider>
   </StrictMode>
 )

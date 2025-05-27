@@ -1,6 +1,6 @@
 import { GenerateRequest } from 'ollama'
 
-export interface Action {
+export interface Assistant {
   id: string
   title: string
   description: string
@@ -22,13 +22,13 @@ export enum MessageRole {
   CUSTOM_ERROR = 'custom_error'
 }
 
-export interface ActionMessage {
+export interface AssistantMessage {
   role: MessageRole
   content: string
   images?: string[]
 }
 
-export interface ActionHistory {
-  actionId: string
-  messages: ActionMessage[]
+export interface AssistantHistory {
+  assistantId: string
+  messages: AssistantMessage[]
 }

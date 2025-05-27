@@ -19,7 +19,7 @@ import { useEffect } from 'react'
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, setAssistants, activeAssistant, setActiveAssistant } = useAssistantContext()
 
-  const { theme, setTheme } = useTheme()
+  const { isDark, toggleTheme } = useTheme()
 
   const { toggleSidebar } = useSidebar()
 
@@ -101,10 +101,10 @@ export const SidebarComponent = (): React.ReactElement => {
             ))}
             <SidebarMenuItem
               className="cursor-pointer flex gap-2 items-center"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              onClick={() => toggleTheme()}
             >
-              <Switch checked={theme === 'dark'} />
-              {theme.charAt(0).toUpperCase() + theme.slice(1)} Mode
+              <Switch checked={isDark} />
+              {isDark ? 'Dark' : 'Light'} Mode
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>

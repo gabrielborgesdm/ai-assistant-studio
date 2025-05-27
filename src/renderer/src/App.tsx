@@ -1,8 +1,8 @@
-import { Action, ActionHistory, ActionMessage } from '@global/types/action'
+import { SidebarComponent } from '@/components/features/sidebar'
+import { ChatPage } from '@/components/pages/chat'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import { AssistantHistory, Assistant, AssistantMessage } from '@global/types/assistant'
 import { ReactElement } from 'react'
-import { Chat } from './components/Chat/Chat'
-import { Form } from './components/Form'
-import { Layout } from './components/Layout'
 
 /**
  * Global window object to expose API methods and data
@@ -14,16 +14,19 @@ declare global {
     api: {
       ollama: {
         streamOllamaChatResponse: (
-          action: Action,
-          history: ActionHistory,
+          assistant: Assistant,
+          history: AssistantHistory,
           callback: (response) => void
         ) => Promise<void>
       }
       db: {
-        getActions: () => Promise<Action[]>
-        getHistory: (actionId: string) => Promise<ActionHistory | undefined>
-        addActionMessage: (actionId: string, messages: ActionMessage[]) => Promise<ActionHistory>
-        clearHistory: (actionId: string) => Promise<void>
+        getAssistants: () => Promise<Assistant[]>
+        getHistory: (assistantId: string) => Promise<AssistantHistory | undefined>
+        addAssistantMessage: (
+          assistantId: string,
+          messages: AssistantMessage[]
+        ) => Promise<AssistantHistory>
+        clearHistory: (assistantId: string) => Promise<void>
       }
       cancel: (eventName: string) => void
     }
@@ -32,9 +35,13 @@ declare global {
 
 export default function App(): ReactElement {
   return (
-    <Layout>
-      <Chat />
-      <Form />
-    </Layout>
+    <div className="bg-background text-foreground ">
+      <SidebarProvider>
+        <SidebarComponent />
+        <main className="flex flex-row w-full">
+          <ChatPage />
+        </main>
+      </SidebarProvider>
+    </div>
   )
 }

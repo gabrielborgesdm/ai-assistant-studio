@@ -18,6 +18,7 @@
       "@global/*": [
         "src/global/*"
       ],
+      "@/*": ["src/renderer/src/*"]
     }
   }
 }

@@ -1,11 +1,11 @@
 import { ChatEvent } from '@global/const/ollama.event'
-import { Assistant, ActionHistory, AssistantMessage, MessageRole } from '@global/types/assistant'
+import { Assistant, AssistantHistory, AssistantMessage, MessageRole } from '@global/types/assistant'
 import { OllamaMessageStreamResponse } from '@global/types/ollama'
 import { FormEvent, useEffect, useState } from 'react'
 
 interface useHandleChatProps {
-  history: ActionHistory | undefined
-  setHistory: (history: ActionHistory | undefined) => void
+  history: AssistantHistory | undefined
+  setHistory: (history: AssistantHistory | undefined) => void
   textInput: string
   setTextInput: (textInput: string) => void
   isLoading: boolean
@@ -20,7 +20,7 @@ interface useHandleChatProps {
 }
 
 export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
-  const [history, setHistory] = useState<ActionHistory | undefined>(undefined)
+  const [history, setHistory] = useState<AssistantHistory | undefined>(undefined)
   const [textInput, setTextInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [currentAssistantMessage, setCurrentAssistantMessage] = useState<string | undefined>(
@@ -59,7 +59,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
 
     e.preventDefault()
     setIsLoading(true)
-    const newHistory = await window.api.db.addActionMessage(assistant.id, [
+    const newHistory = await window.api.db.addAssistantMessage(assistant.id, [
       {
         role: MessageRole.USER,
         content: textInput
@@ -117,11 +117,11 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     if (canceled) {
       messagesToInclude.push({
         role: MessageRole.CUSTOM_UI,
-        content: 'Action was canceled by the user'
+        content: 'Generation was canceled by the user'
       })
     }
 
-    const newHistory = await window.api.db.addActionMessage(assistant.id, messagesToInclude)
+    const newHistory = await window.api.db.addAssistantMessage(assistant.id, messagesToInclude)
 
     setHistory(newHistory)
     setCurrentAssistantMessage(undefined)

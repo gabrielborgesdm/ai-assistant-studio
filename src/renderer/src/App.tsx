@@ -1,7 +1,7 @@
 import { SidebarComponent } from '@/components/features/sidebar'
 import { ChatPage } from '@/components/pages/chat'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { ActionHistory, Assistant, AssistantMessage } from '@global/types/assistant'
+import { AssistantHistory, Assistant, AssistantMessage } from '@global/types/assistant'
 import { ReactElement } from 'react'
 
 /**
@@ -14,16 +14,19 @@ declare global {
     api: {
       ollama: {
         streamOllamaChatResponse: (
-          action: Assistant,
-          history: ActionHistory,
+          assistant: Assistant,
+          history: AssistantHistory,
           callback: (response) => void
         ) => Promise<void>
       }
       db: {
-        getActions: () => Promise<Assistant[]>
-        getHistory: (actionId: string) => Promise<ActionHistory | undefined>
-        addActionMessage: (actionId: string, messages: AssistantMessage[]) => Promise<ActionHistory>
-        clearHistory: (actionId: string) => Promise<void>
+        getAssistants: () => Promise<Assistant[]>
+        getHistory: (assistantId: string) => Promise<AssistantHistory | undefined>
+        addAssistantMessage: (
+          assistantId: string,
+          messages: AssistantMessage[]
+        ) => Promise<AssistantHistory>
+        clearHistory: (assistantId: string) => Promise<void>
       }
       cancel: (eventName: string) => void
     }

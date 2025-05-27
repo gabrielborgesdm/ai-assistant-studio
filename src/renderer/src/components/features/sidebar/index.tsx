@@ -24,11 +24,11 @@ export const SidebarComponent = (): React.ReactElement => {
   const { toggleSidebar } = useSidebar()
 
   useEffect(() => {
-    window.api.db.getActions().then(setAssistants)
+    window.api.db.getAssistants().then(setAssistants)
   }, [])
 
   useEffect(() => {
-    // set the first action as selected by default
+    // set the first assistant as selected by default
     if (assistants.length > 0 && !activeAssistant) {
       setActiveAssistant(assistants[0])
     }

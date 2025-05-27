@@ -28,7 +28,7 @@ export interface AssistantMessage {
   images?: string[]
 }
 
-export interface ActionHistory {
-  actionId: string
+export interface AssistantHistory {
+  assistantId: string
   messages: AssistantMessage[]
 }

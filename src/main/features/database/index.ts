@@ -1,10 +1,10 @@
-import { Assistant, ActionHistory, AssistantMessage } from 'src/global/types/assistant'
+import { Assistant, AssistantHistory, AssistantMessage } from 'src/global/types/assistant'
 import { app, ipcMain } from 'electron'
 import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
-import defaultActions from '../../../../resources/default-actions.json'
-import { addActionMessage, clearHistory, getActions, getHistory } from './actions.service'
+import defaultAssistants from '../../../../resources/default-assistants.json'
+import { addAssistantMessage, clearHistory, getAssistants, getHistory } from './assistants.service'
 import fs from 'fs/promises'
 
 /*
@@ -14,8 +14,8 @@ import fs from 'fs/promises'
  * The database is stored in the user data directory of the app.
  */
 
-const initialData: { actions: Assistant[]; history: ActionHistory[] } = {
-  actions: defaultActions,
+const initialData: { assistants: Assistant[]; history: AssistantHistory[] } = {
+  assistants: defaultAssistants,
   history: []
 }
 
@@ -23,24 +23,26 @@ let db: Low<typeof initialData>
 export type DB = typeof db
 
 export async function initDB(): Promise<void> {
-  // for debug purposes, remove the db file
   const file = path.join(app.getPath('userData'), 'db.json')
-  // try {
-  //   await fs.rm(file).then(() => console.log('Database file removed'))
-  // } catch (error) {
-  //   console.error('Error removing database file:', error)
-  // }
+  // for debug purposes, remove the db file
+  try {
+    await fs.rm(file).then(() => console.log('Database file removed'))
+  } catch (error) {
+    console.error('Error removing database file:', error)
+  }
 
   db = await JSONFilePreset(file, initialData)
   await db.read()
 }
 
-ipcMain.handle('get-actions', () => getActions(db))
+ipcMain.handle('get-assistants', () => getAssistants(db))
 
-ipcMain.handle('get-history', (_event, actionId) => getHistory(db, actionId))
+ipcMain.handle('get-history', (_event, assistantId) => getHistory(db, assistantId))
 
-ipcMain.handle('add-action-message', (_event, actionId: string, messages: AssistantMessage[]) =>
-  addActionMessage(db, actionId, messages)
+ipcMain.handle(
+  'add-assistant-message',
+  (_event, assistantId: string, messages: AssistantMessage[]) =>
+    addAssistantMessage(db, assistantId, messages)
 )
 
-ipcMain.handle('clear-history', (_event, actionId: string) => clearHistory(db, actionId))
+ipcMain.handle('clear-history', (_event, assistantId: string) => clearHistory(db, assistantId))

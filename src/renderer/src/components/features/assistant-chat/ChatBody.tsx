@@ -1,12 +1,11 @@
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
-import { ActionHistory, Assistant, MessageRole } from '@global/types/assistant'
+import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ReactElement } from 'react'
 import { ChatMessage } from './ChatMessage'
-import { isCustomRole } from '@global/utils/role.utils'
 
 interface ChatBodyProps {
   assistant: Assistant
-  history: ActionHistory | undefined
+  history: AssistantHistory | undefined
   currentAssistantMessage: string | undefined
   isLoading: boolean
 }

@@ -46,6 +46,7 @@ export const ChatMessage = ({
 
   return (
     <ChatBubble
+      layout={message.role === MessageRole.ASSISTANT ? 'ai' : 'default'}
       variant={getVariant(message.role)}
       className={`my-2 ${className}`}
       onClick={() => handleCopy(message.content)}
@@ -56,6 +57,7 @@ export const ChatMessage = ({
         isLoading={showLoadingIcon(isLoading, message)}
       >
         {message.content}
+
         {message.role === MessageRole.ASSISTANT && (
           <div>
             {shouldShowCopy && (

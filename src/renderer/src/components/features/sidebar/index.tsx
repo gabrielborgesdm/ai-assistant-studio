@@ -11,7 +11,9 @@ import {
   useSidebar
 } from '@/components/ui/sidebar'
 import { Switch } from '@renderer/components/ui/switch'
+import { Page } from '@renderer/pages'
 import { useAssistantContext } from '@renderer/provider/AssistantProvider'
+import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
 import { Bot, History, Settings } from 'lucide-react'
 import { useEffect } from 'react'
@@ -20,6 +22,7 @@ export const SidebarComponent = (): React.ReactElement => {
   const { assistants, setAssistants, activeAssistant, setActiveAssistant } = useAssistantContext()
 
   const { isDark, toggleTheme } = useTheme()
+  const { setActivePage, activePage } = usePageContext()
 
   const { toggleSidebar } = useSidebar()
 
@@ -49,9 +52,17 @@ export const SidebarComponent = (): React.ReactElement => {
     },
     {
       title: 'Settings',
-      icon: Settings
+      icon: Settings,
+      onClick: () => {
+        setActivePage('settings')
+        toggleSidebar()
+      }
     }
   ]
+
+  if (activePage === Page.Setup) {
+    return <></>
+  }
 
   return (
     <Sidebar>
@@ -91,7 +102,7 @@ export const SidebarComponent = (): React.ReactElement => {
           <SidebarMenu>
             {footerItems.map((item) => (
               <SidebarMenuItem key={item.title} className="cursor-pointer">
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild onClick={item.onClick}>
                   <span>
                     <item.icon />
                     {item.title}

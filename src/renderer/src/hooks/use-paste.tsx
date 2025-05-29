@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
 
 // identify mouse right click and paste from clipboard
-export const usePasteOnRightClick = (ref: React.RefObject<HTMLTextAreaElement | null>): void => {
+export const usePasteOnRightClick = (
+  ref: React.RefObject<HTMLTextAreaElement | null>,
+  setValue: (value: string) => void
+): void => {
   useEffect((): (() => void) | undefined => {
     const textarea = ref?.current
     if (!textarea) return
@@ -28,7 +31,7 @@ export const usePasteOnRightClick = (ref: React.RefObject<HTMLTextAreaElement | 
         const value = textarea.value
 
         // Insert text at cursor position
-        textarea.value = value.substring(0, start) + text + value.substring(end)
+        textarea.value = value.substring(0, start) + text + value.substring(end).trim()
 
         // Update cursor position
         const newCursorPos = start + text.length
@@ -37,6 +40,8 @@ export const usePasteOnRightClick = (ref: React.RefObject<HTMLTextAreaElement | 
         // Trigger input event to update React state
         const event = new Event('input', { bubbles: true })
         textarea.dispatchEvent(event)
+        console.log('textarea value', textarea.value)
+        setValue(textarea.value)
       } catch (error) {
         console.error('Failed to paste from clipboard:', error)
       }

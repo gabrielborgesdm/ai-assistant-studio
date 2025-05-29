@@ -1,10 +1,16 @@
 import { ipcRenderer } from 'electron'
+import {
+  GetAssistantsEvent,
+  GetHistoryEvent,
+  AddAssistantMessageEvent,
+  ClearHistoryEvent
+} from '@global/const/db.event'
 
 // This file is used to expose the database API to the renderer process
 export const dbApi = {
-  getAssistants: () => ipcRenderer.invoke('get-assistants'),
-  getHistory: (assistantId) => ipcRenderer.invoke('get-history', assistantId),
+  getAssistants: () => ipcRenderer.invoke(GetAssistantsEvent),
+  getHistory: (assistantId) => ipcRenderer.invoke(GetHistoryEvent, assistantId),
   addAssistantMessage: (assistantId, messages) =>
-    ipcRenderer.invoke('add-assistant-message', assistantId, messages),
-  clearHistory: (assistantId) => ipcRenderer.invoke('clear-history', assistantId)
+    ipcRenderer.invoke(AddAssistantMessageEvent, assistantId, messages),
+  clearHistory: (assistantId) => ipcRenderer.invoke(ClearHistoryEvent, assistantId)
 }

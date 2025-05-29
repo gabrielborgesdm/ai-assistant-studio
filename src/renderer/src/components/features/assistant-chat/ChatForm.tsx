@@ -18,7 +18,7 @@ export const ChatForm = ({
   handleSubmit
 }: ChatFormProps): ReactElement => {
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  usePasteOnRightClick(inputRef)
+  usePasteOnRightClick(inputRef, setTextInput)
 
   useEffect(() => {
     if (!isLoading) {

@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChatEvent, ChatEventCancel, ChatEventReply } from '@global/const/ollama.event'
+import {
+  ChatEvent,
+  ChatEventCancel,
+  ChatEventReply,
+  OllamaIsInstalledEvent
+} from '@global/const/ollama.event'
 import { Assistant, AssistantHistory } from 'src/global/types/assistant'
 import { OllamaMessageStreamResponse } from '@global/types/ollama'
 import { isCustomRole } from '@global/utils/role.utils'
@@ -62,6 +67,18 @@ export const streamOllamaChatResponse = async (
   }
 }
 
+export const checkOllamaIsInstalled = async (): Promise<boolean> => {
+  try {
+    const ollama = getOllama()
+    const response = await ollama.list()
+    console.log('Ollama list response:', response)
+    return true
+  } catch (error) {
+    console.error('Error checking Ollama installation:', error)
+  }
+  return false
+}
+
 // export const downloadModel = async (modelName: string): Promise<boolean> => {
 //   try {
 //     console.log('Attempting to download model', modelName)
@@ -91,3 +108,6 @@ ipcMain.on(ChatEvent, async (event, assistant: Assistant, history: AssistantHist
   // Call the function to stream the response passing the abort controller
   await streamOllamaChatResponse(assistant, history, event, abort)
 })
+
+ipcMain.handle(OllamaIsInstalledEvent, () => checkOllamaIsInstalled())
+

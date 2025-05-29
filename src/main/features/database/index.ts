@@ -3,7 +3,7 @@ import { app, ipcMain } from 'electron'
 import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
-import defaultAssistants from '../../../../resources/default-assistants.json'
+import defaultAssistants from '@global/resources/default-assistants.json'
 import { addAssistantMessage, clearHistory, getAssistants, getHistory } from './assistants.service'
 import fs from 'fs/promises'
 

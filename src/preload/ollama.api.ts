@@ -1,4 +1,4 @@
-import { ChatEvent, ChatEventReply } from '@global/const/ollama.event'
+import { ChatEvent, ChatEventReply, OllamaIsInstalledEvent } from '@global/const/ollama.event'
 import { ipcRenderer } from 'electron'
 
 // This file is used to expose the database API to the renderer process
@@ -11,10 +11,10 @@ export const ollamaApi = {
     ipcRenderer.send(ChatEvent, action, history)
 
     const listener = (_event: Electron.IpcRendererEvent, result): void => {
-      console.log('Responding with result:', result)
       callback(result)
     }
 
     ipcRenderer.on(ChatEventReply, listener)
-  }
+  },
+  checkOllamaIsInstalled: () => ipcRenderer.invoke(OllamaIsInstalledEvent)
 }

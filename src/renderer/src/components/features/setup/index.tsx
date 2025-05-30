@@ -2,64 +2,31 @@
 
 import { Button } from '@/components/ui/button'
 import { AnimatedLoader } from '@renderer/components/shared/Loader'
-import { Page } from '@renderer/pages'
-import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
-import { ArrowLeft, ArrowRight, Moon } from 'lucide-react'
-import { ReactElement, useMemo, useState } from 'react'
+import { ArrowRight, Moon } from 'lucide-react'
+import { ReactElement } from 'react'
 import { OllamaStep } from './OllamaStep'
 import { RequiredModelsStep } from './RequiredModelsStep'
-import { useHandleSetup } from './use-handle-setup'
+import { SetupStep, useHandleSetup } from './use-handle-setup'
 import { WelcomeStep } from './WelcomeStep'
 
 export const SetupComponent = (): ReactElement => {
   const { toggleTheme } = useTheme()
 
-  enum SetupStep {
-    Welcome = 1,
-    Ollama = 2,
-    RequiredModels = 3
-  }
-
-  const [currentStep, setCurrentStep] = useState<SetupStep>(SetupStep.Welcome)
-
-  const { setActivePage } = usePageContext()
-
   const {
     ollamaRunning,
+    models,
+    hadInitialLoad,
     isCheckingRequirements,
+    currentStep,
     refetchRequirementsCheck,
     openOllamaWebsite,
-    models,
-    allRequirementsMet,
-    hadInitialLoad
+    shouldContinueButtonBeEnabled,
+    handleContinue
   } = useHandleSetup()
 
-  const isContinueButtonDisabled = useMemo(() => {
-    if (currentStep === SetupStep.Ollama) {
-      return ollamaRunning === false
-    }
-    console.log('allRequirementsMet', allRequirementsMet)
-    console.log('currentStep', currentStep)
-    console.log('isOllamaRunning', ollamaRunning)
-    if (currentStep === SetupStep.RequiredModels) {
-      return allRequirementsMet === false
-    }
-
-    return false
-  }, [currentStep, ollamaRunning, allRequirementsMet])
-
-  const handleContinue = (): void => {
-    if (allRequirementsMet && currentStep === SetupStep.RequiredModels) {
-      setActivePage(Page.Chat)
-      return
-    }
-
-    setCurrentStep(currentStep + 1)
-  }
-
   // The first load when oppening the application
-  if (!hadInitialLoad) {
+  if (!hadInitialLoad || isCheckingRequirements || !currentStep) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center bg-slate-50 dark:bg-secondary text-foreground ">
         <AnimatedLoader />
@@ -87,19 +54,11 @@ export const SetupComponent = (): ReactElement => {
         />
       )}
       {currentStep === SetupStep.RequiredModels && <RequiredModelsStep models={models} />}
-      <div
-        className={`flex items-center justify-center gap-4 ${currentStep > SetupStep.Welcome ? 'w-[360px]' : ''}`}
-      >
-        {currentStep > SetupStep.Welcome && (
-          <Button size="lg" onClick={() => setCurrentStep(currentStep - 1)} className="flex-1">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        )}
+      <div className="flex items-center justify-center gap-4 w-[320px]">
         <Button
           size="lg"
           onClick={handleContinue}
-          disabled={isContinueButtonDisabled}
+          disabled={shouldContinueButtonBeEnabled() === false}
           className="flex-1"
         >
           Continue

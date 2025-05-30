@@ -1,7 +1,7 @@
+import { Assistant } from '@global/types/assistant'
 import { ChatBody } from '@renderer/components/features/assistant-chat/ChatBody'
 import { ChatForm } from '@renderer/components/features/assistant-chat/ChatForm'
 import { useHandleChat } from '@renderer/components/features/assistant-chat/use-handle-chat'
-import { Assistant } from '@global/types/assistant'
 import { ChatHeader } from './ChatHeader'
 
 interface ChatComponentProps {

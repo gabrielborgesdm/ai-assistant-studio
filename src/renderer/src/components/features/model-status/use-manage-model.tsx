@@ -4,93 +4,101 @@ import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 import requiredModels from '@global/resources/required-models.json'
 
 interface UseManageModel {
-  models: InstalledModels | undefined
-  updateModel: (model: ModelDownload) => void
-  checkRequiredModelsAreInstalled: () => Promise<boolean>
   isModelInstalled: (model: string) => boolean
   handleFinishedDownloading: (model: string) => void
-  loadModels: () => Promise<void>
-  refreshOrUpdateModelStatus: (modelName: string) => Promise<void>
+  syncModelsAndOllamaStatus: (models?: InstalledModels) => Promise<void>
+  saveModel: (modelName: string) => Promise<void>
+  checkRequirementsAreMet: () => boolean
 }
 
 export const useManageModel = (): UseManageModel => {
-  const { models, updateModel, updateModels, getModelsFromLocalStorage } = useRequirementsContext()
+  const {
+    models,
+    updateModels,
+    getModelsFromLocalStorage,
+    setIsCheckingRequirements,
+    setOllamaRunning
+  } = useRequirementsContext()
 
   const isModelInstalled = (model: string): boolean => {
+    console.log('models', models)
     return models?.[model]?.installed ?? false
   }
 
-  const refreshOrUpdateModelStatus = async (modelName: string): Promise<void> => {
+  /*
+   * Save a model into the models list if it doesn't exist
+   * Then call syncModelsAndOllamaStatus to update the models status
+   */
+  const saveModel = async (modelName: string): Promise<void> => {
     if (!models) return
-    // Check if the model is installed on the machine
-    const installedModels = await window.api.ollama.listModels()
-    const isModelInstalled = installedModels.includes(modelName)
-    console.log('isModelInstalled', isModelInstalled, modelName)
 
-    let model: ModelDownload
-    if (models[modelName]) {
-      model = models[modelName]
-    } else {
-      model = ModelFactory({ name: modelName })
+    const modelsToBeSynced = { ...models }
+
+    if (!modelsToBeSynced[modelName]) {
+      modelsToBeSynced[modelName] = ModelFactory({ name: modelName })
     }
-    model.installed = isModelInstalled
 
-    updateModel(model)
+    syncModelsAndOllamaStatus(modelsToBeSynced)
   }
 
-  const handleFinishedDownloading = (model: string): void => {
-    updateModel(ModelFactory({ name: model, installed: true }))
+  const handleFinishedDownloading = (): void => {
+    syncModelsAndOllamaStatus()
   }
 
-  const loadModels = async (): Promise<void> => {
-    // Load the models from localStorage
-    let models = getModelsFromLocalStorage()
+  /*
+   * Sync the models and ollama status
+   * This is called when we want to verify that the models are installed and ollama is running
+   * This function get the models from various sources and syncs them with the context and localStorage
+   * the first source can be a model set by the user, then the models from the context, and finally the models from localStorage,
+   * if none of these sources have the models, it will create them from the required models json file
+   */
+  const syncModelsAndOllamaStatus = async (updatedModels?: InstalledModels): Promise<void> => {
+    setIsCheckingRequirements(true)
 
-    // If there are no models, we create them from the required models json file
-    if (!models) {
-      models = {}
+    let modelsToBeSynced = updatedModels || models || getModelsFromLocalStorage()
+
+    // Clone the models to avoid mutating the original object
+    modelsToBeSynced = modelsToBeSynced ? { ...modelsToBeSynced } : undefined
+
+    // If there are no models yet, we create them from the required models json file
+    if (!modelsToBeSynced) {
+      modelsToBeSynced = {}
       requiredModels.forEach((model) => {
-        models![model.name] = ModelFactory(model)
+        modelsToBeSynced![model.name] = ModelFactory(model)
       })
     }
 
-    // Check if the models are installed on the machine
+    // Now that we have the models listed, we check if they are installed
     const installedModels = await window.api.ollama.listModels()
-    Object.values(models).forEach((model) => {
-      model.installed = installedModels.includes(model.name)
+    Object.values(modelsToBeSynced).forEach((model: ModelDownload) => {
+      model.installed = installedModels.some((installedModel) =>
+        installedModel.includes(model.name)
+      )
     })
 
-    // Update the models in the context and localStorage
-    updateModels(models)
+    // Check if ollama is running
+    const isOllamaRunning = await window.api.ollama.checkOllamaRunning()
+    setOllamaRunning(isOllamaRunning)
+
+    // call this method to update the models in the context and localStorage
+    updateModels(modelsToBeSynced)
+    setIsCheckingRequirements(false)
   }
 
-  const checkRequiredModelsAreInstalled = async (): Promise<boolean> => {
-    // If there are no required models, we consider it installed
-    if (!models) return true
+  const checkRequirementsAreMet = (): boolean => {
+    if (!models) return false
 
-    // get models installed in the machine from ollama
-    const installedModels = await window.api.ollama.listModels()
-    console.log('installed models', installedModels)
+    const requiredModels = Object.values(models).filter((model) => model.required)
+    console.log('requiredModels', requiredModels)
 
-    // Get all required models from the models state
-    const requiredModels: string[] = Object.values(models)
-      .filter((model) => model.required)
-      .map((model) => model.name)
-    console.log('required models', requiredModels)
-
-    // Check if all required models are in the installed models list
-    const allModelsInstalled = requiredModels.every((model) => installedModels.includes(model))
-
-    return allModelsInstalled
+    return requiredModels.every((model) => model.installed)
   }
 
   return {
-    models,
-    updateModel,
-    checkRequiredModelsAreInstalled,
     isModelInstalled,
     handleFinishedDownloading,
-    loadModels,
-    refreshOrUpdateModelStatus
+    syncModelsAndOllamaStatus,
+    saveModel,
+    checkRequirementsAreMet
   }
 }

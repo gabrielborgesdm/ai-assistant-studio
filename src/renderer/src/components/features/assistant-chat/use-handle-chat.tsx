@@ -1,7 +1,10 @@
 import { ChatEvent } from '@global/const/ollama.event'
 import { Assistant, AssistantHistory, AssistantMessage, MessageRole } from '@global/types/assistant'
 import { OllamaMessageStreamResponse } from '@global/types/ollama'
+import { Page } from '@renderer/pages'
+import { usePageContext } from '@renderer/provider/PageProvider'
 import { FormEvent, useEffect, useState } from 'react'
+import { useManageModel } from '../model-status/use-manage-model'
 
 interface useHandleChatProps {
   history: AssistantHistory | undefined
@@ -20,6 +23,8 @@ interface useHandleChatProps {
 }
 
 export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
+  const { checkRequirementsAreMet } = useManageModel()
+  const { setActivePage } = usePageContext()
   const [history, setHistory] = useState<AssistantHistory | undefined>(undefined)
   const [textInput, setTextInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -142,6 +147,11 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
 
   // Load the history when the assistant changes
   useEffect(() => {
+    // Check if ollama is running and the required models installed, if not, redirect to setup page
+    if (!checkRequirementsAreMet()) {
+      setActivePage(Page.Setup)
+      return
+    }
     window.api.db.getHistory(assistant.id).then(setHistory)
   }, [assistant])
 

@@ -4,18 +4,24 @@ import { createContext, ReactElement, ReactNode, useContext, useState } from 're
 
 interface RequirementsContextType {
   models: InstalledModels | undefined
+  ollamaRunning: boolean
+  isCheckingRequirements: boolean
   updateModel: (model: ModelDownload) => void
   updateModels: (models: InstalledModels) => void
   getModelsFromLocalStorage: () => InstalledModels | undefined
+  setOllamaRunning: (ollamaRunning: boolean) => void
+  setIsCheckingRequirements: (isCheckingRequirements: boolean) => void
 }
 
 const RequirementsContext = createContext<RequirementsContextType | undefined>(undefined)
 
 export const RequirementsProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [models, setModels] = useState<InstalledModels | undefined>(undefined)
+  const [ollamaRunning, setOllamaRunning] = useState(false)
+  const [isCheckingRequirements, setIsCheckingRequirements] = useState(true)
 
   const getModelsFromLocalStorage = (): InstalledModels | undefined => {
-    // localStorage.removeItem('models')
+    localStorage.removeItem('models')
 
     const modelsJson = localStorage.getItem('models')
     if (modelsJson) {
@@ -41,9 +47,13 @@ export const RequirementsProvider = ({ children }: { children: ReactNode }): Rea
     <RequirementsContext.Provider
       value={{
         models,
+        ollamaRunning,
+        isCheckingRequirements,
         updateModel,
         updateModels,
-        getModelsFromLocalStorage
+        getModelsFromLocalStorage,
+        setOllamaRunning,
+        setIsCheckingRequirements
       }}
     >
       {children}

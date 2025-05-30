@@ -3,9 +3,9 @@ import { app, ipcMain } from 'electron'
 import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
-import defaultAssistants from '../../../../resources/default-assistants.json'
+import defaultAssistants from '@global/resources/default-assistants.json'
 import { addAssistantMessage, clearHistory, getAssistants, getHistory } from './assistants.service'
-import fs from 'fs/promises'
+// import fs from 'fs/promises'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -25,11 +25,11 @@ export type DB = typeof db
 export async function initDB(): Promise<void> {
   const file = path.join(app.getPath('userData'), 'db.json')
   // for debug purposes, remove the db file
-  try {
-    await fs.rm(file).then(() => console.log('Database file removed'))
-  } catch (error) {
-    console.error('Error removing database file:', error)
-  }
+  // try {
+  //   await fs.rm(file).then(() => console.log('Database file removed'))
+  // } catch (error) {
+  //   console.error('Error removing database file:', error)
+  // }
 
   db = await JSONFilePreset(file, initialData)
   await db.read()

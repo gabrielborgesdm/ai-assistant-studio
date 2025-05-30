@@ -1,6 +1,6 @@
 import { ChatBody } from '@renderer/components/features/assistant-chat/ChatBody'
 import { ChatForm } from '@renderer/components/features/assistant-chat/ChatForm'
-import { useHandleChat } from '@renderer/components/features/assistant-chat/useHandleChat'
+import { useHandleChat } from '@renderer/components/features/assistant-chat/use-handle-chat'
 import { Assistant } from '@global/types/assistant'
 import { ChatHeader } from './ChatHeader'
 
@@ -22,7 +22,7 @@ export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactEle
   } = useHandleChat(assistant)
 
   return (
-    <main className="flex flex-grow-1 flex-col w-full h-full">
+    <div className="flex flex-grow-1 flex-col w-full h-full">
       <ChatHeader
         assistant={assistant}
         isLoading={isLoading}
@@ -36,11 +36,12 @@ export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactEle
         isLoading={isLoading}
       />
       <ChatForm
+        assistant={assistant}
         textInput={textInput}
         setTextInput={setTextInput}
         isLoading={isLoading}
         handleSubmit={handleSubmit}
       />
-    </main>
+    </div>
   )
 }

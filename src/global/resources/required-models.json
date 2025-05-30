@@ -1,0 +1,14 @@
+[
+  {
+    "name": "gemma3:1b",
+    "size": "8.2GB",
+    "info": "Used to generate responses for the chat",
+    "required": true
+  },
+  {
+    "name": "gnokit/improve-grammar:latest",
+    "size": "8.2GB",
+    "info": "Used to generate responses for the chat",
+    "required": true
+  }
+]

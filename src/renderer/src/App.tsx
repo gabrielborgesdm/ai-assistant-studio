@@ -1,13 +1,16 @@
 import { SidebarComponent } from '@/components/features/sidebar'
 import { ChatPage } from '@/components/pages/chat'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { AssistantHistory, Assistant, AssistantMessage } from '@global/types/assistant'
+import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
 import { ReactElement } from 'react'
+import { PageProvider } from '@/provider/PageProvider'
+import { SetupPage } from '@/components/pages/setup'
+import { RequirementsProvider } from '@/provider/RequirementsProvider'
+import { ModelDownload } from '@global/types/model'
 
 /**
  * Global window object to expose API methods and data
  * These methods are defined in /preload directory and use the Electron ipcRenderer to communicate with the main process
- *
  */
 declare global {
   interface Window {
@@ -18,6 +21,9 @@ declare global {
           history: AssistantHistory,
           callback: (response) => void
         ) => Promise<void>
+        checkOllamaRunning: () => Promise<boolean>
+        downloadModel: (model: ModelDownload, callback: (response) => void) => Promise<void>
+        listModels: () => Promise<string[]>
       }
       db: {
         getAssistants: () => Promise<Assistant[]>
@@ -36,12 +42,18 @@ declare global {
 export default function App(): ReactElement {
   return (
     <div className="bg-background text-foreground ">
-      <SidebarProvider>
-        <SidebarComponent />
-        <main className="flex flex-row w-full">
-          <ChatPage />
-        </main>
-      </SidebarProvider>
+      <PageProvider>
+        <SidebarProvider>
+          <RequirementsProvider>
+            <SidebarComponent />
+            <main className="flex flex-row w-full">
+              {/* The Setup Page is the initial page */}
+              <SetupPage />
+              <ChatPage />
+            </main>
+          </RequirementsProvider>
+        </SidebarProvider>
+      </PageProvider>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { Assistant } from '@global/types/assistant'
 import { Button } from '@renderer/components/ui/button'
-import { SidebarTrigger } from '@renderer/components/ui/sidebar'
-import { Pause, Trash2 } from 'lucide-react'
+import { useSidebar } from '@renderer/components/ui/sidebar'
+import { Pause, SidebarIcon, Trash2 } from 'lucide-react'
 
 interface ChatHeaderProps {
   assistant: Assistant
@@ -16,11 +16,12 @@ export const ChatHeader = ({
   handleClearHistory,
   handleCancelMessageRequest
 }: ChatHeaderProps): React.ReactElement => {
+  const { toggleSidebar } = useSidebar()
   return (
     <header className="flex items-center justify-between p-4 border-b">
       <div className="flex gap-2 items-center">
-        <Button variant="ghost" size="icon">
-          <SidebarTrigger className="" />
+        <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+          <SidebarIcon />
         </Button>
         <span title={assistant?.description} aria-label="Description">
           <h2 className="text-lg font-bold cursor-help">{assistant?.title}</h2>

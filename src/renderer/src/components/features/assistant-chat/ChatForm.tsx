@@ -6,8 +6,9 @@ import { Button } from '@renderer/components/ui/button'
 import { usePasteOnRightClick } from '@renderer/hooks/use-paste'
 import { SendHorizonal } from 'lucide-react'
 import { ReactElement, useEffect, useRef } from 'react'
-import { ModelStatusCard } from '../model-status/ModelStatusCard'
-import { useManageModel } from '../model-status/use-manage-model'
+import { ModelStatusCard } from '@renderer/components/features/model-status/ModelStatusCard'
+import { useManageModel } from '@renderer/components/features/model-status/use-manage-model'
+import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 
 interface ChatFormProps {
   assistant: Assistant
@@ -27,7 +28,8 @@ export const ChatForm = ({
   const inputRef = useRef<HTMLTextAreaElement>(null)
   usePasteOnRightClick(inputRef, setTextInput)
 
-  const { isModelInstalled, refreshOrUpdateModelStatus, models } = useManageModel()
+  const { isModelInstalled, saveModel } = useManageModel()
+  const { isCheckingRequirements } = useRequirementsContext()
 
   useEffect(() => {
     if (!isLoading) {
@@ -38,13 +40,10 @@ export const ChatForm = ({
   }, [isLoading])
 
   useEffect(() => {
-    if (models) {
-      console.log('refreshOrUpdateModelStatus', assistant.model)
-      refreshOrUpdateModelStatus(assistant.model)
-    }
+    saveModel(assistant.model)
   }, [assistant.model])
 
-  if (!isModelInstalled(assistant.model))
+  if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements)
     return (
       <ModelStatusCard
         className="border-t border-0 rounded-none"

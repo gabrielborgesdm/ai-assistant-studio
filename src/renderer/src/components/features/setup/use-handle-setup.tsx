@@ -2,57 +2,84 @@ import { useManageModel } from '@/components/features/model-status/use-manage-mo
 import { InstalledModels } from '@global/types/model'
 import { Page } from '@renderer/pages'
 import { usePageContext } from '@renderer/provider/PageProvider'
+import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 import { useEffect, useState } from 'react'
 
 interface UseHandleSetup {
   ollamaRunning: boolean
   isCheckingRequirements: boolean
   models: InstalledModels | undefined
-  allRequirementsMet: boolean
   hadInitialLoad: boolean
+  currentStep: SetupStep
+  setCurrentStep: (step: SetupStep) => void
   refetchRequirementsCheck: (debounce?: boolean) => Promise<void>
   openOllamaWebsite: () => void
+  shouldContinueButtonBeEnabled: () => boolean
+  handleContinue: () => void
+}
+
+export enum SetupStep {
+  None = 0,
+  Welcome = 1,
+  Ollama = 2,
+  RequiredModels = 3
 }
 
 export const useHandleSetup = (): UseHandleSetup => {
+  const { syncModelsAndOllamaStatus, checkRequirementsAreMet } = useManageModel()
+  const { models, ollamaRunning, isCheckingRequirements } = useRequirementsContext()
   const { setActivePage } = usePageContext()
-  const { models, checkRequiredModelsAreInstalled, loadModels } = useManageModel()
-
+  const [currentStep, setCurrentStep] = useState<SetupStep>(SetupStep.None)
   const [hadInitialLoad, setHadInitialLoad] = useState(false)
 
-  const [ollamaRunning, setOllamaRunning] = useState(false)
-  const [isCheckingRequirements, setIsCheckingRequirements] = useState(false)
-  const [allRequirementsMet, setAllRequirementsMet] = useState(false)
+  const shouldContinueButtonBeEnabled = (): boolean => {
+    if (currentStep === SetupStep.Ollama) {
+      return ollamaRunning
+    }
 
-  const refetchRequirementsCheck = async (debounce?: boolean): Promise<void> => {
-    if (!models) return
-    setIsCheckingRequirements(true)
-    const allModelsInstalled = await checkRequiredModelsAreInstalled()
-    const isOllamaRunning = await window.api.ollama.checkOllamaRunning()
-    console.log('allModelsInstalled', allModelsInstalled)
-    console.log('isOllamaRunning', isOllamaRunning)
+    if (currentStep === SetupStep.RequiredModels) {
+      return checkRequirementsAreMet()
+    }
 
-    const allRequirementsMet = isOllamaRunning && allModelsInstalled
+    return true
+  }
 
-    // If the requirements are met and it's the first load, we redirect to the chat
-    // otherwise we wait for the user to click continue
-    if (!hadInitialLoad && allRequirementsMet) {
-      // the timeout is to debounce the loading animation
-      setTimeout(() => {
-        setActivePage(Page.Chat)
-      }, 1000)
+  const handleContinue = (): void => {
+    if (currentStep === SetupStep.RequiredModels && ollamaRunning && checkRequirementsAreMet()) {
+      setActivePage(Page.Chat)
       return
     }
+
+    setNextStep()
+  }
+
+  const setNextStep = (): void => {
+    if (!currentStep && !localStorage.getItem('welcomeShown')) {
+      localStorage.setItem('welcomeShown', 'true')
+      setCurrentStep(SetupStep.Welcome)
+      return
+    }
+
+    if (!ollamaRunning) {
+      setCurrentStep(SetupStep.Ollama)
+      return
+    }
+
+    if (!checkRequirementsAreMet()) {
+      setCurrentStep(SetupStep.RequiredModels)
+      return
+    }
+
+    setActivePage(Page.Chat)
+  }
+
+  const refetchRequirementsCheck = async (debounce?: boolean): Promise<void> => {
+    await syncModelsAndOllamaStatus()
 
     // the timeout is to debounce the loading animation on the button
     if (debounce) {
       await new Promise((resolve) => setTimeout(resolve, 1000))
     }
-
-    setHadInitialLoad(true)
-    setAllRequirementsMet(allRequirementsMet)
-    setIsCheckingRequirements(false)
-    setOllamaRunning(isOllamaRunning)
   }
 
   const openOllamaWebsite = (): void => {
@@ -60,21 +87,29 @@ export const useHandleSetup = (): UseHandleSetup => {
   }
 
   useEffect(() => {
-    loadModels()
+    refetchRequirementsCheck()
   }, [])
 
-  // Initial check
   useEffect(() => {
-    refetchRequirementsCheck()
-  }, [models])
+    if (isCheckingRequirements || hadInitialLoad) return
+
+    // Doing this to show the loading icon for at least 1 second
+    setTimeout(() => {
+      setNextStep()
+      setHadInitialLoad(true)
+    }, 500)
+  }, [isCheckingRequirements])
 
   return {
+    currentStep,
     models,
     ollamaRunning,
     isCheckingRequirements,
-    allRequirementsMet,
     hadInitialLoad,
+    setCurrentStep,
     refetchRequirementsCheck,
-    openOllamaWebsite
+    openOllamaWebsite,
+    shouldContinueButtonBeEnabled,
+    handleContinue
   }
 }

@@ -1,101 +1,80 @@
-import { useEffect, useState } from 'react'
-import { ModelDownload } from '@global/types/model'
-import { useRequirementsContext } from '@/provider/RequirementsProvider'
-import { usePageContext } from '@renderer/provider/PageProvider'
+import { useManageModel } from '@/components/features/model-status/use-manage-model'
+import { InstalledModels } from '@global/types/model'
 import { Page } from '@renderer/pages'
+import { usePageContext } from '@renderer/provider/PageProvider'
+import { useEffect, useState } from 'react'
 
 interface UseHandleSetup {
-  ollamaInstalled: boolean
-  requirementsCheckLoading: boolean
-  models: ModelDownload[]
+  ollamaRunning: boolean
+  isCheckingRequirements: boolean
+  models: InstalledModels | undefined
   allRequirementsMet: boolean
-  refetchRequirementsCheck: () => Promise<void>
+  hadInitialLoad: boolean
+  refetchRequirementsCheck: (debounce?: boolean) => Promise<void>
   openOllamaWebsite: () => void
-  downloadModel: (modelName: string) => Promise<void>
 }
 
 export const useHandleSetup = (): UseHandleSetup => {
-  const { getModels, updateModel, completeSetup, isSetupCompleted } = useRequirementsContext()
-
   const { setActivePage } = usePageContext()
-  const [ollamaInstalled, setOllamaInstalled] = useState(false)
-  const [requirementsCheckLoading, setRequirementsCheckLoading] = useState(false)
-  const [models, setModels] = useState<ModelDownload[]>(getModels())
+  const { models, checkRequiredModelsAreInstalled, loadModels } = useManageModel()
 
-  const allRequirementsMet = ollamaInstalled && models.every((model) => model.installed)
+  const [hadInitialLoad, setHadInitialLoad] = useState(false)
 
-  const refetchRequirementsCheck = async (): Promise<void> => {
-    setModels(getModels())
-    await checkOllamaInstallation()
-  }
+  const [ollamaRunning, setOllamaRunning] = useState(false)
+  const [isCheckingRequirements, setIsCheckingRequirements] = useState(false)
+  const [allRequirementsMet, setAllRequirementsMet] = useState(false)
 
-  // Mock Electron IPC calls
-  const checkOllamaInstallation = async (): Promise<void> => {
-    setRequirementsCheckLoading(true)
-    // Simulate checking Ollama installation
-    const isInstalled = await window.api.ollama.checkOllamaIsInstalled()
-    setOllamaInstalled(isInstalled)
-    setRequirementsCheckLoading(false)
+  const refetchRequirementsCheck = async (debounce?: boolean): Promise<void> => {
+    if (!models) return
+    setIsCheckingRequirements(true)
+    const allModelsInstalled = await checkRequiredModelsAreInstalled()
+    const isOllamaRunning = await window.api.ollama.checkOllamaRunning()
+    console.log('allModelsInstalled', allModelsInstalled)
+    console.log('isOllamaRunning', isOllamaRunning)
+
+    const allRequirementsMet = isOllamaRunning && allModelsInstalled
+
+    // If the requirements are met and it's the first load, we redirect to the chat
+    // otherwise we wait for the user to click continue
+    if (!hadInitialLoad && allRequirementsMet) {
+      // the timeout is to debounce the loading animation
+      setTimeout(() => {
+        setActivePage(Page.Chat)
+      }, 1000)
+      return
+    }
+
+    // the timeout is to debounce the loading animation on the button
+    if (debounce) {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+
+    setHadInitialLoad(true)
+    setAllRequirementsMet(allRequirementsMet)
+    setIsCheckingRequirements(false)
+    setOllamaRunning(isOllamaRunning)
   }
 
   const openOllamaWebsite = (): void => {
-    // In Electron, you would use: window.electronAPI.openExternal('https://ollama.ai')
     window.open('https://ollama.ai', '_blank')
   }
 
-  const downloadModel = async (modelName: string): Promise<void> => {
-    setModels((prev) =>
-      prev.map((model) =>
-        model.name === modelName
-          ? { ...model, downloading: true, progress: 0, currentStep: 'Initializing download...' }
-          : model
-      )
-    )
-
-    // Simulate model download with progress
-    const steps = [
-      'Connecting to Ollama...',
-      'Downloading model layers...',
-      'Verifying checksums...',
-      'Installing model...',
-      'Finalizing installation...'
-    ]
-
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      const progress = ((i + 1) / steps.length) * 100
-
-      setModels((prev) =>
-        prev.map((model) =>
-          model.name === modelName
-            ? {
-                ...model,
-                progress,
-                currentStep: steps[i],
-                installed: i === steps.length - 1,
-                downloading: i !== steps.length - 1
-              }
-            : model
-        )
-      )
-    }
-  }
-
   useEffect(() => {
-    if (isSetupCompleted) {
-      setActivePage(Page.Chat)
-    } else {
-      refetchRequirementsCheck()
-    }
+    loadModels()
   }, [])
 
+  // Initial check
+  useEffect(() => {
+    refetchRequirementsCheck()
+  }, [models])
+
   return {
-    ollamaInstalled,
-    requirementsCheckLoading,
     models,
+    ollamaRunning,
+    isCheckingRequirements,
     allRequirementsMet,
+    hadInitialLoad,
     refetchRequirementsCheck,
-    openOllamaWebsite,
-    downloadModel
+    openOllamaWebsite
   }
 }

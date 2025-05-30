@@ -27,6 +27,6 @@
     "title": "Jokster",
     "description": "Create a funny joke based on the provided context.",
     "prompt": "joke: {{text}}\nCreate a funny joke based on the provided context\nReturn only the joke text, nothing else.",
-    "model": "llama3.1:8b"
+    "model": "nomic-embed-text:v1.5"
   }
 ]

@@ -8,8 +8,10 @@ import './features/ollama/ollama.service'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 450,
-    height: 650,
+    width: 1024,
+    height: 768,
+    minWidth: 600,
+    minHeight: 600,
     skipTaskbar: true,
     alwaysOnTop: true,
     autoHideMenuBar: true,

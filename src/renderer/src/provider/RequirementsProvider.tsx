@@ -1,52 +1,49 @@
 /* eslint-disable react-refresh/only-export-components */
-import requiredModels from '@global/resources/required-models.json'
-import { ModelDownload } from '@global/types/model'
-import { createContext, ReactElement, ReactNode, useContext } from 'react'
+import { InstalledModels, ModelDownload } from '@global/types/model'
+import { createContext, ReactElement, ReactNode, useContext, useState } from 'react'
 
 interface RequirementsContextType {
-  isSetupCompleted: boolean
-  completeSetup: () => void
-  getModels: () => ModelDownload[]
-  setModels: (models: ModelDownload[]) => void
+  models: InstalledModels | undefined
   updateModel: (model: ModelDownload) => void
+  updateModels: (models: InstalledModels) => void
+  getModelsFromLocalStorage: () => InstalledModels | undefined
 }
 
 const RequirementsContext = createContext<RequirementsContextType | undefined>(undefined)
 
 export const RequirementsProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const isSetupCompleted = localStorage.getItem('setupCompleted') === 'true'
+  const [models, setModels] = useState<InstalledModels | undefined>(undefined)
 
-  const completeSetup = (): void => {
-    localStorage.setItem('setupCompleted', 'true')
-  }
+  const getModelsFromLocalStorage = (): InstalledModels | undefined => {
+    // localStorage.removeItem('models')
 
-  const getModels = (): ModelDownload[] => {
-    let models = JSON.parse(localStorage.getItem('models') || '[]')
-    if (!models?.length) {
-      models = requiredModels
-      localStorage.setItem('models', JSON.stringify(models))
+    const modelsJson = localStorage.getItem('models')
+    if (modelsJson) {
+      return JSON.parse(modelsJson)
     }
-    return models
+    return undefined
   }
 
-  const setModels = (models: ModelDownload[]): void => {
+  const updateModel = (payload: ModelDownload): void => {
+    const modelsCopy = { ...models }
+    modelsCopy[payload.name] = { ...modelsCopy[payload.name], ...payload }
     localStorage.setItem('models', JSON.stringify(models))
+    setModels(modelsCopy)
   }
 
-  const updateModel = (model: ModelDownload): void => {
-    const models = getModels()
-    const updatedModels = models.map((item) => (item.name === model.name ? model : item))
-    setModels(updatedModels)
+  const updateModels = (models: InstalledModels): void => {
+    console.log('calling update models:', models)
+    localStorage.setItem('models', JSON.stringify(models))
+    setModels({ ...models })
   }
 
   return (
     <RequirementsContext.Provider
       value={{
-        isSetupCompleted,
-        completeSetup,
-        getModels,
-        setModels,
-        updateModel
+        models,
+        updateModel,
+        updateModels,
+        getModelsFromLocalStorage
       }}
     >
       {children}

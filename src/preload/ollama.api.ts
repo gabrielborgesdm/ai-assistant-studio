@@ -1,4 +1,11 @@
-import { ChatEvent, ChatEventReply, OllamaIsInstalledEvent } from '@global/const/ollama.event'
+import {
+  ChatEvent,
+  ChatEventReply,
+  DownloadModelEvent,
+  getDownloadModelEventReply,
+  ListModelsEvent,
+  OllamaIsInstalledEvent
+} from '@global/const/ollama.event'
 import { ipcRenderer } from 'electron'
 
 // This file is used to expose the database API to the renderer process
@@ -16,5 +23,20 @@ export const ollamaApi = {
 
     ipcRenderer.on(ChatEventReply, listener)
   },
-  checkOllamaIsInstalled: () => ipcRenderer.invoke(OllamaIsInstalledEvent)
+  downloadModel: (model, callback) => {
+    const eventReply = getDownloadModelEventReply(model)
+    ipcRenderer.removeAllListeners(eventReply) // Remove any previous listeners to avoid duplicates
+
+    console.log('calling downloadModel', DownloadModelEvent)
+    ipcRenderer.send(DownloadModelEvent, model)
+
+    const listener = (_event: Electron.IpcRendererEvent, result): void => {
+      console.log('reply being called in the listener result', result)
+      callback(result)
+    }
+
+    ipcRenderer.on(eventReply, listener)
+  },
+  listModels: () => ipcRenderer.invoke(ListModelsEvent),
+  checkOllamaRunning: () => ipcRenderer.invoke(OllamaIsInstalledEvent)
 }

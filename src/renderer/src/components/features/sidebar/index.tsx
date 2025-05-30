@@ -18,6 +18,7 @@ import { useTheme } from '@renderer/provider/ThemeProvider'
 import { Bot, History, Settings } from 'lucide-react'
 import { useEffect } from 'react'
 
+// TODO: make it stay fixed when size is big, deactivate clicks when generating messages
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, setAssistants, activeAssistant, setActiveAssistant } = useAssistantContext()
 

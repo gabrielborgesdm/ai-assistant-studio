@@ -36,6 +36,7 @@ export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactEle
         isLoading={isLoading}
       />
       <ChatForm
+        assistant={assistant}
         textInput={textInput}
         setTextInput={setTextInput}
         isLoading={isLoading}

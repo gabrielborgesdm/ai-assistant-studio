@@ -6,6 +6,7 @@ import { ReactElement } from 'react'
 import { PageProvider } from '@/provider/PageProvider'
 import { SetupPage } from '@/components/pages/setup'
 import { RequirementsProvider } from '@/provider/RequirementsProvider'
+import { ModelDownload } from '@global/types/model'
 
 /**
  * Global window object to expose API methods and data
@@ -20,7 +21,9 @@ declare global {
           history: AssistantHistory,
           callback: (response) => void
         ) => Promise<void>
-        checkOllamaIsInstalled: () => Promise<boolean>
+        checkOllamaRunning: () => Promise<boolean>
+        downloadModel: (model: ModelDownload, callback: (response) => void) => Promise<void>
+        listModels: () => Promise<string[]>
       }
       db: {
         getAssistants: () => Promise<Assistant[]>

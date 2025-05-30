@@ -1,8 +1,11 @@
 export interface ModelDownload {
   name: string
-  size: string
+  size?: string
+  info?: string
   installed: boolean
-  downloading: boolean
-  progress: number
-  currentStep: string
+  required?: boolean
+}
+
+export interface InstalledModels {
+  [key: string]: ModelDownload
 }

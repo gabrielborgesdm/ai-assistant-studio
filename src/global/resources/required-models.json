@@ -1,18 +1,14 @@
 [
   {
-    "name": "llama3.1:8b",
-    "size": "4.7GB",
-    "installed": false,
-    "downloading": false,
-    "progress": 0,
-    "currentStep": ""
+    "name": "gemma3:1b",
+    "size": "8.2GB",
+    "info": "Used to generate responses for the chat",
+    "required": true
   },
   {
-    "name": "llama3.3",
+    "name": "gnokit/improve-grammar:latest",
     "size": "8.2GB",
-    "installed": false,
-    "downloading": false,
-    "progress": 0,
-    "currentStep": ""
+    "info": "Used to generate responses for the chat",
+    "required": true
   }
 ]

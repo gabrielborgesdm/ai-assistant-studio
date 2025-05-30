@@ -1,17 +1,24 @@
 import { AnimatedLoader } from '@/components/shared/Loader'
 import { ChatInput } from '@/components/ui/chat/chat-input'
+import { ModelFactory } from '@global/factories/model.factory'
+import { Assistant } from '@global/types/assistant'
 import { Button } from '@renderer/components/ui/button'
 import { usePasteOnRightClick } from '@renderer/hooks/use-paste'
 import { SendHorizonal } from 'lucide-react'
 import { ReactElement, useEffect, useRef } from 'react'
+import { ModelStatusCard } from '../model-status/ModelStatusCard'
+import { useManageModel } from '../model-status/use-manage-model'
 
 interface ChatFormProps {
+  assistant: Assistant
+
   textInput: string
   setTextInput: (value: string) => void
   isLoading: boolean
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }
 export const ChatForm = ({
+  assistant,
   textInput,
   setTextInput,
   isLoading,
@@ -20,6 +27,8 @@ export const ChatForm = ({
   const inputRef = useRef<HTMLTextAreaElement>(null)
   usePasteOnRightClick(inputRef, setTextInput)
 
+  const { isModelInstalled, refreshOrUpdateModelStatus, models } = useManageModel()
+
   useEffect(() => {
     if (!isLoading) {
       if (inputRef.current) {
@@ -27,6 +36,24 @@ export const ChatForm = ({
       }
     }
   }, [isLoading])
+
+  useEffect(() => {
+    if (models) {
+      console.log('refreshOrUpdateModelStatus', assistant.model)
+      refreshOrUpdateModelStatus(assistant.model)
+    }
+  }, [assistant.model])
+
+  if (!isModelInstalled(assistant.model))
+    return (
+      <ModelStatusCard
+        className="border-t border-0 rounded-none"
+        description="This assistant requires the model to be downloaded before you can chat with it."
+        shouldShowCheckButton={false}
+        shouldRenderWhenDownloaded={false}
+        model={ModelFactory({ name: assistant.model })}
+      />
+    )
   return (
     <form onSubmit={handleSubmit} className="border-t shadow">
       <ChatInput

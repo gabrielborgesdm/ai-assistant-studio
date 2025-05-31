@@ -4,6 +4,8 @@ import { createContext, ReactElement, ReactNode, useContext, useState } from 're
 
 interface PageContextType {
   activePage: string
+  isSidebarDisabled: boolean
+  setIsSidebarDisabled: (disabled: boolean) => void
   setActivePage: (page: string) => void
   withActivePage: (pageName: string, Component: React.ComponentType) => ReactElement
 }
@@ -21,10 +23,14 @@ export const PageProvider = ({ children }: { children: ReactNode }): ReactElemen
     return <></>
   }
 
+  const [isSidebarDisabled, setIsSidebarDisabled] = useState(false)
+
   return (
     <PageContext.Provider
       value={{
         activePage,
+        isSidebarDisabled,
+        setIsSidebarDisabled,
         setActivePage,
         withActivePage
       }}

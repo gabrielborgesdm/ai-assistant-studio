@@ -74,12 +74,7 @@ export const useHandleSetup = (): UseHandleSetup => {
   }
 
   const refetchRequirementsCheck = async (debounce?: boolean): Promise<void> => {
-    await syncModelsAndOllamaStatus()
-
-    // the timeout is to debounce the loading animation on the button
-    if (debounce) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
+    await syncModelsAndOllamaStatus(undefined, debounce)
   }
 
   const openOllamaWebsite = (): void => {

@@ -2,13 +2,14 @@ import { AnimatedLoader } from '@/components/shared/Loader'
 import { ChatInput } from '@/components/ui/chat/chat-input'
 import { ModelFactory } from '@global/factories/model.factory'
 import { Assistant } from '@global/types/assistant'
-import { Button } from '@renderer/components/ui/button'
-import { usePasteOnRightClick } from '@renderer/hooks/use-paste'
-import { SendHorizonal } from 'lucide-react'
-import { ReactElement, useEffect, useRef } from 'react'
 import { ModelStatusCard } from '@renderer/components/features/model-status/ModelStatusCard'
 import { useManageModel } from '@renderer/components/features/model-status/use-manage-model'
+import { Button } from '@renderer/components/ui/button'
+import { usePasteOnRightClick } from '@renderer/hooks/use-paste'
+import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
+import { SendHorizonal } from 'lucide-react'
+import { ReactElement, useEffect, useRef } from 'react'
 
 interface ChatFormProps {
   assistant: Assistant
@@ -31,6 +32,8 @@ export const ChatForm = ({
   const { isModelInstalled, saveModel } = useManageModel()
   const { isCheckingRequirements } = useRequirementsContext()
 
+  const { setIsSidebarDisabled } = useGlobalContext()
+
   useEffect(() => {
     if (!isLoading) {
       if (inputRef.current) {
@@ -51,6 +54,12 @@ export const ChatForm = ({
         shouldShowCheckButton={false}
         shouldRenderWhenDownloaded={false}
         model={ModelFactory({ name: assistant.model })}
+        onStartedDownloading={() => {
+          setIsSidebarDisabled(true)
+        }}
+        onFinishedDownloading={() => {
+          setIsSidebarDisabled(false)
+        }}
       />
     )
   return (

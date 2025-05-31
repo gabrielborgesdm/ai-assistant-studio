@@ -6,7 +6,7 @@ import requiredModels from '@global/resources/required-models.json'
 interface UseManageModel {
   isModelInstalled: (model: string) => boolean
   handleFinishedDownloading: (model: string) => void
-  syncModelsAndOllamaStatus: (models?: InstalledModels) => Promise<void>
+  syncModelsAndOllamaStatus: (models?: InstalledModels, debounce?: boolean) => Promise<void>
   saveModel: (modelName: string) => Promise<void>
   checkRequirementsAreMet: () => boolean
 }
@@ -52,8 +52,16 @@ export const useManageModel = (): UseManageModel => {
    * the first source can be a model set by the user, then the models from the context, and finally the models from localStorage,
    * if none of these sources have the models, it will create them from the required models json file
    */
-  const syncModelsAndOllamaStatus = async (updatedModels?: InstalledModels): Promise<void> => {
+  const syncModelsAndOllamaStatus = async (
+    updatedModels?: InstalledModels,
+    debounce?: boolean
+  ): Promise<void> => {
     setIsCheckingRequirements(true)
+
+    // the timeout is to debounce the loading animation on the button
+    if (debounce) {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
 
     let modelsToBeSynced = updatedModels || models || getModelsFromLocalStorage()
 

@@ -29,9 +29,11 @@ export const RequiredModelsComponent = ({ models }: RequiredModelsComponentProps
         <CardDescription>Download the language models you want to use</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {Object.values(models).map((model, index) => (
-          <ModelStatusCard key={model.name + index} model={model} />
-        ))}
+        {Object.values(models)
+          .filter((model) => model.required)
+          .map((model, index) => (
+            <ModelStatusCard key={model.name + index} model={model} />
+          ))}
       </CardContent>
     </Card>
   )

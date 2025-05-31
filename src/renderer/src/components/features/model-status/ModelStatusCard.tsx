@@ -28,7 +28,6 @@ export const ModelStatusCard = ({
 }: ModelStatusCardProps): ReactElement => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [downloaded, setDownloaded] = useState(false)
 
   const { handleFinishedDownloading } = useManageModel()
 
@@ -37,7 +36,6 @@ export const ModelStatusCard = ({
     if (onStartedDownloading) {
       onStartedDownloading()
     }
-    setDownloaded(false)
     await window.api.ollama.downloadModel(model, (result) => {
       // console.log('Download model result', result)
       if (result.error) {
@@ -49,13 +47,13 @@ export const ModelStatusCard = ({
       if (result.done) {
         // Timeout to debounce the animation
         setTimeout(() => {
-          setDownloaded(true)
           // If shouldRenderWhenDownloaded is set to false, no need to update the ui when finished downloading
           // because the component will be unmounted anyways
+          handleFinishedDownloading(model.name)
+          onFinishedDownloading?.()
           if (!shouldRenderWhenDownloaded) {
             return
           }
-          setIsDownloading(false)
         }, 1000)
       } else {
         setProgress(result.progress)
@@ -70,11 +68,10 @@ export const ModelStatusCard = ({
   }
 
   useEffect(() => {
-    if (downloaded) {
-      handleFinishedDownloading(model.name)
-      onFinishedDownloading?.()
+    if (model.installed) {
+      setIsDownloading(false)
     }
-  }, [downloaded])
+  }, [model.installed])
 
   const renderDownloadingComponent = (): ReactElement => {
     return (

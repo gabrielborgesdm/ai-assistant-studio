@@ -45,7 +45,7 @@ export const OllamaStep = ({
           <CardDescription>
             {ollamaRunning
               ? 'Great! Ollama is installed and ready to use'
-              : 'Ollama needs to be installed to continue'}
+              : 'Ollama needs to be running to continue'}
           </CardDescription>
         </CardHeader>
         <CardContent>

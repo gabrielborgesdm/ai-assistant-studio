@@ -7,6 +7,7 @@ import { PageProvider } from '@/provider/PageProvider'
 import { SetupPage } from '@/components/pages/setup'
 import { RequirementsProvider } from '@/provider/RequirementsProvider'
 import { ModelDownload } from '@global/types/model'
+import { GlobalProvider } from '@/provider/GlobalProvider'
 
 /**
  * Global window object to expose API methods and data
@@ -42,18 +43,20 @@ declare global {
 export default function App(): ReactElement {
   return (
     <div className="bg-background text-foreground ">
-      <PageProvider>
-        <SidebarProvider>
-          <RequirementsProvider>
-            <SidebarComponent />
-            <main className="flex flex-row w-full">
-              {/* The Setup Page is the initial page */}
-              <SetupPage />
-              <ChatPage />
-            </main>
-          </RequirementsProvider>
-        </SidebarProvider>
-      </PageProvider>
+      <GlobalProvider>
+        <PageProvider>
+          <SidebarProvider defaultOpen>
+            <RequirementsProvider>
+              <SidebarComponent />
+              <main className="flex flex-row w-full">
+                {/* The Setup Page is the initial page */}
+                <SetupPage />
+                <ChatPage />
+              </main>
+            </RequirementsProvider>
+          </SidebarProvider>
+        </PageProvider>
+      </GlobalProvider>
     </div>
   )
 }

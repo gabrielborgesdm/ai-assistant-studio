@@ -1,4 +1,5 @@
 import './styles/globals.css'
+import './styles/shared.css'
 
 import { AssistantProvider } from './provider/AssistantProvider'
 

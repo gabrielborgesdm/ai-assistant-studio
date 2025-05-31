@@ -112,15 +112,16 @@ export const SidebarComponent = (): React.ReactElement => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel className="flex gap-1 items-center">
             <History />
             Chat History
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{/* TODO: Add chat history items */}</SidebarMenu>
+            <SidebarMenu></SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> 
+        */}
         <SidebarFooter>
           <SidebarMenu>
             {footerItems.map((item) => (

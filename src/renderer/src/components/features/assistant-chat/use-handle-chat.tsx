@@ -5,6 +5,7 @@ import { Page } from '@renderer/pages'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { FormEvent, useEffect, useState } from 'react'
 import { useManageModel } from '../model-status/use-manage-model'
+import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 
 interface useHandleChatProps {
   history: AssistantHistory | undefined
@@ -25,6 +26,7 @@ interface useHandleChatProps {
 export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   const { checkRequirementsAreMet } = useManageModel()
   const { setActivePage } = usePageContext()
+  const { setIsSidebarDisabled } = useGlobalContext()
   const [history, setHistory] = useState<AssistantHistory | undefined>(undefined)
   const [textInput, setTextInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -154,6 +156,10 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     }
     window.api.db.getHistory(assistant.id).then(setHistory)
   }, [assistant])
+
+  useEffect(() => {
+    setIsSidebarDisabled(isLoading)
+  }, [isLoading])
 
   return {
     history,

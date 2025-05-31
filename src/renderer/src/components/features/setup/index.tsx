@@ -26,7 +26,7 @@ export const SetupComponent = (): ReactElement => {
   } = useHandleSetup()
 
   // The first load when oppening the application
-  if (!hadInitialLoad || isCheckingRequirements || !currentStep) {
+  if (!hadInitialLoad || !currentStep) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center bg-slate-50 dark:bg-secondary text-foreground ">
         <AnimatedLoader />

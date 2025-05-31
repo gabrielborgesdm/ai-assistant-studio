@@ -6,6 +6,7 @@ import { Progress } from '@renderer/components/ui/progress'
 import { CheckCircle, Circle, Download } from 'lucide-react'
 import { ReactElement, useEffect, useState } from 'react'
 import { useManageModel } from './use-manage-model'
+import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 
 interface ModelStatusCardProps {
   model: ModelDownload
@@ -13,23 +14,28 @@ interface ModelStatusCardProps {
   shouldRenderWhenDownloaded?: boolean
   className?: string
   description?: string
+  onStartedDownloading?: () => void
+  onFinishedDownloading?: () => void
 }
 export const ModelStatusCard = ({
   model,
   shouldShowCheckButton = true,
   shouldRenderWhenDownloaded = true,
   className,
-  description
+  description,
+  onStartedDownloading,
+  onFinishedDownloading
 }: ModelStatusCardProps): ReactElement => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [downloaded, setDownloaded] = useState(false)
 
   const { handleFinishedDownloading } = useManageModel()
 
   const downloadModel = async (): Promise<void> => {
     setIsDownloading(true)
-    setDownloaded(false)
+    if (onStartedDownloading) {
+      onStartedDownloading()
+    }
     await window.api.ollama.downloadModel(model, (result) => {
       // console.log('Download model result', result)
       if (result.error) {
@@ -41,8 +47,13 @@ export const ModelStatusCard = ({
       if (result.done) {
         // Timeout to debounce the animation
         setTimeout(() => {
-          setIsDownloading(false)
-          setDownloaded(true)
+          // If shouldRenderWhenDownloaded is set to false, no need to update the ui when finished downloading
+          // because the component will be unmounted anyways
+          handleFinishedDownloading(model.name)
+          onFinishedDownloading?.()
+          if (!shouldRenderWhenDownloaded) {
+            return
+          }
         }, 1000)
       } else {
         setProgress(result.progress)
@@ -53,19 +64,24 @@ export const ModelStatusCard = ({
   const cancelDownload = (model: ModelDownload): void => {
     window.api.cancel(DownloadModelEvent + model.name)
     setIsDownloading(false)
+    onFinishedDownloading?.()
   }
 
   useEffect(() => {
-    if (downloaded) {
-      handleFinishedDownloading(model.name)
+    if (model.installed) {
+      setIsDownloading(false)
     }
-  }, [downloaded])
+  }, [model.installed])
 
   const renderDownloadingComponent = (): ReactElement => {
     return (
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span> {progress === 100 ? 'Almost there...' : 'Downloading...'}</span>
+          <span>
+            {' '}
+            {progress === 100 ? 'Almost there' : 'Downloading'}
+            <LoadingDots />
+          </span>
           <span>{Math.round(progress)}%</span>
         </div>
         <div className="flex justify-between items-center gap-3">

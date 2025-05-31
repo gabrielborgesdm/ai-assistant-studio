@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/chat/chat-bubble'
 import { AssistantMessage, MessageRole } from '@global/types/assistant'
 import { isCustomRole } from '@global/utils/role.utils'
+import { cn } from '@renderer/lib/utils'
 import { Copy } from 'lucide-react'
 import { ReactElement } from 'react'
 
@@ -48,10 +49,15 @@ export const ChatMessage = ({
     <ChatBubble
       layout={message.role === MessageRole.ASSISTANT ? 'ai' : 'default'}
       variant={getVariant(message.role)}
-      className={`my-2 ${className}`}
+      className={`my-2 ${className} select-text`}
       onClick={() => handleCopy(message.content)}
     >
-      <ChatBubbleAvatar fallback={message.role === MessageRole.ASSISTANT ? 'AI' : 'US'} />
+      <ChatBubbleAvatar
+        className={cn('select-none', {
+          invisible: isLoading
+        })}
+        fallback={message.role === MessageRole.ASSISTANT ? 'AI' : 'US'}
+      />
       <ChatBubbleMessage
         variant={getVariant(message.role)}
         isLoading={showLoadingIcon(isLoading, message)}

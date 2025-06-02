@@ -1,14 +1,13 @@
+import { Logo } from '@renderer/components/shared/Logo'
 import { Card, CardContent } from '@renderer/components/ui/card'
-import { Bot, Settings, MessageSquare, Zap } from 'lucide-react'
+import { Settings, MessageSquare, Zap } from 'lucide-react'
 import { ReactElement } from 'react'
 
 export const WelcomeStep = (): ReactElement => {
   return (
     <div className="text-center space-y-8">
       <div className="space-y-4">
-        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center">
-          <Bot className="h-10 w-10 text-white" />
-        </div>
+        <Logo />
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
           Welcome to AI Assistant Studio
         </h1>

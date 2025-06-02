@@ -1,10 +1,10 @@
 {
-  "name": "llm-floating-chat",
+  "name": "ai-assistant-studio",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "AI Assistant Studio lets you create, customize, and chat with your own AI assistants powered by local language models via Ollama.",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "Gabriel Borges",
+  "homepage": "https://github.com/gabrielborgesdm/ai-assistant-studio",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -41,6 +41,7 @@
     "lowdb": "^7.0.1",
     "lucide-react": "^0.511.0",
     "ollama": "^0.5.15",
+    "react-component-export-image": "^1.0.6",
     "tailwind-merge": "^3.3.0",
     "tw-animate-css": "^1.3.0"
   },

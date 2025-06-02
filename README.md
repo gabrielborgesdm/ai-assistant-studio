@@ -1,42 +1,45 @@
-## 📦 llm-quick-access
+# 🚀 AI Assistant Studio
 
-**llm-quick-access** is an Electron application built with React and TypeScript. It provides a floating, always-available interface to interact with local LLMs via [Ollama](https://ollama.com/). Designed to boost productivity, it allows you to perform common AI-powered tasks—like proofreading, writing emails, or generating content—via configurable actions and keyboard shortcuts.
+**AI Assistant Studio** lets you create, customize, and chat with your own AI assistants powered by local language models via [Ollama](https://ollama.com/).
 
-You can:
+## ✨ Key Features
 
-- ⚡ **Open a floating AI window anytime, anywhere**
-  Just hit a keyboard shortcut (like `Alt + Space`) and a clean, draggable window pops up—right over whatever you’re doing. It’s like having your own personal assistant, always ready to help without interrupting your flow.
+- 🎨 **Fully Customizable**
+  Choose any Ollama model, craft custom prompts, and add specialized input fields for your unique use cases.
 
-- 🧠 **Get help with everyday writing tasks—fast**
-  Need to polish a message, write a quick email, or draft something for LinkedIn? Set up actions once, and trigger them whenever you need. No copy-pasting between apps, no friction.
+- 💬 **Multiple Conversations**
+  Create multiple chat sessions with each assistant, keeping your conversations organized and contextual.
 
-- 🤖 **Let the app handle all the model setup for you**
-  You don’t have to worry about downloading or managing LLMs. Behind the scenes, the app talks to Ollama, runs the right commands, and makes sure everything’s ready to go—automatically.
+- 🔒 **Privacy First**
+  Everything runs locally on your machine. Your data stays private, and you can work offline.
 
-- ✍️ **Customize how actions behave and respond**
-  You decide how each action works: set an initial prompt, choose the model, format the response, and control what goes in and out. It’s flexible, so it fits the way _you_ work.
+- ⚡ **Quick Access**
+  Open a floating AI window anytime with a keyboard shortcut, right over whatever you're working on.
 
-- 🎹 **Use global shortcuts to trigger specific actions**
-  Want to launch a proofreader or email writer with a single key combo? You can assign shortcuts to any action you create and use them from anywhere on your desktop.
-
-- 📁 **Organize everything in a handy sidebar**
-  All your custom actions live in a simple side panel—easy to browse, update, or launch on the fly.
+- 🛠 **Easy Setup**
+  The app helps you set up Ollama and download essential models to power your AI assistants.
 
 ## 🚀 Getting Started
 
-### 📦 Install Dependencies
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v16 or later)
+- [Yarn](https://yarnpkg.com/)
+- [Ollama](https://ollama.com/) (for local model inference)
+
+### Install Dependencies
 
 ```bash
 yarn
 ```
 
-### 🧪 Run in Development
+### Development
 
 ```bash
 yarn dev
 ```
 
-### 🛠 Build for Production
+### Build for Production
 
 ```bash
 # Windows
@@ -49,36 +52,27 @@ yarn build:mac
 yarn build:linux
 ```
 
----
-
 ## 🗺 Roadmap
 
-- [ ] JSON-based action configuration (fields: `keepHistory`, `initialPrompt`, `model`, `outputTemplate`, `inputFormat`)
-- [ ] Built-in actions:
-
-  - Proofreader
-  - Email writer
-  - LinkedIn content generator
-
-- [ ] Ollama integration:
-
-  - Check for installed models
-  - Pull models defined in actions
-  - Handle stream-based LLM requests
-
-- [ ] Side panel UI to trigger actions
-- [ ] Dynamic keyboard shortcut assignment per action
-- [ ] Visual Ollama management
-- [ ] Visual Actions management
-- [ ] Local Storage
-- [ ] Chat feature implementation with history capabilities
-- [ ] Allow multiple dynamic inputs with different types (text, image, etc) for actions
-- [ ] .exe and .deb portable file to run the software with cut releases
+- [X] Chat feature with conversation history
+- [X] JSON-based assistant management
+- [X] Default assistants (Proofreader, E-mail assistant, Markdown assistant)
+- [X] Welcome/Setup screen
+- [X] Functional Ollama Management Integration with Cancellable Requests and Stream Support
+- [X] [Shadcn](https://ui.shadcn.com/) UI integration && [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
+- [ ] Image upload support for vision models (base64 encoding)
+- [ ] Dynamic Assistant Management with form powered by A.I. to help with assistant creation
+- [ ] Multiple chat sessions with each assistant support
+- [ ] Dynamic keyboard shortcut assignment support for Windows and Linux
+- [ ] Portable files (.exe and .deb) for running the software with cut releases
 
 ---
 
 ## 📚 References
 
-- Ollama API Docs: [https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-structured-outputs](https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-structured-outputs)
+- [Electron](https://www.electronjs.org/)
+- [Shadcn](https://ui.shadcn.com/)
+- [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
+- [Ollama API Docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
 
 ---

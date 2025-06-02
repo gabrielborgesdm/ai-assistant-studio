@@ -1,4 +1,4 @@
-import { AssistantMessage, AssistantHistory } from 'src/global/types/assistant'
+import { AssistantMessage, AssistantHistory, MessageRole } from '@global/types/assistant'
 
 export const HistoryFactory = (
   assistantId: string,
@@ -6,4 +6,9 @@ export const HistoryFactory = (
 ): AssistantHistory => ({
   assistantId,
   messages
+})
+
+export const AssistantMessageFactory = (role: MessageRole, content: string): AssistantMessage => ({
+  role,
+  content
 })

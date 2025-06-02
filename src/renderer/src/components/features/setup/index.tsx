@@ -5,10 +5,10 @@ import { AnimatedLoader } from '@renderer/components/shared/Loader'
 import { useTheme } from '@renderer/provider/ThemeProvider'
 import { ArrowRight, Moon } from 'lucide-react'
 import { ReactElement } from 'react'
-import { OllamaStep } from './OllamaStep'
-import { RequiredModelsStep } from './RequiredModelsStep'
-import { SetupStep, useHandleSetup } from './use-handle-setup'
-import { WelcomeStep } from './WelcomeStep'
+import { OllamaStep } from '@/components/features/setup/OllamaStep'
+import { RequiredModelsStep } from '@/components/features/setup/RequiredModelsStep'
+import { SetupStep, useHandleSetup } from '@/components/features/setup/use-handle-setup'
+import { WelcomeStep } from '@/components/features/setup/WelcomeStep'
 
 export const SetupComponent = (): ReactElement => {
   const { toggleTheme } = useTheme()

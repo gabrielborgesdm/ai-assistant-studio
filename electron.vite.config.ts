@@ -7,7 +7,10 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@global': resolve('src/global')
+        '@global': resolve('src/global'),
+        '@resources': resolve('/resources'),
+        '@main': resolve('src/main'),
+        '@preload': resolve('src/preload')
       }
     }
   },
@@ -15,7 +18,10 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@global': resolve('src/global')
+        '@global': resolve('src/global'),
+        '@resources': resolve('/resources'),
+        '@main': resolve('src/main'),
+        '@preload': resolve('src/preload')
       }
     }
   },
@@ -24,7 +30,8 @@ export default defineConfig({
       alias: {
         '@renderer': resolve('src/renderer/src'),
         '@global': resolve('src/global'),
-        '@': resolve('src/renderer/src')
+        '@': resolve('src/renderer/src'),
+        '@resources': resolve('/resources')
       }
     },
     plugins: [react()]

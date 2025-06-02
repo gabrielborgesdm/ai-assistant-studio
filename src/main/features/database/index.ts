@@ -1,11 +1,16 @@
-import { Assistant, AssistantHistory, AssistantMessage } from 'src/global/types/assistant'
+import defaultAssistants from '@global/resources/default-assistants.json'
+import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
 import { app, ipcMain } from 'electron'
+import fs from 'fs/promises'
 import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
-import defaultAssistants from '@global/resources/default-assistants.json'
-import { addAssistantMessage, clearHistory, getAssistants, getHistory } from './assistants.service'
-// import fs from 'fs/promises'
+import {
+  addAssistantMessage,
+  clearHistory,
+  getAssistants,
+  getHistory
+} from '@main/features/database/assistants.service'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -24,12 +29,15 @@ export type DB = typeof db
 
 export async function initDB(): Promise<void> {
   const file = path.join(app.getPath('userData'), 'db.json')
-  // for debug purposes, remove the db file
-  // try {
-  //   await fs.rm(file).then(() => console.log('Database file removed'))
-  // } catch (error) {
-  //   console.error('Error removing database file:', error)
-  // }
+  // for debug purposes, remove the db file if env var is set
+  if (process.env.VITE_DEBUG_CLEANUP) {
+    console.log('Removing database file for debug purposes')
+    try {
+      await fs.rm(file).then(() => console.log('Database file removed'))
+    } catch (error) {
+      console.error('Error removing database file:', error)
+    }
+  }
 
   db = await JSONFilePreset(file, initialData)
   await db.read()

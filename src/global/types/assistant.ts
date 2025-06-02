@@ -9,6 +9,7 @@ export interface Assistant {
   options?: GenerateRequest
   downloaded?: boolean
   ephemeral?: boolean
+  systemBehavior?: string
 }
 
 export enum MessageRole {

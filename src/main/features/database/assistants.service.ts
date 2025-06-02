@@ -1,5 +1,5 @@
 import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
-import { DB } from '.'
+import { DB } from '@main/features/database'
 import { HistoryFactory } from '@global/factories/assistant.factory'
 
 /*

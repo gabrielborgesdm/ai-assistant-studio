@@ -9,15 +9,16 @@ import {
   ListModelsEvent,
   OllamaIsInstalledEvent
 } from '@global/const/ollama.event'
+import { AssistantMessageFactory } from '@global/factories/assistant.factory'
+import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ModelDownload } from '@global/types/model'
 import { OllamaDownloadStreamResponse, OllamaMessageStreamResponse } from '@global/types/ollama'
+import { processStreamBufferToJson } from '@global/utils/buffer.utils'
 import { getProgressPercentage } from '@global/utils/progress.utils'
 import { isCustomRole } from '@global/utils/role.utils'
+import axios from 'axios'
 import { ipcMain, IpcMainEvent } from 'electron'
 import ollama from 'ollama'
-import { Assistant, AssistantHistory } from 'src/global/types/assistant'
-import axios from 'axios'
-import { processStreamBufferToJson } from '@global/utils/buffer.utils'
 
 const OLLAMA_HOST = 'http://localhost:11434' // Default Ollama API host
 
@@ -30,23 +31,10 @@ export const streamOllamaChatResponse = async (
   abort: AbortController
 ): Promise<void> => {
   try {
-    console.log('Generating response for assistant:', assistant.title)
-
-    // If it's ephemeral we keep only the last message
-    if (assistant.ephemeral) {
-      console.log('Ephemeral message, keeping only the last message')
-      history.messages = history.messages.slice(history.messages.length - 1)
-      console.log('History messages:', history.messages)
-    }
-
-    // If this is the first message (or ephemeral), we need to replace the message with the prompt
-    if (history.messages.length === 1) {
-      history.messages[0].content = assistant.prompt.replace(
-        '{{text}}',
-        history.messages[0].content
-      )
-      console.log('First message, replacing with prompt:', history.messages[0].content)
-    }
+    addSystemBehaviorToHistory(history, assistant)
+    removeAssistantMessageHistoryIfEphemeral(history, assistant)
+    applyPromptToUserMessage(history, assistant)
+    console.log('History:', history)
 
     const response = await await getOllama().chat({
       model: assistant.model,
@@ -76,11 +64,74 @@ export const streamOllamaChatResponse = async (
   }
 }
 
+// If it's ephemeral we keep only the last message and the system message
+const removeAssistantMessageHistoryIfEphemeral = (
+  history: AssistantHistory,
+  assistant: Assistant
+): void => {
+  if (assistant.ephemeral) {
+    const systemMessages = history.messages.filter((message) => message.role === MessageRole.SYSTEM)
+    const userMessage = history.messages[history.messages.length - 1]
+    console.log('Ephemeral message, keeping only the system and last message')
+    history.messages = [...systemMessages, userMessage]
+  }
+}
+/*
+ * The way we deal with the prompt instruction varies if the assistant is ephemeral (single task) or not
+ * For non-ephemeral assistants, we only format the user message with the prompt in the first message, otherwise the conversation will be broken
+ * For ephemeral assistants, we always format the user message with the prompt, to make sure the A.I. will follow the instructions
+ * this approach is necessary because relying only on the system message is not enough to make the A.I. follow what is being asked
+ */
+const applyPromptToUserMessage = (history: AssistantHistory, assistant: Assistant): void => {
+  const countUserMessages = history.messages.filter(
+    (message) => message.role === MessageRole.USER
+  ).length
+
+  if (!assistant.ephemeral && countUserMessages > 1) {
+    return
+  }
+
+  // If there is no prompt, we don't need to apply it, sometimes the user just give a system message or just want a general A.I. chat to chat with
+  if (!assistant.prompt) {
+    return
+  }
+
+  const templateVariable = '{{text}}'
+
+  const hasTemplateVariable = assistant.prompt.includes(templateVariable)
+
+  // If there is no template variable defined, we append the prompt the the user message
+  if (!hasTemplateVariable) {
+    history.messages[history.messages.length - 1].content =
+      `${assistant.prompt}\n\n${history.messages[history.messages.length - 1].content}`
+    return
+  }
+
+  // Otherwise, we replace the template variable with the user message
+  history.messages[history.messages.length - 1].content = assistant.prompt.replace(
+    templateVariable,
+    history.messages[history.messages.length - 1].content
+  )
+}
+
+// Adds the system behavior to the message history if it's not already there
+const addSystemBehaviorToHistory = (history: AssistantHistory, assistant: Assistant): void => {
+  if (!assistant.systemBehavior) {
+    return
+  }
+
+  if (history.messages?.length > 0 && history.messages[0].role === MessageRole.SYSTEM) {
+    return
+  }
+
+  history.messages.unshift(AssistantMessageFactory(MessageRole.SYSTEM, assistant.systemBehavior))
+}
+
 export const checkOllamaRunning = async (): Promise<boolean> => {
   try {
     const ollama = getOllama()
     const response = await ollama.list()
-    console.log('Ollama list response:', response)
+    console.log('Ollama list length:', response?.models?.length)
     return true
   } catch (error) {
     console.error('Error checking Ollama installation:', error)

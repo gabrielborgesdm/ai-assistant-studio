@@ -4,9 +4,9 @@ dotenv.config()
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import icon from '../../resources/icon.png?asset'
-import { initDB } from './features/database'
-import './features/ollama/ollama.service'
+import icon from '@resources/icon.png?asset'
+import { initDB } from '@main/features/database'
+import '@main/features/ollama/ollama.service'
 
 function createWindow(): void {
   // Create the browser window.

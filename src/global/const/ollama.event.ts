@@ -1,5 +1,5 @@
 import { ModelDownload } from '@global/types/model'
-import { EventCancel, EventReply } from './event'
+import { EventCancel, EventReply } from '@global/const/event'
 
 export const ChatEvent = 'ollama-chat'
 export const ChatEventReply = EventReply(ChatEvent)

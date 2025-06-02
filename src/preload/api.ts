@@ -1,7 +1,7 @@
 import { EventCancel } from '@global/const/event'
 import { ipcRenderer } from 'electron'
-import { dbApi } from './db.api'
-import { ollamaApi } from './ollama.api'
+import { dbApi } from '@preload/db.api'
+import { ollamaApi } from '@preload/ollama.api'
 
 /*
  * This file is used to define the API that will be exposed to the renderer process.

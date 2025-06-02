@@ -1,11 +1,16 @@
-import { Assistant, AssistantHistory, AssistantMessage } from 'src/global/types/assistant'
+import defaultAssistants from '@global/resources/default-assistants.json'
+import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
 import { app, ipcMain } from 'electron'
+import fs from 'fs/promises'
 import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
-import defaultAssistants from '@global/resources/default-assistants.json'
-import { addAssistantMessage, clearHistory, getAssistants, getHistory } from './assistants.service'
-import fs from 'fs/promises'
+import {
+  addAssistantMessage,
+  clearHistory,
+  getAssistants,
+  getHistory
+} from '@main/features/database/assistants.service'
 
 /*
  * This file is responsible for initializing the database and handling

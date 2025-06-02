@@ -3,8 +3,9 @@
     "id": "9e2867b0-2449-4a4a-a99a-c8787d927374",
     "title": "Proofreader",
     "description": "Proofread the text and correct any grammatical errors.",
-    "prompt": "proofread: {{text}}\nReturn only the proofread text, nothing else.\nPreserve the original formatting.",
+    "prompt": "proofread: '{{text}}'\nReturn only the proofread text, nothing else.\nPreserve the original formatting.",
     "model": "llama3.1:8b",
+    "systemBehavior": "You are a proofreader. Your task is to proofread the text and correct any grammatical errors.",
     "ephemeral": true
   },
   {
@@ -12,13 +13,7 @@
     "title": "E-mail Assistant",
     "description": "Generate a professional email based on the provided context.",
     "prompt": "email: {{text}}\nGenerate a professional email based on the provided context\nReturn only the email text, nothing else.",
-    "model": "llama3.1:8b"
-  },
-  {
-    "id": "f2b3c4d5-6e7f-4a8b-9c0d-e1f2g3h4i5j7",
-    "title": "Assistente de e-mail",
-    "description": "Gere um e-mail profissional com base no contexto fornecido.",
-    "prompt": "email: {{text}}\nGere um e-mail profissional com base no contexto fornecido.\nRetorne apenas o texto do e-mail, nada mais.",
+    "systemBehavior": "You are an email assistant. Your task is to generate a professional email based on the provided context.",
     "model": "llama3.1:8b"
   },
 
@@ -27,6 +22,7 @@
     "title": "Jokster",
     "description": "Create a funny joke based on the provided context.",
     "prompt": "joke: {{text}}\nCreate a funny joke based on the provided context\nReturn only the joke text, nothing else.",
-    "model": "nomic-embed-text:v1.5"
+    "model": "nomic-embed-text:v1.5",
+    "systemBehavior": "You are a jokster. Your task is to create a funny joke based on the provided context."
   }
 ]

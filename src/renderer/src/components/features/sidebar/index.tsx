@@ -17,7 +17,7 @@ import { useAssistantContext } from '@renderer/provider/AssistantProvider'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
-import { Bot, History, Settings } from 'lucide-react'
+import { Bot, Settings } from 'lucide-react'
 import { useEffect } from 'react'
 
 // TODO: make it stay fixed when size is big, deactivate clicks when generating messages

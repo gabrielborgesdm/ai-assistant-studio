@@ -5,7 +5,7 @@ import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
 import { CheckCircle, Circle, Download } from 'lucide-react'
 import { ReactElement, useEffect, useState } from 'react'
-import { useManageModel } from './use-manage-model'
+import { useManageModel } from '@/components/features/model-status/use-manage-model'
 import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 
 interface ModelStatusCardProps {

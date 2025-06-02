@@ -8,7 +8,7 @@ import {
 } from '@renderer/components/ui/card'
 import { CheckCircle, Circle } from 'lucide-react'
 import { ReactElement } from 'react'
-import { ModelStatusCard } from './ModelStatusCard'
+import { ModelStatusCard } from '@/components/features/model-status/ModelStatusCard'
 
 interface RequiredModelsComponentProps {
   models: InstalledModels

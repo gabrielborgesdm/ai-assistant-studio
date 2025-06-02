@@ -9,6 +9,15 @@
     "ephemeral": true
   },
   {
+    "id": "9e2867b0-2449-4a4a-a99a-c8787d927375",
+    "title": "Markdown Assistant",
+    "description": "Proofread and convert the text to markdown.",
+    "prompt": "proofread and markdown: '{{text}}'\nReturn only the corrected markdown text, nothing else.\nPreserve the original formatting.",
+    "model": "llama3.1:8b",
+    "systemBehavior": "You are a markdown assistant. Your task is to convert the text to markdown. Proofread the text and correct any grammatical errors. Preserve the original formatting.",
+    "ephemeral": true
+  },
+  {
     "id": "f2b3c4d5-6e7f-4a8b-9c0d-e1f2g3h4i5j6",
     "title": "E-mail Assistant",
     "description": "Generate a professional email based on the provided context.",

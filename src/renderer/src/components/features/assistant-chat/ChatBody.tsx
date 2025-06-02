@@ -1,7 +1,7 @@
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ReactElement } from 'react'
-import { ChatMessage } from './ChatMessage'
+import { ChatMessage } from '@/components/features/assistant-chat/ChatMessage'
 
 interface ChatBodyProps {
   assistant: Assistant

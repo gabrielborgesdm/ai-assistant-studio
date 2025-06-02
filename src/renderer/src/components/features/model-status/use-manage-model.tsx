@@ -76,20 +76,22 @@ export const useManageModel = (): UseManageModel => {
       })
     }
 
-    // Now that we have the models listed, we check if they are installed
-    const installedModels = await window.api.ollama.listModels()
-    Object.values(modelsToBeSynced).forEach((model: ModelDownload) => {
-      model.installed = installedModels.some((installedModel) =>
-        installedModel.includes(model.name)
-      )
-    })
-
     // Check if ollama is running
     const isOllamaRunning = await window.api.ollama.checkOllamaRunning()
     setOllamaRunning(isOllamaRunning)
 
-    // call this method to update the models in the context and localStorage
-    updateModels(modelsToBeSynced)
+    if (isOllamaRunning) {
+      // Now that we have the models listed, we check if they are installed
+      const installedModels = await window.api.ollama.listModels()
+      Object.values(modelsToBeSynced).forEach((model: ModelDownload) => {
+        model.installed = installedModels.some((installedModel) =>
+          installedModel.includes(model.name)
+        )
+      })
+      // call this method to update the models in the context and localStorage
+      updateModels(modelsToBeSynced)
+    }
+
     setIsCheckingRequirements(false)
   }
 

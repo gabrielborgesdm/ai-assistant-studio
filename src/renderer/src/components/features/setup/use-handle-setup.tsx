@@ -53,7 +53,16 @@ export const useHandleSetup = (): UseHandleSetup => {
     setNextStep()
   }
 
+  // The welcome component should be shown only once, so we set a localStorage item to prevent it from being shown again
+  // We also only show other steps if their requirements are not met, such as the ollama status and the required models
+  // this is also useful because if the ollama stops running or some required model is not downloaded we redirect to the setup page right at
+  // the necessary step
   const setNextStep = (): void => {
+    // If debug cleanup is enabled, remove the welcome shown item to prevent skipping the welcome step
+    if (import.meta.env.VITE_DEBUG_CLEANUP) {
+      console.log('Removing welcome shown localStorage item for debug purposes')
+      localStorage.removeItem('welcomeShown')
+    }
     if (!currentStep && !localStorage.getItem('welcomeShown')) {
       localStorage.setItem('welcomeShown', 'true')
       setCurrentStep(SetupStep.Welcome)

@@ -1,4 +1,4 @@
-import { ModelDownload } from 'src/global/types/model'
+import { ModelDownload } from '@global/types/model'
 
 export const ModelFactory = (model: Partial<ModelDownload> & { name: string }): ModelDownload => ({
   installed: false,

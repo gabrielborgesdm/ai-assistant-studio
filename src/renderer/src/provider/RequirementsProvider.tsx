@@ -21,7 +21,10 @@ export const RequirementsProvider = ({ children }: { children: ReactNode }): Rea
   const [isCheckingRequirements, setIsCheckingRequirements] = useState(true)
 
   const getModelsFromLocalStorage = (): InstalledModels | undefined => {
-    localStorage.removeItem('models')
+    if (import.meta.env.VITE_DEBUG_CLEANUP) {
+      console.log('Removing models from localStorage for debug purposes')
+      localStorage.removeItem('models')
+    }
 
     const modelsJson = localStorage.getItem('models')
     if (modelsJson) {

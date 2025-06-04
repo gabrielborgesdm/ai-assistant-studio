@@ -60,7 +60,7 @@ yarn build:linux
 - [X] Welcome/Setup screen
 - [X] Functional Ollama Management Integration with Cancellable Requests and Stream Support
 - [X] [Shadcn](https://ui.shadcn.com/) UI integration && [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
-- [ ] Image upload support for vision models (base64 encoding)
+- [X] Image upload support for vision models (base64 encoding)
 - [ ] Dynamic Assistant Management with form powered by A.I. to help with assistant creation
 - [ ] Multiple chat sessions with each assistant support
 - [ ] Dynamic keyboard shortcut assignment support for Windows and Linux

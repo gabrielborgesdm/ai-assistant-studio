@@ -5,8 +5,10 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '@resources/logo.png?asset'
-import { initDB } from '@main/features/database'
-import '@main/features/ollama/ollama.service'
+
+import { initDB } from '@main/features/database/db.config'
+import '@main/features/ollama/ollama.controller'
+import '@main/features/file/file.controller'
 
 function createWindow(): void {
   // Create the browser window.

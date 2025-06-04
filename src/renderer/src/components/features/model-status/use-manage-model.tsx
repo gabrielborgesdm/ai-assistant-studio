@@ -1,7 +1,8 @@
 import { ModelFactory } from '@global/factories/model.factory'
+import requiredModels from '@global/resources/required-models.json'
 import { InstalledModels, ModelDownload } from '@global/types/model'
 import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
-import requiredModels from '@global/resources/required-models.json'
+import { useCallback } from 'react'
 
 interface UseManageModel {
   isModelInstalled: (model: string) => boolean
@@ -20,10 +21,10 @@ export const useManageModel = (): UseManageModel => {
     setOllamaRunning
   } = useRequirementsContext()
 
-  const isModelInstalled = (model: string): boolean => {
-    console.log('models', models)
-    return models?.[model]?.installed ?? false
-  }
+  const isModelInstalled = useCallback(
+    (model: string): boolean => models?.[model]?.installed ?? false,
+    [models]
+  )
 
   /*
    * Save a model into the models list if it doesn't exist

@@ -8,7 +8,19 @@ export const HistoryFactory = (
   messages
 })
 
-export const AssistantMessageFactory = (role: MessageRole, content: string): AssistantMessage => ({
-  role,
-  content
-})
+export const AssistantMessageFactory = (
+  role: MessageRole,
+  content: string,
+  images?: string[] | undefined
+): AssistantMessage => {
+  const message: AssistantMessage = {
+    role,
+    content
+  }
+
+  if (images?.length) {
+    message.images = images
+  }
+
+  return message
+}

@@ -3,10 +3,11 @@ import { ModelDownload } from '@global/types/model'
 import { Badge } from '@renderer/components/ui/badge'
 import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
-import { CheckCircle, Circle, Download } from 'lucide-react'
+import { CheckCircle, Circle, Copy, Download } from 'lucide-react'
 import { ReactElement, useEffect, useState } from 'react'
 import { useManageModel } from '@/components/features/model-status/use-manage-model'
 import { LoadingDots } from '@renderer/components/shared/LoadingDots'
+import { toast } from 'sonner'
 
 interface ModelStatusCardProps {
   model: ModelDownload
@@ -42,6 +43,19 @@ export const ModelStatusCard = ({
         setProgress(0)
         setIsDownloading(false)
         console.error('Error downloading model:', model.name, result.error)
+        toast('Error downloading model', {
+          description: result.error,
+          action: (
+            <Button
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(result.error)
+              }}
+            >
+              <Copy className="size-3" />
+            </Button>
+          )
+        })
         return
       }
       if (result.done) {

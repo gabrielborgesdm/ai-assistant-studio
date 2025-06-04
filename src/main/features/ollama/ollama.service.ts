@@ -176,6 +176,11 @@ export const downloadModel = async (
       if (part.status === 'success') {
         return
       }
+
+      if (part.error) {
+        console.error('Error downloading model:', model.name, part.error)
+        throw new Error(part.error)
+      }
     }
   } catch (error: any) {
     console.error('Error downloading model:', model.name, error.message)

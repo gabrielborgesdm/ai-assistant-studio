@@ -8,6 +8,7 @@ import { SetupPage } from '@/components/pages/setup'
 import { RequirementsProvider } from '@/provider/RequirementsProvider'
 import { ModelDownload } from '@global/types/model'
 import { GlobalProvider } from '@/provider/GlobalProvider'
+import { Toaster } from 'sonner'
 
 /**
  * Global window object to expose API methods and data
@@ -35,6 +36,9 @@ declare global {
         ) => Promise<AssistantHistory>
         clearHistory: (assistantId: string) => Promise<void>
       }
+      file: {
+        selectImage: () => Promise<{ buffer: string; name: string; type: string } | undefined>
+      }
       cancel: (eventName: string) => void
     }
   }
@@ -57,6 +61,7 @@ export default function App(): ReactElement {
           </SidebarProvider>
         </PageProvider>
       </GlobalProvider>
+      <Toaster position="bottom-left" />
     </div>
   )
 }

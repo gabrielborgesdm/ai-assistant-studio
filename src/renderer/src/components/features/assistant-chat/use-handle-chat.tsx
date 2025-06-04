@@ -6,8 +6,14 @@ import { usePageContext } from '@renderer/provider/PageProvider'
 import { FormEvent, useEffect, useState } from 'react'
 import { useManageModel } from '../model-status/use-manage-model'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
+import { fileToBase64 } from '@global/utils/file.utils'
+import { AssistantMessageFactory } from '@global/factories/assistant.factory'
 
 interface useHandleChatProps {
+  images: File[]
+  onRemoveImage: (image: File) => void
+  onAddImage: (image: File) => void
+  onClickAttachFile: () => void
   history: AssistantHistory | undefined
   setHistory: (history: AssistantHistory | undefined) => void
   textInput: string
@@ -35,6 +41,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   )
   const [canceled, setCanceled] = useState(false)
   const [error, setError] = useState<string | undefined>(undefined)
+  const [images, setImages] = useState<File[]>([])
 
   /**
    * Clear the assistant history
@@ -50,6 +57,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     window.api.db.clearHistory(assistant.id)
     setHistory(history ? { ...history, messages: [] } : undefined)
     setCurrentAssistantMessage(undefined)
+    setImages([])
   }
 
   const handleCancelMessageRequest = (): void => {
@@ -59,21 +67,29 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   }
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
+    e.preventDefault()
+
+    if (!textInput || !textInput.trim()) {
+      return
+    }
+
     if (!assistant) {
       console.error('No assistant selected')
       return
     }
 
-    e.preventDefault()
     setIsLoading(true)
+    const base64Images = await getBase64Images()
+
     const newHistory = await window.api.db.addAssistantMessage(assistant.id, [
-      {
-        role: MessageRole.USER,
-        content: textInput
-      }
+      AssistantMessageFactory(MessageRole.USER, textInput, base64Images)
     ])
+
+    console.log('New history:', JSON.stringify(newHistory.messages))
+
     setHistory({ ...newHistory })
     setTextInput('')
+    setImages([])
     // Set the current assistant message to an empty string to show the loading icon
     setCurrentAssistantMessage('')
     window.api.ollama.streamOllamaChatResponse(
@@ -100,7 +116,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     )
   }
 
-  const persistMessage = async (): Promise<void> => {
+  const persistGeneratedMessage = async (): Promise<void> => {
     if (!assistant) {
       return
     }
@@ -136,14 +152,41 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     setCanceled(false)
   }
 
+  const getBase64Images = async (): Promise<string[] | undefined> => {
+    if (!images) return undefined
+    return Promise.all(images.map((image) => fileToBase64(image))).then((results) => {
+      const filteredResults = results.filter((result) => result !== undefined) as string[]
+      return filteredResults
+    })
+  }
+
+  const onAddImage = (file: File): void => {
+    setImages((prev) => [...prev, file])
+  }
+
+  const onRemoveImage = (file: File): void => {
+    setImages((prev) => prev.filter((image) => image !== file))
+  }
+
+  // open electron file picker
+  const onClickAttachFile = (): void => {
+    window.api.file.selectImage().then((result) => {
+      if (result) {
+        const blob = new Blob([result.buffer], { type: result.type })
+        const file = new File([blob], result.name, { type: result.type })
+        onAddImage(file)
+      }
+    })
+  }
+
   /**
    * We don't want to persist the message until the assistant message is done generating, so when It's done the useEffect will trigger and persist the message.
-   * We couldn't call the persistMessage function directly because the callback holds the closure of when the function was created,
-   * instead, we use the useEffect to trigger the persistMessage function when the loading state changes.
+   * We couldn't call the persistGeneratedMessage function directly because the callback holds the closure of when the function was created,
+   * instead, we use the useEffect to trigger the persistGeneratedMessage function when the loading state changes.
    */
   useEffect(() => {
     if ((!isLoading && currentAssistantMessage !== undefined) || error) {
-      persistMessage()
+      persistGeneratedMessage()
     }
   }, [isLoading])
 
@@ -174,6 +217,10 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     setCanceled,
     handleClearHistory,
     handleCancelMessageRequest,
-    handleSubmit
+    handleSubmit,
+    images,
+    onRemoveImage,
+    onAddImage,
+    onClickAttachFile
   }
 }

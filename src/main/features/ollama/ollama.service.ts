@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  ChatEvent,
-  ChatEventCancel,
-  ChatEventReply,
-  DownloadModelEvent,
-  getDownloadModelEventCancel,
-  getDownloadModelEventReply,
-  ListModelsEvent,
-  OllamaIsInstalledEvent
-} from '@global/const/ollama.event'
+import { ChatEventReply } from '@global/const/ollama.event'
 import { AssistantMessageFactory } from '@global/factories/assistant.factory'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ModelDownload } from '@global/types/model'
@@ -17,7 +8,7 @@ import { processStreamBufferToJson } from '@global/utils/buffer.utils'
 import { getProgressPercentage } from '@global/utils/progress.utils'
 import { isCustomRole } from '@global/utils/role.utils'
 import axios from 'axios'
-import { ipcMain, IpcMainEvent } from 'electron'
+import { IpcMainEvent } from 'electron'
 import ollama from 'ollama'
 
 const OLLAMA_HOST = 'http://localhost:11434' // Default Ollama API host
@@ -130,8 +121,7 @@ const addSystemBehaviorToHistory = (history: AssistantHistory, assistant: Assist
 export const checkOllamaRunning = async (): Promise<boolean> => {
   try {
     const ollama = getOllama()
-    const response = await ollama.list()
-    console.log('Ollama list length:', response?.models?.length)
+    await ollama.list()
     return true
   } catch (error) {
     console.error('Error checking Ollama installation:', error)
@@ -186,42 +176,14 @@ export const downloadModel = async (
       if (part.status === 'success') {
         return
       }
+
+      if (part.error) {
+        console.error('Error downloading model:', model.name, part.error)
+        throw new Error(part.error)
+      }
     }
   } catch (error: any) {
     console.error('Error downloading model:', model.name, error.message)
     event.reply(eventReply, { error: error.message, done: true })
   }
 }
-
-ipcMain.on(ChatEvent, async (event, assistant: Assistant, history: AssistantHistory) => {
-  // Initialize the abort controller
-  const abort = new AbortController()
-
-  // Listen for the cancel event
-  ipcMain.once(ChatEventCancel, () => {
-    console.log('Received cancel request from renderer')
-    abort.abort()
-  })
-  console.log('Received streamOllamaChatResponse request from renderer')
-
-  // Call the function to stream the response passing the abort controller
-  await streamOllamaChatResponse(assistant, history, event, abort)
-})
-
-// I need to be able to run this in parallel according to the model name and cancel it if the user requests it
-ipcMain.on(DownloadModelEvent, async (event, model: ModelDownload) => {
-  const eventReply = getDownloadModelEventReply(model)
-  const abort = new AbortController()
-
-  // Listen for the cancel event
-  ipcMain.once(getDownloadModelEventCancel(model), () => {
-    console.log('Received cancel request from renderer', getDownloadModelEventCancel(model))
-    abort.abort()
-  })
-
-  // Call the function to stream the response passing the abort controller
-  await downloadModel(event, eventReply, model, abort)
-})
-
-ipcMain.handle(OllamaIsInstalledEvent, () => checkOllamaRunning())
-ipcMain.handle(ListModelsEvent, () => listModels())

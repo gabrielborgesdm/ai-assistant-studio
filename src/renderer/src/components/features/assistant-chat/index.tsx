@@ -10,8 +10,11 @@ interface ChatComponentProps {
 
 export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactElement => {
   const {
+    images,
+    onRemoveImage,
+    onAddImage,
+    onClickAttachFile,
     history,
-
     textInput,
     setTextInput,
     isLoading,
@@ -36,6 +39,10 @@ export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactEle
         isLoading={isLoading}
       />
       <ChatForm
+        images={images}
+        onRemoveImage={onRemoveImage}
+        onAddImage={onAddImage}
+        onClickAttachFile={onClickAttachFile}
         assistant={assistant}
         textInput={textInput}
         setTextInput={setTextInput}

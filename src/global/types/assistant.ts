@@ -10,6 +10,7 @@ export interface Assistant {
   downloaded?: boolean
   ephemeral?: boolean
   systemBehavior?: string
+  allowImage?: boolean
 }
 
 export enum MessageRole {

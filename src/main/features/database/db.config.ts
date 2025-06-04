@@ -10,7 +10,7 @@ import {
   clearHistory,
   getAssistants,
   getHistory
-} from '@main/features/database/assistants.service'
+} from '@main/features/database/assistants.repository'
 
 /*
  * This file is responsible for initializing the database and handling

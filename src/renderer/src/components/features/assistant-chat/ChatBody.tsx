@@ -1,6 +1,6 @@
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect } from 'react'
 import { ChatMessage } from '@/components/features/assistant-chat/ChatMessage'
 
 interface ChatBodyProps {
@@ -25,6 +25,13 @@ export const ChatBody = ({
     if (!assistant.description || history?.messages?.length || currentAssistantMessage) return <></>
     return <p className="text-center text-sm italic">{assistant.description}</p>
   }
+
+  useEffect(() => {
+    if (!assistant.model) return
+    window.api.ollama.searchOnlineModels().then((models) => {
+      console.log('models search', models)
+    })
+  }, [assistant.model])
 
   return (
     <div className="flex flex-1 relative">

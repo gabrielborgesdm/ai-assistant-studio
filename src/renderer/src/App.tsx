@@ -9,6 +9,7 @@ import { RequirementsProvider } from '@/provider/RequirementsProvider'
 import { ModelDownload } from '@global/types/model'
 import { GlobalProvider } from '@/provider/GlobalProvider'
 import { Toaster } from 'sonner'
+import { OllamaModel } from 'ollama-models-search'
 
 /**
  * Global window object to expose API methods and data
@@ -26,6 +27,7 @@ declare global {
         checkOllamaRunning: () => Promise<boolean>
         downloadModel: (model: ModelDownload, callback: (response) => void) => Promise<void>
         listModels: () => Promise<string[]>
+        searchOnlineModels: (query?: string) => Promise<OllamaModel[]>
       }
       db: {
         getAssistants: () => Promise<Assistant[]>

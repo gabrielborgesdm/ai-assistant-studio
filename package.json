@@ -45,7 +45,8 @@
     "react-component-export-image": "^1.0.6",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
-    "tw-animate-css": "^1.3.0"
+    "tw-animate-css": "^1.3.0",
+    "ollama-models-search": "^1.0.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

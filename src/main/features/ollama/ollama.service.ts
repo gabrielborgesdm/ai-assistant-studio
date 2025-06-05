@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChatEventReply } from '@global/const/ollama.event'
+import { EventReply } from '@global/const/event'
+import { ChatEventReply, SearchOnlineModelsEvent } from '@global/const/ollama.event'
 import { AssistantMessageFactory } from '@global/factories/assistant.factory'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ModelDownload } from '@global/types/model'
@@ -10,6 +11,7 @@ import { isCustomRole } from '@global/utils/role.utils'
 import axios from 'axios'
 import { IpcMainEvent } from 'electron'
 import ollama from 'ollama'
+import { searchOllamaModels, SearchOllamaModelsParams, OllamaModel } from 'ollama-models-search'
 
 const OLLAMA_HOST = 'http://localhost:11434' // Default Ollama API host
 
@@ -185,5 +187,15 @@ export const downloadModel = async (
   } catch (error: any) {
     console.error('Error downloading model:', model.name, error.message)
     event.reply(eventReply, { error: error.message, done: true })
+  }
+}
+
+export const searchOnlineModels = async (query: string): Promise<OllamaModel[]> => {
+  try {
+    const response = await searchOllamaModels({ query })
+    return response
+  } catch (error: any) {
+    console.error('Error searching models:', error)
+    throw error
   }
 }

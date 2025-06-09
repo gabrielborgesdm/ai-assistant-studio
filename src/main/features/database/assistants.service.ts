@@ -21,7 +21,7 @@ export const saveAssistant = async (
   db: DB,
   assistantData: AssistantFormData,
   assistantId: string | undefined
-): Promise<void> => {
+): Promise<Assistant> => {
   await db.read()
 
   const assistant = AssistantDataFactory(assistantData, assistantId)
@@ -42,6 +42,8 @@ export const saveAssistant = async (
   }
 
   await db.write()
+
+  return assistant as Assistant
 }
 
 /*

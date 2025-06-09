@@ -22,6 +22,8 @@ import { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { FormGroup } from '@renderer/components/shared/form/FormGroup'
+import { usePageContext } from '@renderer/provider/PageProvider'
+import { Page } from '@renderer/pages'
 
 interface AssistantFormProps {
   assistant?: Assistant
@@ -31,7 +33,8 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
   const [models, setModels] = useState<OllamaModel[]>([])
   const { assistants } = useAssistantContext()
   const [selectedModel, setSelectedModel] = useState<OllamaModel | undefined>(undefined)
-  const { loadAssistants } = useAssistantContext()
+  const { loadAssistants, setActiveAssistant } = useAssistantContext()
+  const { setActivePage } = usePageContext()
   const {
     register,
     handleSubmit,
@@ -56,13 +59,21 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
   const ephemeral = useWatch({ control, name: 'ephemeral' })
 
   const onSubmit = async (values: AssistantFormData): Promise<void> => {
-    await window.api.db.saveAssistant(values, assistant?.id)
-    // reset form
-    reset()
+    const savedAssistant = await window.api.db.saveAssistant(values, assistant?.id)
     loadAssistants()
-    // enqueue toast
+    setActiveAssistant(savedAssistant)
+    setActivePage(Page.Chat)
+    reset()
+
     toast.success('Assistant saved successfully')
   }
+
+  // useEffect(() => {
+  //   if (activeAssistant?.title === watch('title')) {
+  //     setActivePage(Page.Chat)
+  //     reset()
+  //   }
+  // }, [activeAssistant])
 
   const handleModelChange = (value: string): void => {
     setValue('model', value)

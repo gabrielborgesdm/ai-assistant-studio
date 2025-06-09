@@ -21,9 +21,32 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
     setAssistants(assistants)
   }
 
+  const updateActiveAssistant = (assistant: Assistant): void => {
+    setActiveAssistant(assistant)
+    localStorage.setItem('activeAssistant', assistant.id)
+  }
+
   useEffect(() => {
     loadAssistants()
   }, [])
+
+  useEffect(() => {
+    // set the first assistant as selected by default
+    if (assistants.length > 0 && !activeAssistant) {
+      if (import.meta.env.VITE_DEBUG_CLEANUP) {
+        localStorage.removeItem('activeAssistant')
+      }
+      const activeAssistantId = localStorage.getItem('activeAssistant')
+      if (activeAssistantId) {
+        const foundAssistant = assistants.find((assistant) => assistant.id === activeAssistantId)
+        if (foundAssistant) {
+          setActiveAssistant(foundAssistant)
+          return
+        }
+      }
+      setActiveAssistant(assistants[0])
+    }
+  }, [assistants])
 
   return (
     <AssistantContext.Provider
@@ -32,7 +55,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
         loadAssistants,
         setAssistants,
         activeAssistant,
-        setActiveAssistant
+        setActiveAssistant: updateActiveAssistant
       }}
     >
       {children}

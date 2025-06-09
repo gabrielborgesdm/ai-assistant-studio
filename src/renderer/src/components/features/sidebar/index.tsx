@@ -18,29 +18,16 @@ import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
 import { Bot, Settings } from 'lucide-react'
-import { useEffect } from 'react'
 
 // TODO: make it stay fixed when size is big, deactivate clicks when generating messages
 export const SidebarComponent = (): React.ReactElement => {
-  const { assistants, setAssistants, activeAssistant, setActiveAssistant } = useAssistantContext()
+  const { assistants, activeAssistant, setActiveAssistant } = useAssistantContext()
 
   const { isDark, toggleTheme } = useTheme()
   const { setActivePage, activePage } = usePageContext()
   const { isSidebarDisabled } = useGlobalContext()
 
   const { toggleSidebar } = useSidebar()
-
-  useEffect(() => {
-    window.api.db.getAssistants().then(setAssistants)
-  }, [])
-
-
-  useEffect(() => {
-    // set the first assistant as selected by default
-    if (assistants.length > 0 && !activeAssistant) {
-      setActiveAssistant(assistants[0])
-    }
-  }, [assistants, activeAssistant])
 
   const handleAssistantSelect = (assistantId: string): void => {
     if (isSidebarDisabled) return

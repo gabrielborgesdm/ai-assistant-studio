@@ -45,7 +45,7 @@ declare global {
         saveAssistant: (
           assistantData: AssistantFormData,
           assistantId: string | undefined
-        ) => Promise<void>
+        ) => Promise<Assistant>
         clearHistory: (assistantId: string) => Promise<void>
       }
       file: {

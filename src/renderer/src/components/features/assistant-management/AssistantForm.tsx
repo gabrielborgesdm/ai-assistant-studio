@@ -35,6 +35,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
   const [selectedModel, setSelectedModel] = useState<OllamaModel | undefined>(undefined)
   const { loadAssistants, setActiveAssistant } = useAssistantContext()
   const { setActivePage } = usePageContext()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const {
     register,
     handleSubmit,
@@ -59,6 +60,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
   const ephemeral = useWatch({ control, name: 'ephemeral' })
 
   const onSubmit = async (values: AssistantFormData): Promise<void> => {
+    setIsSubmitting(true)
     const savedAssistant = await window.api.db.saveAssistant(values, assistant?.id)
     loadAssistants()
     setActiveAssistant(savedAssistant)
@@ -66,6 +68,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
     reset()
 
     toast.success('Assistant saved successfully')
+    setIsSubmitting(false)
   }
 
   // useEffect(() => {
@@ -228,7 +231,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
           />
         </FormSection>
 
-        <Button type="submit" className="ml-auto mt-4 align-right w-full">
+        <Button type="submit" className="ml-auto mt-4 align-right w-full" disabled={isSubmitting}>
           Save Assistant
         </Button>
       </form>

@@ -24,7 +24,14 @@ export const saveAssistant = async (
 ): Promise<Assistant> => {
   await db.read()
 
-  const assistant = AssistantDataFactory(assistantData, assistantId)
+  // This is to ensure that base models are saved with the latest tag
+  // In the near future I'll probably implment a proper versioning system
+  let model = assistantData.model
+  if (!model.includes(':')) {
+    model = `${model}:latest`
+  }
+
+  const assistant = AssistantDataFactory({ ...assistantData, model }, assistantId)
   const isNewAssistant = !assistant.id
   if (isNewAssistant) {
     assistant.id = crypto.randomUUID()

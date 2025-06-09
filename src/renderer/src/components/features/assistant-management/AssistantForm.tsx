@@ -29,12 +29,15 @@ interface AssistantFormProps {
 
 export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactElement => {
   const [models, setModels] = useState<OllamaModel[]>([])
+  const { assistants } = useAssistantContext()
   const [selectedModel, setSelectedModel] = useState<OllamaModel | undefined>(undefined)
   const { loadAssistants } = useAssistantContext()
   const {
     register,
     handleSubmit,
     setValue,
+    setError,
+    clearErrors,
     watch,
     formState: { errors },
     control,
@@ -74,6 +77,22 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
     })
   }, [])
 
+  const validateTitle = (title: string): void => {
+    if (!title) return
+
+    const assistantsNames = assistants.map((assistant) => assistant.title.toLowerCase())
+    if (assistantsNames.some((name) => name === title.toLowerCase())) {
+      setError('title', {
+        type: 'manual',
+        message: 'Assistant name already exists'
+      })
+      return
+    }
+    if (errors.title?.message === 'Assistant name already exists') {
+      clearErrors('title')
+    }
+  }
+
   return (
     <div className="space-y-4">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,6 +103,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
               id="title"
               placeholder="e.g. Proofreader, E-mail Assistant, Software Engineer etc."
               {...register('title')}
+              onBlur={(e) => validateTitle(e.target.value)}
             />
             <InputError error={errors.title?.message} />
           </FormGroup>

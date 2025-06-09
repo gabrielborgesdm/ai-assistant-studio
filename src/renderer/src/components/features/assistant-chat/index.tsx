@@ -3,12 +3,19 @@ import { ChatBody } from '@renderer/components/features/assistant-chat/ChatBody'
 import { ChatForm } from '@renderer/components/features/assistant-chat/ChatForm'
 import { useHandleChat } from '@renderer/components/features/assistant-chat/use-handle-chat'
 import { ChatHeader } from '@renderer/components/features/assistant-chat/ChatHeader'
+import { ReactElement } from 'react'
 
 interface ChatComponentProps {
   assistant: Assistant
+  HeaderButton?: ReactElement
+  shouldShowAvatar?: boolean
 }
 
-export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactElement => {
+export const ChatComponent = ({
+  assistant,
+  HeaderButton,
+  shouldShowAvatar = true
+}: ChatComponentProps): React.ReactElement => {
   const {
     images,
     onRemoveImage,
@@ -31,12 +38,14 @@ export const ChatComponent = ({ assistant }: ChatComponentProps): React.ReactEle
         isLoading={isLoading}
         handleClearHistory={handleClearHistory}
         handleCancelMessageRequest={handleCancelMessageRequest}
+        HeaderButton={HeaderButton}
       />
       <ChatBody
         assistant={assistant}
         history={history}
         currentAssistantMessage={currentAssistantMessage}
         isLoading={isLoading}
+        shouldShowAvatar={shouldShowAvatar}
       />
       <ChatForm
         images={images}

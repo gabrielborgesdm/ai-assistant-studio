@@ -1,5 +1,10 @@
 import defaultAssistants from '@global/resources/default-assistants.json'
-import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
+import {
+  Assistant,
+  AssistantFormData,
+  AssistantHistory,
+  AssistantMessage
+} from '@global/types/assistant'
 import { app, ipcMain } from 'electron'
 import fs from 'fs/promises'
 import { Low } from 'lowdb/lib'
@@ -9,8 +14,16 @@ import {
   addAssistantMessage,
   clearHistory,
   getAssistants,
-  getHistory
-} from '@main/features/database/assistants.repository'
+  getHistory,
+  saveAssistant
+} from '@main/features/database/assistants.service'
+import {
+  GetAssistantsEvent,
+  GetHistoryEvent,
+  AddAssistantMessageEvent,
+  ClearHistoryEvent,
+  SaveAssistantEvent
+} from '@global/const/db.event'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -43,14 +56,20 @@ export async function initDB(): Promise<void> {
   await db.read()
 }
 
-ipcMain.handle('get-assistants', () => getAssistants(db))
+ipcMain.handle(GetAssistantsEvent, () => getAssistants(db))
 
-ipcMain.handle('get-history', (_event, assistantId) => getHistory(db, assistantId))
+ipcMain.handle(GetHistoryEvent, (_event, assistantId) => getHistory(db, assistantId))
 
 ipcMain.handle(
-  'add-assistant-message',
+  AddAssistantMessageEvent,
   (_event, assistantId: string, messages: AssistantMessage[]) =>
     addAssistantMessage(db, assistantId, messages)
 )
 
-ipcMain.handle('clear-history', (_event, assistantId: string) => clearHistory(db, assistantId))
+ipcMain.handle(ClearHistoryEvent, (_event, assistantId: string) => clearHistory(db, assistantId))
+
+ipcMain.handle(
+  SaveAssistantEvent,
+  (_event, assistantData: AssistantFormData, assistantId: string | undefined) =>
+    saveAssistant(db, assistantData, assistantId)
+)

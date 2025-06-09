@@ -79,7 +79,9 @@ export const useHandleSetup = (): UseHandleSetup => {
       return
     }
 
-    setActivePage(Page.Chat)
+    //setActivePage(Page.Chat)
+    // TODO: DEBUGGING ASSISTANT PAGE, REMOVE THIS
+    setActivePage(Page.AssistantManagement)
   }
 
   const refetchRequirementsCheck = async (debounce?: boolean): Promise<void> => {

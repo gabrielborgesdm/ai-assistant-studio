@@ -5,6 +5,8 @@ import { createContext, ReactElement, ReactNode, useContext, useState } from 're
 interface PageContextType {
   activePage: string
   isSidebarDisabled: boolean
+  pageProps: Record<string, unknown>
+  setPageProps: (props: Record<string, unknown>) => void
   setIsSidebarDisabled: (disabled: boolean) => void
   setActivePage: (page: string) => void
   withActivePage: (pageName: string, Component: React.ComponentType) => ReactElement
@@ -25,11 +27,15 @@ export const PageProvider = ({ children }: { children: ReactNode }): ReactElemen
 
   const [isSidebarDisabled, setIsSidebarDisabled] = useState(false)
 
+  const [pageProps, setPageProps] = useState<Record<string, unknown>>({})
+
   return (
     <PageContext.Provider
       value={{
         activePage,
         isSidebarDisabled,
+        pageProps,
+        setPageProps,
         setIsSidebarDisabled,
         setActivePage,
         withActivePage

@@ -1,11 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Assistant } from '@global/types/assistant'
-import { createContext, ReactElement, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
 
 interface AssistantContextType {
   assistants: Assistant[]
   activeAssistant: Assistant | undefined
-
+  loadAssistants: () => Promise<void>
   setAssistants: (value: Assistant[]) => void
   setActiveAssistant: (value: Assistant) => void
 }
@@ -16,10 +16,20 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
   const [assistants, setAssistants] = useState<Assistant[]>([])
   const [activeAssistant, setActiveAssistant] = useState<Assistant | undefined>(undefined)
 
+  const loadAssistants = async (): Promise<void> => {
+    const assistants = await window.api.db.getAssistants()
+    setAssistants(assistants)
+  }
+
+  useEffect(() => {
+    loadAssistants()
+  }, [])
+
   return (
     <AssistantContext.Provider
       value={{
         assistants,
+        loadAssistants,
         setAssistants,
         activeAssistant,
         setActiveAssistant

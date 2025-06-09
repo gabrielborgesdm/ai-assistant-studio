@@ -1,6 +1,11 @@
-import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
+import {
+  Assistant,
+  AssistantFormData,
+  AssistantHistory,
+  AssistantMessage
+} from '@global/types/assistant'
 import { DB } from '@main/features/database/db.config'
-import { HistoryFactory } from '@global/factories/assistant.factory'
+import { AssistantDataFactory, HistoryFactory } from '@global/factories/assistant.factory'
 
 /*
  * Retrieves all assistants from the database.
@@ -10,6 +15,33 @@ import { HistoryFactory } from '@global/factories/assistant.factory'
 export const getAssistants = async (db: DB): Promise<Assistant[]> => {
   await db.read()
   return db.data?.assistants || []
+}
+
+export const saveAssistant = async (
+  db: DB,
+  assistantData: AssistantFormData,
+  assistantId: string | undefined
+): Promise<void> => {
+  await db.read()
+
+  const assistant = AssistantDataFactory(assistantData, assistantId)
+  const isNewAssistant = !assistant.id
+  if (isNewAssistant) {
+    assistant.id = crypto.randomUUID()
+    db.data.assistants.push(assistant as Assistant)
+  } else {
+    const foundAssistantIndex = db.data?.assistants.findIndex((a) => a.id === assistant.id)
+
+    // If the assistant is not found, throw an error
+    // This should never happen
+    if (foundAssistantIndex === -1) {
+      throw new Error('Assistant not found')
+    }
+
+    db.data.assistants[foundAssistantIndex] = assistant as Assistant
+  }
+
+  await db.write()
 }
 
 /*

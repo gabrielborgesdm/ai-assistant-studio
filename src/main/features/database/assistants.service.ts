@@ -110,3 +110,9 @@ export const clearHistory = async (db: DB, assistantId: string): Promise<void> =
   console.log('Cleaning history', assistantId)
   db.write()
 }
+
+export const deleteAssistant = async (db: DB, assistantId: string): Promise<void> => {
+  await db.read()
+  db.data.assistants = db.data?.assistants.filter((assistant) => assistant.id !== assistantId)
+  await db.write()
+}

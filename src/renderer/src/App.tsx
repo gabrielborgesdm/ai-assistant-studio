@@ -47,6 +47,7 @@ declare global {
           assistantId: string | undefined
         ) => Promise<Assistant>
         clearHistory: (assistantId: string) => Promise<void>
+        deleteAssistant: (assistantId: string) => Promise<void>
       }
       file: {
         selectImage: () => Promise<{ buffer: string; name: string; type: string } | undefined>

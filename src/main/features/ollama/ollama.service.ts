@@ -24,7 +24,7 @@ export const streamOllamaChatResponse = async (
   abort: AbortController
 ): Promise<void> => {
   try {
-    addSystemBehaviorToHistory(history, assistant)
+    addsystemBehaviourToHistory(history, assistant)
     removeAssistantMessageHistoryIfEphemeral(history, assistant)
     applyPromptToUserMessage(history, assistant)
     console.log('History:', history)
@@ -108,8 +108,8 @@ const applyPromptToUserMessage = (history: AssistantHistory, assistant: Assistan
 }
 
 // Adds the system behavior to the message history if it's not already there
-const addSystemBehaviorToHistory = (history: AssistantHistory, assistant: Assistant): void => {
-  if (!assistant.systemBehavior) {
+const addsystemBehaviourToHistory = (history: AssistantHistory, assistant: Assistant): void => {
+  if (!assistant.systemBehaviour) {
     return
   }
 
@@ -117,7 +117,7 @@ const addSystemBehaviorToHistory = (history: AssistantHistory, assistant: Assist
     return
   }
 
-  history.messages.unshift(AssistantMessageFactory(MessageRole.SYSTEM, assistant.systemBehavior))
+  history.messages.unshift(AssistantMessageFactory(MessageRole.SYSTEM, assistant.systemBehaviour))
 }
 
 export const checkOllamaRunning = async (): Promise<boolean> => {

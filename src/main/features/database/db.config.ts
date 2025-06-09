@@ -13,6 +13,7 @@ import path from 'path'
 import {
   addAssistantMessage,
   clearHistory,
+  deleteAssistant,
   getAssistants,
   getHistory,
   saveAssistant
@@ -22,7 +23,8 @@ import {
   GetHistoryEvent,
   AddAssistantMessageEvent,
   ClearHistoryEvent,
-  SaveAssistantEvent
+  SaveAssistantEvent,
+  DeleteAssistantEvent
 } from '@global/const/db.event'
 
 /*
@@ -72,4 +74,8 @@ ipcMain.handle(
   SaveAssistantEvent,
   (_event, assistantData: AssistantFormData, assistantId: string | undefined) =>
     saveAssistant(db, assistantData, assistantId)
+)
+
+ipcMain.handle(DeleteAssistantEvent, (_event, assistantId: string) =>
+  deleteAssistant(db, assistantId)
 )

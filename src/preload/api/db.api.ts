@@ -4,7 +4,8 @@ import {
   GetHistoryEvent,
   AddAssistantMessageEvent,
   ClearHistoryEvent,
-  SaveAssistantEvent
+  SaveAssistantEvent,
+  DeleteAssistantEvent
 } from '@global/const/db.event'
 
 // This file is used to expose the database API to the renderer process
@@ -15,5 +16,6 @@ export const dbApi = {
     ipcRenderer.invoke(AddAssistantMessageEvent, assistantId, messages),
   clearHistory: (assistantId) => ipcRenderer.invoke(ClearHistoryEvent, assistantId),
   saveAssistant: (assistantData, assistantId) =>
-    ipcRenderer.invoke(SaveAssistantEvent, assistantData, assistantId)
+    ipcRenderer.invoke(SaveAssistantEvent, assistantData, assistantId),
+  deleteAssistant: (assistantId) => ipcRenderer.invoke(DeleteAssistantEvent, assistantId)
 }

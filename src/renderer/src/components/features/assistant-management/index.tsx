@@ -1,4 +1,3 @@
-import { Assistant } from '@global/types/assistant'
 import { BackButton } from '@renderer/components/shared/BackButton'
 import {
   Card,
@@ -10,14 +9,16 @@ import {
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useEffect } from 'react'
 import { AssistantForm } from './AssistantForm'
+import { AssistantData } from '@global/types/assistant'
 
 export const AssistantManagement = ({
   assistant
 }: {
-  assistant?: Assistant
+  assistant?: AssistantData
 }): React.ReactElement => {
   const { activePage } = usePageContext()
 
+  // To avoid showing the page with the scroll at the bottom
   useEffect(() => {
     window.scrollTo({ top: 0 })
   }, [activePage])
@@ -28,7 +29,9 @@ export const AssistantManagement = ({
       <div className="mx-auto w-full">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">Create AI Assistant</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              {assistant ? `Edit ${assistant.title}` : 'Create AI Assistant'}
+            </CardTitle>
             <CardDescription>
               Configure your AI assistant with custom settings and behavior
             </CardDescription>

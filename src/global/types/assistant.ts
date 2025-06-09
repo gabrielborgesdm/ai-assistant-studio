@@ -10,7 +10,7 @@ export interface Assistant {
   downloaded?: boolean
   ephemeral?: boolean
   prompt?: string
-  systemBehavior?: string
+  systemBehaviour?: string
   allowImage?: boolean
 }
 

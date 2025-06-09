@@ -1,6 +1,6 @@
 import { AssistantModeCheck } from '@/components/features/assistant-management/form/AssistantModeCheck'
 import { ImageUploadSwitch } from '@/components/features/assistant-management/form/ImageUploadSwitch'
-import { Assistant, AssistantFormData, assistantFormSchema } from '@global/types/assistant'
+import { AssistantData, AssistantFormData, assistantFormSchema } from '@global/types/assistant'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Description } from '@renderer/components/shared/Description'
 import { FormSection } from '@renderer/components/shared/form/FormSection'
@@ -24,9 +24,10 @@ import { toast } from 'sonner'
 import { FormGroup } from '@renderer/components/shared/form/FormGroup'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { Page } from '@renderer/pages'
+import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 
 interface AssistantFormProps {
-  assistant?: Assistant
+  assistant?: AssistantData
 }
 
 export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactElement => {
@@ -51,8 +52,10 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
     defaultValues: {
       title: assistant?.title || '',
       description: assistant?.description || '',
-      model: assistant?.model || '',
+      model: '',
       ephemeral: assistant?.ephemeral || false,
+      systemBehaviour: assistant?.systemBehaviour || '',
+      prompt: assistant?.prompt || '',
       allowImageUpload: assistant?.allowImage || false
     }
   })
@@ -71,13 +74,6 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
     setIsSubmitting(false)
   }
 
-  // useEffect(() => {
-  //   if (activeAssistant?.title === watch('title')) {
-  //     setActivePage(Page.Chat)
-  //     reset()
-  //   }
-  // }, [activeAssistant])
-
   const handleModelChange = (value: string): void => {
     setValue('model', value)
     setSelectedModel(models.find((model) => model.name === value))
@@ -90,6 +86,13 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
       setModels(models)
     })
   }, [])
+
+  useEffect(() => {
+    if (!assistant || !models.length) return
+
+    // TODO: update this when the ollama custom component is implemented
+    handleModelChange(assistant.model.split(':')[0])
+  }, [assistant, models?.length])
 
   const validateTitle = (title: string): void => {
     if (!title) return
@@ -141,12 +144,19 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
 
           <FormGroup>
             <Label>Ollama Model *</Label>
-            <Select
-              defaultValue={watch('model')}
-              onValueChange={(value) => handleModelChange(value)}
-            >
+            <Select value={watch('model')} onValueChange={(value) => handleModelChange(value)}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select an Ollama model" />
+                <SelectValue
+                  placeholder={
+                    !models.length ? (
+                      <>
+                        Loading models <LoadingDots />
+                      </>
+                    ) : (
+                      'Select an Ollama model'
+                    )
+                  }
+                />
               </SelectTrigger>
               <SelectContent className="max-h-[200px] overflow-y-scroll">
                 {models.map((model) => (

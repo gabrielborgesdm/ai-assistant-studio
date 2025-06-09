@@ -8,6 +8,7 @@ interface AssistantContextType {
   loadAssistants: () => Promise<void>
   setAssistants: (value: Assistant[]) => void
   setActiveAssistant: (value: Assistant) => void
+  removeAssistant: (assistantId: string) => void
 }
 
 const AssistantContext = createContext<AssistantContextType | undefined>(undefined)
@@ -19,6 +20,16 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
   const loadAssistants = async (): Promise<void> => {
     const assistants = await window.api.db.getAssistants()
     setAssistants(assistants)
+  }
+
+  const removeAssistant = (assistantId: string): void => {
+    if (assistants.length === 1) {
+      throw new Error('Cannot remove the last assistant')
+    }
+    window.api.db.deleteAssistant(assistantId)
+    const filteredAssistants = assistants.filter((assistant) => assistant.id !== assistantId)
+    setAssistants(filteredAssistants)
+    setActiveAssistant(filteredAssistants[0])
   }
 
   const updateActiveAssistant = (assistant: Assistant): void => {
@@ -55,7 +66,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
         loadAssistants,
         setAssistants,
         activeAssistant,
-        setActiveAssistant: updateActiveAssistant
+        setActiveAssistant: updateActiveAssistant,
+        removeAssistant
       }}
     >
       {children}

@@ -35,6 +35,7 @@ export const ChatComponent = ({
     <div className="flex flex-grow-1 flex-col w-full h-full">
       <ChatHeader
         assistant={assistant}
+        history={history}
         isLoading={isLoading}
         handleClearHistory={handleClearHistory}
         handleCancelMessageRequest={handleCancelMessageRequest}

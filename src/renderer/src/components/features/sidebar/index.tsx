@@ -18,28 +18,16 @@ import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
 import { Bot, Settings } from 'lucide-react'
-import { useEffect } from 'react'
 
 // TODO: make it stay fixed when size is big, deactivate clicks when generating messages
 export const SidebarComponent = (): React.ReactElement => {
-  const { assistants, setAssistants, activeAssistant, setActiveAssistant } = useAssistantContext()
+  const { assistants, activeAssistant, setActiveAssistant } = useAssistantContext()
 
   const { isDark, toggleTheme } = useTheme()
   const { setActivePage, activePage } = usePageContext()
   const { isSidebarDisabled } = useGlobalContext()
 
   const { toggleSidebar } = useSidebar()
-
-  useEffect(() => {
-    window.api.db.getAssistants().then(setAssistants)
-  }, [])
-
-  useEffect(() => {
-    // set the first assistant as selected by default
-    if (assistants.length > 0 && !activeAssistant) {
-      setActiveAssistant(assistants[0])
-    }
-  }, [assistants, activeAssistant])
 
   const handleAssistantSelect = (assistantId: string): void => {
     if (isSidebarDisabled) return
@@ -48,12 +36,17 @@ export const SidebarComponent = (): React.ReactElement => {
     if (selectedAssistant) {
       setActiveAssistant(selectedAssistant)
     }
+    if (activePage !== Page.Chat) {
+      setActivePage(Page.Chat)
+    }
+
     checkShouldToggleMenu()
   }
 
-  const handleSettingsClick = (): void => {
+  const handlePageChange = (page: string): void => {
     if (isSidebarDisabled) return
-    setActivePage('settings')
+    console.log(page)
+    setActivePage(page)
     checkShouldToggleMenu()
   }
 
@@ -69,12 +62,15 @@ export const SidebarComponent = (): React.ReactElement => {
   const footerItems = [
     {
       title: 'Add Assistant',
-      icon: Bot
+      page: Page.AssistantManagement,
+      icon: Bot,
+      onClick: () => handlePageChange(Page.AssistantManagement)
     },
     {
       title: 'Settings',
+      page: Page.Settings,
       icon: Settings,
-      onClick: handleSettingsClick
+      onClick: () => handlePageChange(Page.Settings)
     }
   ]
 
@@ -101,7 +97,7 @@ export const SidebarComponent = (): React.ReactElement => {
                 >
                   <SidebarMenuButton
                     asChild
-                    isActive={assistant.id === activeAssistant?.id}
+                    isActive={assistant.id === activeAssistant?.id && activePage === Page.Chat}
                     tooltip={assistant.title}
                     onClick={() => handleAssistantSelect(assistant.id)}
                   >
@@ -131,7 +127,11 @@ export const SidebarComponent = (): React.ReactElement => {
                   disabled: isSidebarDisabled
                 })}
               >
-                <SidebarMenuButton asChild onClick={item.onClick}>
+                <SidebarMenuButton
+                  asChild
+                  onClick={() => handlePageChange(item.page)}
+                  isActive={activePage === item.page}
+                >
                   <span>
                     <item.icon />
                     {item.title}

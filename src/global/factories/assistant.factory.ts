@@ -1,4 +1,20 @@
-import { AssistantMessage, AssistantHistory, MessageRole } from '@global/types/assistant'
+import {
+  AssistantData,
+  AssistantFormData,
+  AssistantHistory,
+  AssistantMessage,
+  MessageRole
+} from '@global/types/assistant'
+
+export const AssistantDataFactory = (
+  assistantData: AssistantFormData,
+  assistantId: string | undefined
+): AssistantData => {
+  return {
+    id: assistantId || undefined,
+    ...assistantData
+  }
+}
 
 export const HistoryFactory = (
   assistantId: string,

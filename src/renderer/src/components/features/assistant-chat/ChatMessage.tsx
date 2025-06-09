@@ -17,6 +17,7 @@ interface ChatMessageProps {
   handleCopy: (text: string) => void
   shouldShowCopy?: boolean
   isLoading?: boolean
+  shouldShowAvatar?: boolean
 }
 
 export const ChatMessage = ({
@@ -24,7 +25,8 @@ export const ChatMessage = ({
   className = '',
   handleCopy,
   shouldShowCopy = true,
-  isLoading = false
+  isLoading = false,
+  shouldShowAvatar = true
 }: ChatMessageProps): ReactElement => {
   if (message?.content === undefined) return <></>
 
@@ -54,12 +56,14 @@ export const ChatMessage = ({
         className={`my-2 ${className} select-text`}
         onClick={() => handleCopy(message.content)}
       >
-        <ChatBubbleAvatar
-          className={cn('select-none', {
-            invisible: isLoading
-          })}
-          fallback={message.role === MessageRole.ASSISTANT ? 'AI' : 'US'}
-        />
+        {shouldShowAvatar && (
+          <ChatBubbleAvatar
+            className={cn('select-none', {
+              invisible: isLoading
+            })}
+            fallback="US"
+          />
+        )}
         <ChatBubbleMessage
           variant={getVariant(message.role)}
           isLoading={showLoadingIcon(isLoading, message)}

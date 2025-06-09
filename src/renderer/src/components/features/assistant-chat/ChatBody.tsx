@@ -1,20 +1,22 @@
+import { ChatMessage } from '@/components/features/assistant-chat/ChatMessage'
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ReactElement } from 'react'
-import { ChatMessage } from '@/components/features/assistant-chat/ChatMessage'
 
 interface ChatBodyProps {
   assistant: Assistant
   history: AssistantHistory | undefined
   currentAssistantMessage: string | undefined
   isLoading: boolean
+  shouldShowAvatar?: boolean
 }
 
 export const ChatBody = ({
   assistant,
   history,
   currentAssistantMessage,
-  isLoading
+  isLoading,
+  shouldShowAvatar = true
 }: ChatBodyProps): ReactElement => {
   const handleCopy = (text: string): void => {
     if (!navigator.clipboard) return
@@ -36,6 +38,7 @@ export const ChatBody = ({
               key={message.role + message.content + index}
               message={message}
               handleCopy={handleCopy}
+              shouldShowAvatar={shouldShowAvatar}
             />
           ))}
 
@@ -46,6 +49,7 @@ export const ChatBody = ({
             shouldShowCopy={false}
             isLoading={isLoading}
             handleCopy={handleCopy}
+            shouldShowAvatar={shouldShowAvatar}
           />
         )}
       </ChatMessageList>

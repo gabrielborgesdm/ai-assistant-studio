@@ -1,7 +1,12 @@
 import { SidebarComponent } from '@/components/features/sidebar'
 import { ChatPage } from '@/components/pages/chat'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { Assistant, AssistantHistory, AssistantMessage } from '@global/types/assistant'
+import {
+  Assistant,
+  AssistantFormData,
+  AssistantHistory,
+  AssistantMessage
+} from '@global/types/assistant'
 import { ReactElement } from 'react'
 import { PageProvider } from '@/provider/PageProvider'
 import { SetupPage } from '@/components/pages/setup'
@@ -9,6 +14,8 @@ import { RequirementsProvider } from '@/provider/RequirementsProvider'
 import { ModelDownload } from '@global/types/model'
 import { GlobalProvider } from '@/provider/GlobalProvider'
 import { Toaster } from 'sonner'
+import { OllamaModel } from 'ollama-models-search'
+import { AssistantManagementPage } from '@renderer/components/pages/assistant-management'
 
 /**
  * Global window object to expose API methods and data
@@ -26,6 +33,7 @@ declare global {
         checkOllamaRunning: () => Promise<boolean>
         downloadModel: (model: ModelDownload, callback: (response) => void) => Promise<void>
         listModels: () => Promise<string[]>
+        searchOnlineModels: (query?: string) => Promise<OllamaModel[]>
       }
       db: {
         getAssistants: () => Promise<Assistant[]>
@@ -34,7 +42,12 @@ declare global {
           assistantId: string,
           messages: AssistantMessage[]
         ) => Promise<AssistantHistory>
+        saveAssistant: (
+          assistantData: AssistantFormData,
+          assistantId: string | undefined
+        ) => Promise<Assistant>
         clearHistory: (assistantId: string) => Promise<void>
+        deleteAssistant: (assistantId: string) => Promise<void>
       }
       file: {
         selectImage: () => Promise<{ buffer: string; name: string; type: string } | undefined>
@@ -56,6 +69,7 @@ export default function App(): ReactElement {
                 {/* The Setup Page is the initial page */}
                 <SetupPage />
                 <ChatPage />
+                <AssistantManagementPage />
               </main>
             </RequirementsProvider>
           </SidebarProvider>

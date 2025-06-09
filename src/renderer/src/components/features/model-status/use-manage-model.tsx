@@ -85,9 +85,7 @@ export const useManageModel = (): UseManageModel => {
       // Now that we have the models listed, we check if they are installed
       const installedModels = await window.api.ollama.listModels()
       Object.values(modelsToBeSynced).forEach((model: ModelDownload) => {
-        model.installed = installedModels.some((installedModel) =>
-          installedModel.includes(model.name)
-        )
+        model.installed = installedModels.some((installedModel) => installedModel === model.name)
       })
       // call this method to update the models in the context and localStorage
       updateModels(modelsToBeSynced)

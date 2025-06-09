@@ -1,5 +1,6 @@
 export enum Page {
   Chat = 'chat',
   Settings = 'settings',
-  Setup = 'setup'
+  Setup = 'setup',
+  AssistantManagement = 'assistant-management'
 }

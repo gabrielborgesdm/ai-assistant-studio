@@ -5,7 +5,7 @@
     "description": "Proofread the text and correct any grammatical errors.",
     "prompt": "proofread: '{{text}}'\nReturn only the proofread text, nothing else.\nPreserve the original formatting.",
     "model": "llama3.1:8b",
-    "systemBehavior": "You are a proofreader. Your task is to proofread the text and correct any grammatical errors.",
+    "systemBehaviour": "You are a proofreader. Your task is to proofread the text and correct any grammatical errors.",
     "ephemeral": true
   },
   {
@@ -14,7 +14,7 @@
     "description": "Proofread and convert the text to markdown.",
     "prompt": "proofread and markdown: '{{text}}'\nReturn only the corrected markdown text, nothing else.\nPreserve the original formatting.",
     "model": "llama3.1:8b",
-    "systemBehavior": "You are a markdown assistant. Your task is to convert the text to markdown. Proofread the text and correct any grammatical errors. Preserve the original formatting.",
+    "systemBehaviour": "You are a markdown assistant. Your task is to convert the text to markdown. Proofread the text and correct any grammatical errors. Preserve the original formatting.",
     "ephemeral": true
   },
   {
@@ -22,7 +22,7 @@
     "title": "E-mail Assistant",
     "description": "Generate a professional email based on the provided context.",
     "prompt": "email: {{text}}\nGenerate a professional email based on the provided context\nReturn only the email text, nothing else.",
-    "systemBehavior": "You are an email assistant. Your task is to generate a professional email based on the provided context.",
+    "systemBehaviour": "You are an email assistant. Your task is to generate a professional email based on the provided context.",
     "model": "llama3.1:8b"
   },
 
@@ -32,7 +32,7 @@
     "description": "Create a funny joke based on the provided context.",
     "prompt": "joke: {{text}}\nCreate a funny joke based on the provided context\nReturn only the joke text, nothing else.",
     "model": "llama3.1:8b",
-    "systemBehavior": "You are a jokster. Your task is to create a funny joke based on the provided context."
+    "systemBehaviour": "You are a jokster. Your task is to create a funny joke based on the provided context."
   },
   {
     "id": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p8",

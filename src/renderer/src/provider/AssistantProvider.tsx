@@ -1,13 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Assistant } from '@global/types/assistant'
-import { createContext, ReactElement, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
 
 interface AssistantContextType {
   assistants: Assistant[]
   activeAssistant: Assistant | undefined
-
+  loadAssistants: () => Promise<void>
   setAssistants: (value: Assistant[]) => void
   setActiveAssistant: (value: Assistant) => void
+  removeAssistant: (assistantId: string) => void
 }
 
 const AssistantContext = createContext<AssistantContextType | undefined>(undefined)
@@ -16,13 +17,57 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
   const [assistants, setAssistants] = useState<Assistant[]>([])
   const [activeAssistant, setActiveAssistant] = useState<Assistant | undefined>(undefined)
 
+  const loadAssistants = async (): Promise<void> => {
+    const assistants = await window.api.db.getAssistants()
+    setAssistants(assistants)
+  }
+
+  const removeAssistant = (assistantId: string): void => {
+    if (assistants.length === 1) {
+      throw new Error('Cannot remove the last assistant')
+    }
+    window.api.db.deleteAssistant(assistantId)
+    const filteredAssistants = assistants.filter((assistant) => assistant.id !== assistantId)
+    setAssistants(filteredAssistants)
+    setActiveAssistant(filteredAssistants[0])
+  }
+
+  const updateActiveAssistant = (assistant: Assistant): void => {
+    setActiveAssistant(assistant)
+    localStorage.setItem('activeAssistant', assistant.id)
+  }
+
+  useEffect(() => {
+    loadAssistants()
+  }, [])
+
+  useEffect(() => {
+    // set the first assistant as selected by default
+    if (assistants.length > 0 && !activeAssistant) {
+      if (import.meta.env.VITE_DEBUG_CLEANUP) {
+        localStorage.removeItem('activeAssistant')
+      }
+      const activeAssistantId = localStorage.getItem('activeAssistant')
+      if (activeAssistantId) {
+        const foundAssistant = assistants.find((assistant) => assistant.id === activeAssistantId)
+        if (foundAssistant) {
+          setActiveAssistant(foundAssistant)
+          return
+        }
+      }
+      setActiveAssistant(assistants[0])
+    }
+  }, [assistants])
+
   return (
     <AssistantContext.Provider
       value={{
         assistants,
+        loadAssistants,
         setAssistants,
         activeAssistant,
-        setActiveAssistant
+        setActiveAssistant: updateActiveAssistant,
+        removeAssistant
       }}
     >
       {children}

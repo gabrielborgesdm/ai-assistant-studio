@@ -1,17 +1,20 @@
 import { GenerateRequest } from 'ollama'
+import { z } from 'zod'
 
 export interface Assistant {
   id: string
   title: string
   description: string
-  prompt: string
   model: string
   options?: GenerateRequest
   downloaded?: boolean
   ephemeral?: boolean
-  systemBehavior?: string
+  prompt?: string
+  systemBehaviour?: string
   allowImage?: boolean
 }
+
+export type AssistantData = Omit<Assistant, 'id'> & { id?: string | undefined }
 
 export enum MessageRole {
   SYSTEM = 'system',
@@ -34,3 +37,18 @@ export interface AssistantHistory {
   assistantId: string
   messages: AssistantMessage[]
 }
+
+// Define the custom field schema
+// Define the main form schema
+export const assistantFormSchema = z.object({
+  title: z.string().min(1, 'Assistant name is required'),
+  description: z.string(),
+  model: z.string().min(1, 'Model selection is required'),
+  ephemeral: z.boolean(),
+  systemBehaviour: z.string().optional(),
+  prompt: z.string().optional(),
+  allowImageUpload: z.boolean()
+})
+
+// Define the type based on the schema
+export type AssistantFormData = z.infer<typeof assistantFormSchema>

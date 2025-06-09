@@ -1,0 +1,9 @@
+{
+  "id": "1e2867b0-2449-4a4a-a99a-c8787d927371",
+  "title": "Assistant Helper",
+  "description": "Helper to create A.I. assistants.",
+  "prompt": "Create a new assistant based on the provided context.",
+  "model": "llama3.1:8b",
+  "systemBehaviour": "You are an assistant helper. Your task is to assist the user in creating a new assistant.",
+  "ephemeral": true
+}

@@ -1,47 +1,62 @@
-import { Assistant } from '@global/types/assistant'
+import { Assistant, AssistantHistory } from '@global/types/assistant'
 import { Button } from '@renderer/components/ui/button'
-import { useSidebar } from '@renderer/components/ui/sidebar'
-import { Pause, SidebarIcon, Trash2 } from 'lucide-react'
+import { Pause, Trash2 } from 'lucide-react'
+import { ReactElement } from 'react'
+import { AssistantDropdown } from '@/components/features/assistant-chat/AssistantDropdown'
+import { cn } from '@renderer/lib/utils'
 
 interface ChatHeaderProps {
   assistant: Assistant
   isLoading: boolean
+  HeaderButton?: ReactElement
   handleClearHistory: () => void
   handleCancelMessageRequest: () => void
+  history: AssistantHistory | undefined
 }
 
 export const ChatHeader = ({
   assistant,
   isLoading,
+  HeaderButton,
   handleClearHistory,
-  handleCancelMessageRequest
+  handleCancelMessageRequest,
+  history
 }: ChatHeaderProps): React.ReactElement => {
-  const { toggleSidebar } = useSidebar()
+  const hasMessages = history?.messages && history.messages.length > 0
+
   return (
     <header className="flex items-center justify-between p-4 border-b">
       <div className="flex gap-2 items-center">
-        <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-          <SidebarIcon />
-        </Button>
+        {!!HeaderButton && HeaderButton}
         <span title={assistant?.description} aria-label="Description">
           <h2 className="text-lg font-bold cursor-help">{assistant?.title}</h2>
         </span>
       </div>
-      {isLoading ? (
-        <Button
-          variant="ghost"
-          size="icon"
-          color="danger"
-          className="animate-pulse"
-          onClick={handleCancelMessageRequest}
-        >
-          <Pause />
-        </Button>
-      ) : (
-        <Button variant="ghost" size="icon" onClick={handleClearHistory}>
-          <Trash2 />
-        </Button>
-      )}
+      <div>
+        {isLoading ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            color="danger"
+            className="animate-pulse"
+            onClick={handleCancelMessageRequest}
+          >
+            <Pause />
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(!hasMessages && 'disabled')}
+            disabled={!hasMessages}
+            onClick={handleClearHistory}
+            title="Clear chat history"
+          >
+            <Trash2 />
+          </Button>
+        )}
+        <AssistantDropdown assistant={assistant} />
+      </div>
     </header>
   )
 }

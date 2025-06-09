@@ -6,7 +6,8 @@ import {
   getDownloadModelEventCancel,
   getDownloadModelEventReply,
   ListModelsEvent,
-  OllamaIsInstalledEvent
+  OllamaIsInstalledEvent,
+  SearchOnlineModelsEvent
 } from '@global/const/ollama.event'
 import { Assistant, AssistantHistory } from '@global/types/assistant'
 import { ModelDownload } from '@global/types/model'
@@ -15,7 +16,8 @@ import {
   streamOllamaChatResponse,
   downloadModel,
   checkOllamaRunning,
-  listModels
+  listModels,
+  searchOnlineModels
 } from './ollama.service'
 
 ipcMain.on(ChatEvent, async (event, assistant: Assistant, history: AssistantHistory) => {
@@ -50,3 +52,5 @@ ipcMain.on(DownloadModelEvent, async (event, model: ModelDownload) => {
 
 ipcMain.handle(OllamaIsInstalledEvent, () => checkOllamaRunning())
 ipcMain.handle(ListModelsEvent, () => listModels())
+
+ipcMain.handle(SearchOnlineModelsEvent, (_event, query: string) => searchOnlineModels(query))

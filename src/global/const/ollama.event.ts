@@ -14,3 +14,5 @@ export const getDownloadModelEventCancel = (model: ModelDownload): string =>
   EventCancel(DownloadModelEvent + model.name)
 
 export const ListModelsEvent = 'ollama-list-models'
+
+export const SearchOnlineModelsEvent = 'ollama-search-online-models'

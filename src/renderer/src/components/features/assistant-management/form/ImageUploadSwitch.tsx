@@ -1,14 +1,13 @@
-import { Control, useController } from 'react-hook-form'
-import { Switch } from '@renderer/components/ui/switch'
 import { Label } from '@renderer/components/ui/label'
-import { AssistantFormData } from '@global/types/assistant'
+import { Switch } from '@renderer/components/ui/switch'
+import { Control, useController } from 'react-hook-form'
 
 export const ImageUploadSwitch = ({
   control,
   modelUrl,
   modelName
 }: {
-  control: Control<AssistantFormData>
+  control: Control<any>
   modelUrl?: string
   modelName?: string
 }): React.ReactElement => {

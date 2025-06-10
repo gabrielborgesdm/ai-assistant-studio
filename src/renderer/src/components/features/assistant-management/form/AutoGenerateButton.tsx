@@ -4,7 +4,7 @@ import { AssistantMessageFactory, HistoryFactory } from '@global/factories/assis
 import { OllamaMessageStreamResponse } from '@global/types/ollama'
 import { Button } from '@renderer/components/ui/button'
 import { Sparkles } from 'lucide-react'
-import { FieldError, TriggerConfig } from 'react-hook-form'
+import { Control, FieldError, TriggerConfig, useWatch } from 'react-hook-form'
 import { cn } from '@renderer/lib/utils'
 import { AnimatedLoader } from '@renderer/components/shared/Loader'
 
@@ -14,7 +14,7 @@ interface GenerateBehaviourButtonProps {
   setIsLoading: (isLoading: boolean) => void
   setError: (field: string, error: FieldError, options?: TriggerConfig) => void
   clearErrors: (field: string) => void
-  watch: (key: string) => string
+  control: Control<any>
   setValue: (key: string, value: string) => void
   fieldName: string
 }
@@ -24,17 +24,17 @@ export const GenerateBehaviourButton = ({
   isLoading,
   setError,
   clearErrors,
-  watch,
+  control,
   setValue,
   fieldName
 }: GenerateBehaviourButtonProps): ReactElement => {
   const [history, setHistory] = useState<AssistantHistory>(HistoryFactory(autoGenerateAssistant.id))
-  const title = watch('title')
-  const description = watch('description')
-  const ephemeral = watch('ephemeral')
-  const systemBehaviour = watch('systemBehaviour')
+  const title = useWatch({ control, name: 'title' })
+  const description = useWatch({ control, name: 'description' })
+  const ephemeral = useWatch({ control, name: 'ephemeral' })
+  const systemBehaviour = useWatch({ control, name: 'systemBehaviour' })
 
-  const [fieldValue, setFieldValue] = useState<string>(watch(fieldName))
+  const [fieldValue, setFieldValue] = useState<string>(useWatch({ control, name: fieldName }))
   const [isGenerating, setIsGenerating] = useState<boolean>(false)
   const disabled = isGenerating || isLoading
 

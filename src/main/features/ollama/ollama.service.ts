@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChatEventReply } from '@global/const/ollama.event'
 import { AssistantMessageFactory } from '@global/factories/assistant.factory'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
-import { ModelDownload } from '@global/types/model'
+import { ModelDownload, OllamaModel } from '@global/types/model'
 import { OllamaDownloadStreamResponse, OllamaMessageStreamResponse } from '@global/types/ollama'
 import { processStreamBufferToJson } from '@global/utils/buffer.utils'
 import { getProgressPercentage } from '@global/utils/progress.utils'
@@ -10,7 +9,8 @@ import { isCustomRole } from '@global/utils/role.utils'
 import axios from 'axios'
 import { IpcMainEvent } from 'electron'
 import ollama from 'ollama'
-import { OllamaModel, searchOllamaModels } from 'ollama-models-search'
+import { searchOllamaModels } from 'ollama-models-search'
+import defaultOllamaModels from '@global/resources/default-ollama-models.json'
 
 const OLLAMA_HOST = 'http://localhost:11434' // Default Ollama API host
 
@@ -27,7 +27,6 @@ export const streamOllamaChatResponse = async (
     addsystemBehaviourToHistory(history, assistant)
     removeAssistantMessageHistoryIfEphemeral(history, assistant)
     applyPromptToUserMessage(history, assistant)
-    console.log('History:', history)
 
     const response = await await getOllama().chat({
       model: assistant.model,
@@ -117,6 +116,7 @@ const addsystemBehaviourToHistory = (history: AssistantHistory, assistant: Assis
     return
   }
 
+  // Add the system behavior to the message history
   history.messages.unshift(AssistantMessageFactory(MessageRole.SYSTEM, assistant.systemBehaviour))
 }
 
@@ -192,7 +192,40 @@ export const downloadModel = async (
 
 export const searchOnlineModels = async (query: string): Promise<OllamaModel[]> => {
   try {
-    const response = await searchOllamaModels({ query })
+    const response = await new Promise<OllamaModel[]>((resolve) => {
+      // If the request takes too long, resolve with the default stored models (Scraped at 2025-06-10)
+      const timeout = setTimeout(() => {
+        console.log('Took too long to search models, returning default models')
+        resolve(defaultOllamaModels)
+      }, 4000)
+
+      searchOllamaModels({ query }).then((models) => {
+        console.log('Successfully searched for Ollama models')
+        clearTimeout(timeout)
+        resolve(models)
+      })
+    })
+
+    const favoriteModels = ['llama3.1', 'mistral-small', 'phi4', 'qwen2.5v']
+
+    // Step 1: Create a Map to assign each favorite model a priority index (for sorting)
+    const priorityMap = new Map(favoriteModels.map((name, index) => [name, index]))
+
+    // Step 2: Sort the response array based on the priority in favoriteModels
+    // Models not in the favorites list get a large value (Infinity), so they appear last
+    response.sort((a, b) => {
+      const aPriority = priorityMap.has(a.name) ? priorityMap.get(a.name)! : Infinity
+      const bPriority = priorityMap.has(b.name) ? priorityMap.get(b.name)! : Infinity
+      return aPriority - bPriority
+    })
+
+    // Step 3: Mark models as recommended if they are in the favorites list
+    // We can break early since the list is sorted and all recommended models come first
+    for (const model of response) {
+      model.recommended = priorityMap.has(model.name)
+      if (!model.recommended) break
+    }
+
     return response
   } catch (error: any) {
     console.error('Error searching models:', error)

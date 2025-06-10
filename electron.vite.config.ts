@@ -31,6 +31,7 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src'),
         '@global': resolve('src/global'),
         '@': resolve('src/renderer/src'),
+
         '@resources': resolve('/resources')
       }
     },

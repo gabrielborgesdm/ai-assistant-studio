@@ -25,7 +25,8 @@ export default tseslint.config(
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
-      'react/no-unescaped-entities': 'off'
+      'react/no-unescaped-entities': 'off',
+      '@typescript-eslint/no-explicit-any': 'off'
     }
   },
   eslintConfigPrettier

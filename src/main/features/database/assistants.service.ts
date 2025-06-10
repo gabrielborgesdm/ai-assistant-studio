@@ -4,7 +4,7 @@ import {
   AssistantHistory,
   AssistantMessage
 } from '@global/types/assistant'
-import { DB } from '@main/features/database/db.config'
+import { DBType } from '@main/features/database/db.type'
 import { AssistantDataFactory, HistoryFactory } from '@global/factories/assistant.factory'
 
 /*
@@ -12,13 +12,13 @@ import { AssistantDataFactory, HistoryFactory } from '@global/factories/assistan
  * @param db - The database instance.
  * @returns An array of assistants.
  */
-export const getAssistants = async (db: DB): Promise<Assistant[]> => {
+export const getAssistants = async (db: DBType): Promise<Assistant[]> => {
   await db.read()
   return db.data?.assistants || []
 }
 
 export const saveAssistant = async (
-  db: DB,
+  db: DBType,
   assistantData: AssistantFormData,
   assistantId: string | undefined
 ): Promise<Assistant> => {
@@ -60,7 +60,7 @@ export const saveAssistant = async (
  * @returns The assistant object if found, otherwise undefined.
  */
 export const getHistory = async (
-  db: DB,
+  db: DBType,
   assistantId: string
 ): Promise<AssistantHistory | undefined> => {
   const histories: AssistantHistory[] = db.data?.history
@@ -77,7 +77,7 @@ export const getHistory = async (
  * @returns The updated assistant history.
  */
 export const addAssistantMessage = async (
-  db: DB,
+  db: DBType,
   assistantId: string,
   messages: AssistantMessage[]
 ): Promise<AssistantHistory> => {
@@ -98,7 +98,7 @@ export const addAssistantMessage = async (
   return filteredHistory
 }
 
-export const clearHistory = async (db: DB, assistantId: string): Promise<void> => {
+export const clearHistory = async (db: DBType, assistantId: string): Promise<void> => {
   console.log('Clearing history for assistantId:', assistantId)
 
   await db.read()
@@ -111,7 +111,7 @@ export const clearHistory = async (db: DB, assistantId: string): Promise<void> =
   db.write()
 }
 
-export const deleteAssistant = async (db: DB, assistantId: string): Promise<void> => {
+export const deleteAssistant = async (db: DBType, assistantId: string): Promise<void> => {
   await db.read()
   db.data.assistants = db.data?.assistants.filter((assistant) => assistant.id !== assistantId)
   await db.write()

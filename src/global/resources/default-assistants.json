@@ -24,21 +24,5 @@
     "prompt": "email: {{text}}\nGenerate a professional email based on the provided context\nReturn only the email text, nothing else.",
     "systemBehaviour": "You are an email assistant. Your task is to generate a professional email based on the provided context.",
     "model": "llama3.1:8b"
-  },
-
-  {
-    "id": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6",
-    "title": "Jokster",
-    "description": "Create a funny joke based on the provided context.",
-    "prompt": "joke: {{text}}\nCreate a funny joke based on the provided context\nReturn only the joke text, nothing else.",
-    "model": "llama3.1:8b",
-    "systemBehaviour": "You are a jokster. Your task is to create a funny joke based on the provided context."
-  },
-  {
-    "id": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p8",
-    "title": "qwen2.5vl",
-    "description": "Flagship vision-language model of Qwen and also a significant leap from the previous Qwen2-VL.",
-    "model": "qwen2.5vl:latest",
-    "allowImage": true
   }
 ]

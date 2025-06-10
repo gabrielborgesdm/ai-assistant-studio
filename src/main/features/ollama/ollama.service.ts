@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EventReply } from '@global/const/event'
-import { ChatEventReply, SearchOnlineModelsEvent } from '@global/const/ollama.event'
+import { ChatEventReply } from '@global/const/ollama.event'
 import { AssistantMessageFactory } from '@global/factories/assistant.factory'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ModelDownload } from '@global/types/model'
@@ -11,12 +10,13 @@ import { isCustomRole } from '@global/utils/role.utils'
 import axios from 'axios'
 import { IpcMainEvent } from 'electron'
 import ollama from 'ollama'
-import { searchOllamaModels, SearchOllamaModelsParams, OllamaModel } from 'ollama-models-search'
+import { OllamaModel, searchOllamaModels } from 'ollama-models-search'
 
 const OLLAMA_HOST = 'http://localhost:11434' // Default Ollama API host
 
 // Necessary workaround to import ollama in the main process
 const getOllama = (): any => (ollama as any).default
+
 export const streamOllamaChatResponse = async (
   assistant: Assistant,
   history: AssistantHistory,

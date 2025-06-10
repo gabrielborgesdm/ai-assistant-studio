@@ -1,9 +1,10 @@
 import { AssistantData, AssistantFormData, assistantFormSchema } from '@global/types/assistant'
+import { OllamaModel } from '@global/types/model'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Page } from '@renderer/pages'
 import { useAssistantContext } from '@renderer/provider/AssistantProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
-import { OllamaModel } from 'ollama-models-search'
+import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 import { useEffect, useState } from 'react'
 import { Control, FieldErrors, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -15,14 +16,14 @@ export interface UseHandleForm {
   ) => (e: React.FormEvent) => void
   register: any
   watch: any
-  errors: FieldErrors<AssistantFormData>
-  models: OllamaModel[]
+  errors: FieldErrors
+  availableModels: OllamaModel[]
   selectedModel: OllamaModel | undefined
   control: Control<AssistantFormData>
   ephemeral: boolean
   isLoading: boolean
   handleModelChange: (value: string) => void
-  validateTitle: (title: string) => void
+  validateTitle: (title: string) => boolean
   setIsLoading: (isLoading: boolean) => void
   setError: any
   setValue: any
@@ -30,10 +31,10 @@ export interface UseHandleForm {
 }
 
 export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
-  const [models, setModels] = useState<OllamaModel[]>([])
   const { assistants } = useAssistantContext()
   const [selectedModel, setSelectedModel] = useState<OllamaModel | undefined>(undefined)
   const { loadAssistants, setActiveAssistant } = useAssistantContext()
+  const { availableModels } = useRequirementsContext()
   const { setActivePage } = usePageContext()
   const [isLoading, setIsLoading] = useState(false)
   const {
@@ -51,7 +52,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     defaultValues: {
       title: assistant?.title || '',
       description: assistant?.description || '',
-      model: '',
+      model: 'llama3.1:latest',
       ephemeral: assistant?.ephemeral || false,
       systemBehaviour: assistant?.systemBehaviour || '',
       prompt: assistant?.prompt || '',
@@ -60,8 +61,10 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   })
 
   const ephemeral = useWatch({ control, name: 'ephemeral' })
+  const title = useWatch({ control, name: 'title' })
 
   const onSubmit = async (values: AssistantFormData): Promise<void> => {
+    if (!validateTitle(title)) return
     setIsLoading(true)
     const savedAssistant = await window.api.db.saveAssistant(values, assistant?.id)
     loadAssistants()
@@ -75,47 +78,44 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
 
   const handleModelChange = (value: string): void => {
     setValue('model', value)
-    setSelectedModel(models.find((model) => model.name === value))
+    const modelWithoutVersion = value.split(':')[0]
+    setSelectedModel(availableModels.find((model) => model.name === modelWithoutVersion))
   }
 
-  useEffect(() => {
-    if (models.length) return
-
-    window.api.ollama.searchOnlineModels().then((models) => {
-      setModels(models)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!assistant || !models.length) return
-
-    // TODO: update this when the ollama custom component is implemented
-    handleModelChange(assistant.model.split(':')[0])
-  }, [assistant, models?.length])
-
-  const validateTitle = (title: string): void => {
-    if (!title) {
-      setError('title', {
-        type: 'value',
-        message: 'Assistant name is required'
-      })
-      return
-    }
-
+  const validateTitle = (title: string): boolean => {
     const assistantsNames = assistants.map((assistant) => assistant.title.toLowerCase())
+    // If we're editing an assistant, we don't want to check if the title already exists for it
+    // otherwise we don't want duplicated assistant names
     if (
       title !== assistant?.title &&
       assistantsNames.some((name) => name === title.toLowerCase())
     ) {
-      setError('title', {
-        type: 'value',
-        message: 'Assistant name already exists'
-      })
-      return
+      setError(
+        'title',
+        {
+          type: 'manual',
+          message: 'Assistant name already exists'
+        },
+        { shouldFocus: true }
+      )
+      console.log('title is not valid')
+      return false
     }
 
-    clearErrors('title')
+    console.log('title is valid')
+    return true
   }
+
+  useEffect(() => {
+    if (!assistant || !availableModels.length) return
+
+    // TODO: update this when the ollama custom component is implemented
+    handleModelChange(assistant.model)
+  }, [assistant, availableModels.length])
+
+  useEffect(() => {
+    validateTitle(title)
+  }, [title])
 
   return {
     onSubmit,
@@ -123,7 +123,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     watch,
     register,
     errors,
-    models,
+    availableModels,
     control,
     ephemeral,
     selectedModel,

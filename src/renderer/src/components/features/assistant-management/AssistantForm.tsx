@@ -8,18 +8,11 @@ import AutoGrowingTextarea from '@renderer/components/shared/form/AutoGrowingTex
 import { FormGroup } from '@renderer/components/shared/form/FormGroup'
 import { FormSection } from '@renderer/components/shared/form/FormSection'
 import { InputError } from '@renderer/components/shared/form/InputError'
-import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { Label } from '@renderer/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@renderer/components/ui/select'
 import { GenerateBehaviourButton } from './form/AutoGenerateButton'
+import OllamaModelSelector from './form/OllamaModelSelector'
 import { useHandleForm } from './form/use-handle-form'
 
 interface AssistantFormProps {
@@ -29,7 +22,7 @@ interface AssistantFormProps {
 export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactElement => {
   const {
     errors,
-    models,
+    availableModels,
     selectedModel,
     control,
     ephemeral,
@@ -39,7 +32,6 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
     register,
     watch,
     handleModelChange,
-    validateTitle,
     setIsLoading,
     setValue,
     setError,
@@ -56,9 +48,8 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
               id="title"
               placeholder="e.g. Proofreader, E-mail Assistant, Software Engineer etc."
               {...register('title')}
-              onBlur={(e) => validateTitle(e.target.value)}
             />
-            <InputError error={errors.title?.message} />
+            <InputError error={errors.title?.message as string} />
           </FormGroup>
 
           <FormGroup>
@@ -76,47 +67,15 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
                 and behavior.
               </strong>
             </Description>
-            <InputError error={errors.description?.message} />
+            <InputError error={errors.description?.message as string} />
           </FormGroup>
 
-          <FormGroup>
-            <Label>Ollama Model *</Label>
-            <Select value={watch('model')} onValueChange={(value) => handleModelChange(value)}>
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  placeholder={
-                    !models.length ? (
-                      <>
-                        Loading models <LoadingDots />
-                      </>
-                    ) : (
-                      'Select an Ollama model'
-                    )
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent className="max-h-[200px] overflow-y-scroll">
-                {models.map((model) => (
-                  <SelectItem key={model.name} value={model.name}>
-                    <div className="font-medium">{model.name}</div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <InputError error={errors.model?.message} />
-            <Description>
-              Choose the AI model to power your assistant. Ollama models define the capabilities and
-              behavior of the assistant.&nbsp;
-              <a
-                href="https://www.hostinger.com/tutorials/what-is-ollama"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Learn more about Ollama models
-              </a>
-            </Description>
-          </FormGroup>
+          <OllamaModelSelector
+            control={control}
+            models={availableModels}
+            handleModelChange={handleModelChange}
+            errors={errors}
+          />
         </FormSection>
         <FormSection>
           <AssistantModeCheck control={control} errors={errors} />
@@ -131,7 +90,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
                 setError={setError}
                 clearErrors={clearErrors}
                 autoGenerateAssistant={systemBehaviourAutoGenerateAssistant}
-                watch={watch}
+                control={control}
                 setValue={setValue}
                 fieldName="systemBehaviour"
               />
@@ -143,7 +102,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
               {...register('systemBehaviour')}
             />
 
-            <InputError error={errors.systemBehaviour?.message} />
+            <InputError error={errors.systemBehaviour?.message as string} />
             <Description>
               Define how the assistant should behave during conversations. This sets its
               personality, tone, and general context for responses.
@@ -161,7 +120,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
                 setError={setError}
                 clearErrors={clearErrors}
                 autoGenerateAssistant={instructionAutoGenerateAssistant}
-                watch={watch}
+                control={control}
                 setValue={setValue}
                 fieldName="prompt"
               />
@@ -194,7 +153,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
                 appended at the end.
               </p>
             </div>
-            <InputError error={errors.prompt?.message} />
+            <InputError error={errors.prompt?.message as string} />
           </FormGroup>
         </FormSection>
         <FormSection>

@@ -1,14 +1,8 @@
 [
   {
-    "name": "gemma3:1b",
-    "size": "8.2GB",
-    "info": "Used to generate responses for the chat",
-    "required": true
-  },
-  {
-    "name": "gnokit/improve-grammar:latest",
-    "size": "8.2GB",
-    "info": "Used to generate responses for the chat",
+    "name": "llama3.1:8b",
+    "size": "4.9GB",
+    "info": "Used for the default assistants and some A.I. auto-genertion features",
     "required": true
   }
 ]

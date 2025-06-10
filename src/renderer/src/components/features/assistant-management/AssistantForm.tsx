@@ -1,10 +1,14 @@
 import { AssistantModeCheck } from '@/components/features/assistant-management/form/AssistantModeCheck'
 import { ImageUploadSwitch } from '@/components/features/assistant-management/form/ImageUploadSwitch'
-import { AssistantData, AssistantFormData, assistantFormSchema } from '@global/types/assistant'
-import { zodResolver } from '@hookform/resolvers/zod'
+import instructionAutoGenerateAssistant from '@global/resources/instruction-assistant.json'
+import systemBehaviourAutoGenerateAssistant from '@global/resources/system-behaviour-assistant.json'
+import { AssistantData } from '@global/types/assistant'
 import { Description } from '@renderer/components/shared/Description'
+import AutoGrowingTextarea from '@renderer/components/shared/form/AutoGrowingTextArea'
+import { FormGroup } from '@renderer/components/shared/form/FormGroup'
 import { FormSection } from '@renderer/components/shared/form/FormSection'
 import { InputError } from '@renderer/components/shared/form/InputError'
+import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { Label } from '@renderer/components/ui/label'
@@ -15,100 +19,32 @@ import {
   SelectTrigger,
   SelectValue
 } from '@renderer/components/ui/select'
-import { Textarea } from '@renderer/components/ui/textarea'
-import { useAssistantContext } from '@renderer/provider/AssistantProvider'
-import { OllamaModel } from 'ollama-models-search'
-import { useEffect, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
-import { toast } from 'sonner'
-import { FormGroup } from '@renderer/components/shared/form/FormGroup'
-import { usePageContext } from '@renderer/provider/PageProvider'
-import { Page } from '@renderer/pages'
-import { LoadingDots } from '@renderer/components/shared/LoadingDots'
+import { GenerateBehaviourButton } from './form/AutoGenerateButton'
+import { useHandleForm } from './form/use-handle-form'
 
 interface AssistantFormProps {
   assistant?: AssistantData
 }
 
 export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactElement => {
-  const [models, setModels] = useState<OllamaModel[]>([])
-  const { assistants } = useAssistantContext()
-  const [selectedModel, setSelectedModel] = useState<OllamaModel | undefined>(undefined)
-  const { loadAssistants, setActiveAssistant } = useAssistantContext()
-  const { setActivePage } = usePageContext()
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const {
-    register,
+    errors,
+    models,
+    selectedModel,
+    control,
+    ephemeral,
+    isLoading,
+    onSubmit,
     handleSubmit,
+    register,
+    watch,
+    handleModelChange,
+    validateTitle,
+    setIsLoading,
     setValue,
     setError,
-    clearErrors,
-    watch,
-    formState: { errors },
-    control,
-    reset
-  } = useForm<AssistantFormData>({
-    resolver: zodResolver(assistantFormSchema),
-    defaultValues: {
-      title: assistant?.title || '',
-      description: assistant?.description || '',
-      model: '',
-      ephemeral: assistant?.ephemeral || false,
-      systemBehaviour: assistant?.systemBehaviour || '',
-      prompt: assistant?.prompt || '',
-      allowImageUpload: assistant?.allowImage || false
-    }
-  })
-
-  const ephemeral = useWatch({ control, name: 'ephemeral' })
-
-  const onSubmit = async (values: AssistantFormData): Promise<void> => {
-    setIsSubmitting(true)
-    const savedAssistant = await window.api.db.saveAssistant(values, assistant?.id)
-    loadAssistants()
-    setActiveAssistant(savedAssistant)
-    setActivePage(Page.Chat)
-    reset()
-
-    toast.success('Assistant saved successfully')
-    setIsSubmitting(false)
-  }
-
-  const handleModelChange = (value: string): void => {
-    setValue('model', value)
-    setSelectedModel(models.find((model) => model.name === value))
-  }
-
-  useEffect(() => {
-    if (models.length) return
-
-    window.api.ollama.searchOnlineModels().then((models) => {
-      setModels(models)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!assistant || !models.length) return
-
-    // TODO: update this when the ollama custom component is implemented
-    handleModelChange(assistant.model.split(':')[0])
-  }, [assistant, models?.length])
-
-  const validateTitle = (title: string): void => {
-    if (!title) return
-
-    const assistantsNames = assistants.map((assistant) => assistant.title.toLowerCase())
-    if (assistantsNames.some((name) => name === title.toLowerCase())) {
-      setError('title', {
-        type: 'manual',
-        message: 'Assistant name already exists'
-      })
-      return
-    }
-    if (errors.title?.message === 'Assistant name already exists') {
-      clearErrors('title')
-    }
-  }
+    clearErrors
+  } = useHandleForm(assistant)
 
   return (
     <div className="space-y-4">
@@ -127,8 +63,9 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
 
           <FormGroup>
             <Label htmlFor="description">Assistant Description (Optional)</Label>
-            <Textarea
+            <AutoGrowingTextarea
               id="description"
+              className="min-h-[100px]"
               placeholder="e.g. This assistant helps you with proofreading and editing your text. It can correct grammar, spelling, and punctuation."
               {...register('description')}
             />
@@ -186,12 +123,26 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
         </FormSection>
         <FormSection>
           <FormGroup>
-            <Label htmlFor="systemBehaviour">Assistant Behaviour (Optional)</Label>
-            <Textarea
+            <div className="flex items-center justify-between max-w-full">
+              <Label htmlFor="systemBehaviour">Assistant Behaviour (Optional)</Label>
+              <GenerateBehaviourButton
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                setError={setError}
+                clearErrors={clearErrors}
+                autoGenerateAssistant={systemBehaviourAutoGenerateAssistant}
+                watch={watch}
+                setValue={setValue}
+                fieldName="systemBehaviour"
+              />
+            </div>
+            <AutoGrowingTextarea
               id="systemBehaviour"
+              watchedValue={watch('systemBehaviour')}
               placeholder='e.g. "You are a friendly tutor that explains complex topics in simple terms."'
               {...register('systemBehaviour')}
             />
+
             <InputError error={errors.systemBehaviour?.message} />
             <Description>
               Define how the assistant should behave during conversations. This sets its
@@ -199,12 +150,25 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
             </Description>
           </FormGroup>
           <FormGroup>
-            <Label htmlFor="prompt">
-              {ephemeral ? 'Instruction' : 'Initial Instruction'}
-              {' (Optional)'}
-            </Label>
-            <Textarea
+            <div className="flex items-center justify-between max-w-full">
+              <Label htmlFor="prompt">
+                {ephemeral ? 'Instruction' : 'Initial Instruction'}
+                {' (Optional)'}
+              </Label>
+              <GenerateBehaviourButton
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                setError={setError}
+                clearErrors={clearErrors}
+                autoGenerateAssistant={instructionAutoGenerateAssistant}
+                watch={watch}
+                setValue={setValue}
+                fieldName="prompt"
+              />
+            </div>
+            <AutoGrowingTextarea
               id="prompt"
+              watchedValue={watch('prompt')}
               placeholder={
                 ephemeral
                   ? 'e.g. "Correct the following text for grammar and spelling:"'
@@ -241,7 +205,7 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
           />
         </FormSection>
 
-        <Button type="submit" className="ml-auto mt-4 align-right w-full" disabled={isSubmitting}>
+        <Button type="submit" className="ml-auto mt-4 align-right w-full" disabled={isLoading}>
           Save Assistant
         </Button>
       </form>

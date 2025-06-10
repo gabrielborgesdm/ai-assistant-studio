@@ -26,7 +26,7 @@ export const RequiredModelsComponent = ({ models }: RequiredModelsComponentProps
           )}
           Required Models
         </CardTitle>
-        <CardDescription>Download the language models you want to use</CardDescription>
+        <CardDescription>These are required for AI Assistant Studio to function</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {Object.values(models)

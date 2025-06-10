@@ -1,4 +1,3 @@
-import { AssistantFormData } from '@global/types/assistant'
 import { Description } from '@renderer/components/shared/Description'
 import { InputError } from '@renderer/components/shared/form/InputError'
 import { Label } from '@renderer/components/ui/label'
@@ -9,8 +8,8 @@ export const AssistantModeCheck = ({
   control,
   errors
 }: {
-  control: Control<AssistantFormData>
-  errors: FieldErrors<AssistantFormData>
+  control: Control<any>
+  errors: FieldErrors
 }): ReactElement => {
   const { field } = useController({
     name: 'ephemeral',
@@ -62,7 +61,7 @@ export const AssistantModeCheck = ({
           </div>
         </label>
       </div>
-      <InputError error={errors.ephemeral?.message} />
+      <InputError error={errors.ephemeral?.message as string} />
     </div>
   )
 }

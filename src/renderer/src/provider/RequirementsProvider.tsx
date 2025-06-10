@@ -1,9 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
-import { InstalledModels, ModelDownload } from '@global/types/model'
-import { createContext, ReactElement, ReactNode, useContext, useState } from 'react'
+import { InstalledModels, ModelDownload, OllamaModel } from '@global/types/model'
+import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
 
 interface RequirementsContextType {
   models: InstalledModels | undefined
+  availableModels: OllamaModel[]
   ollamaRunning: boolean
   isCheckingRequirements: boolean
   updateModel: (model: ModelDownload) => void
@@ -16,7 +17,11 @@ interface RequirementsContextType {
 const RequirementsContext = createContext<RequirementsContextType | undefined>(undefined)
 
 export const RequirementsProvider = ({ children }: { children: ReactNode }): ReactElement => {
+  // these are the installed models
   const [models, setModels] = useState<InstalledModels | undefined>(undefined)
+
+  // these are the available models from the ollama website that we can install
+  const [availableModels, setAvailableModels] = useState<OllamaModel[]>([])
   const [ollamaRunning, setOllamaRunning] = useState(false)
   const [isCheckingRequirements, setIsCheckingRequirements] = useState(true)
 
@@ -46,10 +51,19 @@ export const RequirementsProvider = ({ children }: { children: ReactNode }): Rea
     setModels({ ...models })
   }
 
+  useEffect(() => {
+    if (availableModels.length) return
+
+    window.api.ollama.searchOnlineModels().then((models) => {
+      setAvailableModels(models)
+    })
+  }, [])
+
   return (
     <RequirementsContext.Provider
       value={{
         models,
+        availableModels,
         ollamaRunning,
         isCheckingRequirements,
         updateModel,

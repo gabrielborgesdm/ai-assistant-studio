@@ -11,10 +11,9 @@ import { ReactElement } from 'react'
 import { PageProvider } from '@/provider/PageProvider'
 import { SetupPage } from '@/components/pages/setup'
 import { RequirementsProvider } from '@/provider/RequirementsProvider'
-import { ModelDownload } from '@global/types/model'
+import { ModelDownload, OllamaModel } from '@global/types/model'
 import { GlobalProvider } from '@/provider/GlobalProvider'
 import { Toaster } from 'sonner'
-import { OllamaModel } from 'ollama-models-search'
 import { AssistantManagementPage } from '@renderer/components/pages/assistant-management'
 
 /**

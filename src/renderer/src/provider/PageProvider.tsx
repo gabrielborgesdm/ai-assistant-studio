@@ -5,7 +5,7 @@ import { createContext, ReactElement, ReactNode, useContext, useState } from 're
 interface PageContextType {
   activePage: string
   isSidebarDisabled: boolean
-  pageProps: Record<string, unknown>
+  pageProps: Record<string, unknown> | undefined
   setIsSidebarDisabled: (disabled: boolean) => void
   setActivePage: (page: string, props?: Record<string, unknown>) => void
   withActivePage: (pageName: string, Component: React.ComponentType) => ReactElement
@@ -16,12 +16,11 @@ const PageContext = createContext<PageContextType | undefined>(undefined)
 export const PageProvider = ({ children }: { children: ReactNode }): ReactElement => {
   // The initial page is the setup page
   const [activePage, setActivePage] = useState<string>(Page.Setup)
-  const [pageProps, setPageProps] = useState<Record<string, unknown>>({})
+  const [pageProps, setPageProps] = useState<Record<string, unknown> | undefined>(undefined)
 
-  const updateActivePage = (page: string, props: Record<string, unknown> = {}): void => {
+  const updateActivePage = (page: string, props?: Record<string, unknown> | undefined): void => {
     setActivePage(page)
-    setPageProps({ ...props })
-    console.log('pageProps', props)
+    setPageProps(props ? { ...props } : undefined)
   }
 
   const withActivePage = (pageName: string, Component: React.ComponentType): ReactElement => {

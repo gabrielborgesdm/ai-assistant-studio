@@ -7,7 +7,6 @@ import {
 } from '@global/types/assistant'
 import { app, ipcMain } from 'electron'
 import fs from 'fs/promises'
-import { Low } from 'lowdb/lib'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
 import {
@@ -26,6 +25,7 @@ import {
   SaveAssistantEvent,
   DeleteAssistantEvent
 } from '@global/const/db.event'
+import { DBType } from '@main/features/database/db.type'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -39,8 +39,7 @@ const initialData: { assistants: Assistant[]; history: AssistantHistory[] } = {
   history: []
 }
 
-let db: Low<typeof initialData>
-export type DB = typeof db
+let db: DBType
 
 export async function initDB(): Promise<void> {
   const file = path.join(app.getPath('userData'), 'db.json')

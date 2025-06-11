@@ -1,12 +1,14 @@
+import { useManageModel } from '@/components/features/model-status/use-manage-model'
 import { DownloadModelEvent } from '@global/const/ollama.event'
 import { ModelDownload } from '@global/types/model'
+import { CopyButton } from '@renderer/components/shared/CopyButton'
+import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 import { Badge } from '@renderer/components/ui/badge'
 import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
-import { CheckCircle, Circle, Copy, Download } from 'lucide-react'
+import { useHandleCopy } from '@renderer/hooks/use-handle-copy'
+import { CheckCircle, Circle, Download } from 'lucide-react'
 import { ReactElement, useEffect, useState } from 'react'
-import { useManageModel } from '@/components/features/model-status/use-manage-model'
-import { LoadingDots } from '@renderer/components/shared/LoadingDots'
 import { toast } from 'sonner'
 
 interface ModelStatusCardProps {
@@ -29,6 +31,7 @@ export const ModelStatusCard = ({
 }: ModelStatusCardProps): ReactElement => {
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
+  const { handleCopy } = useHandleCopy()
 
   const { handleFinishedDownloading } = useManageModel()
 
@@ -45,16 +48,7 @@ export const ModelStatusCard = ({
         console.error('Error downloading model:', model.name, result.error)
         toast('Error downloading model', {
           description: result.error,
-          action: (
-            <Button
-              size="sm"
-              onClick={() => {
-                navigator.clipboard.writeText(result.error)
-              }}
-            >
-              <Copy className="size-3" />
-            </Button>
-          )
+          action: <CopyButton onClick={() => handleCopy(result.error)} />
         })
         return
       }

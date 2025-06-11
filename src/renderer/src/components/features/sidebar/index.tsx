@@ -18,7 +18,6 @@ import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
 import { Bot, History, Moon, Sun } from 'lucide-react'
 
-// TODO: make it stay fixed when size is big, deactivate clicks when generating messages
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } = useAssistantContext()
 

@@ -102,7 +102,6 @@ export const ModelStatusCard = ({
     )
   }
 
-  //TODO: this transition is still truncated
   if (model.installed && !shouldRenderWhenDownloaded) return <></>
 
   return (

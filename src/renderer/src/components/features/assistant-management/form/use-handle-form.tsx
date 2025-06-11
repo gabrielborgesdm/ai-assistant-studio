@@ -98,18 +98,15 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
         },
         { shouldFocus: true }
       )
-      console.log('title is not valid')
       return false
     }
 
-    console.log('title is valid')
     return true
   }
 
   useEffect(() => {
     if (!assistant || !availableModels.length) return
 
-    // TODO: update this when the ollama custom component is implemented
     handleModelChange(assistant.model)
   }, [assistant, availableModels.length])
 

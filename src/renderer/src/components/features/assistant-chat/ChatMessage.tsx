@@ -1,14 +1,9 @@
-import {
-  ChatBubble,
-  ChatBubbleAction,
-  ChatBubbleAvatar,
-  ChatBubbleMessage
-} from '@/components/ui/chat/chat-bubble'
+import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '@/components/ui/chat/chat-bubble'
 import { AssistantMessage, MessageRole } from '@global/types/assistant'
 import { isCustomRole } from '@global/utils/role.utils'
 import { ImagesDisplay } from '@renderer/components/features/image/ImagesDisplay'
+import { CopyButton } from '@renderer/components/shared/CopyButton'
 import { cn } from '@renderer/lib/utils'
-import { Copy } from 'lucide-react'
 import { ReactElement } from 'react'
 
 interface ChatMessageProps {
@@ -54,7 +49,6 @@ export const ChatMessage = ({
         layout={message.role === MessageRole.ASSISTANT ? 'ai' : 'default'}
         variant={getVariant(message.role)}
         className={`my-2 ${className} select-text`}
-        onClick={() => handleCopy(message.content)}
       >
         {shouldShowAvatar && (
           <ChatBubbleAvatar
@@ -79,14 +73,7 @@ export const ChatMessage = ({
 
           {message.role === MessageRole.ASSISTANT && (
             <div>
-              {shouldShowCopy && (
-                <ChatBubbleAction
-                  className="size-6"
-                  icon={<Copy className="size-3" />}
-                  onClick={() => handleCopy(message.content)}
-                  title="Copy message"
-                />
-              )}
+              {shouldShowCopy && <CopyButton onClick={() => handleCopy(message.content)} />}
             </div>
           )}
         </ChatBubbleMessage>

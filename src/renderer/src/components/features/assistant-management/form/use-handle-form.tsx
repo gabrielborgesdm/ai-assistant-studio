@@ -66,7 +66,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   const onSubmit = async (values: AssistantFormData): Promise<void> => {
     if (!validateTitle(title)) return
     setIsLoading(true)
-    const savedAssistant = await window.api.db.saveAssistant(values, assistant?.id)
+    const savedAssistant = await window.api.assistants.saveAssistant(values, assistant?.id)
     loadAssistants()
     setActiveAssistant(savedAssistant)
     setActivePage(Page.Chat)

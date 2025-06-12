@@ -8,8 +8,8 @@ import {
   DeleteAssistantEvent
 } from '@global/const/db.event'
 
-// This file is used to expose the database API to the renderer process
-export const dbApi = {
+// This file is used to expose the assistants API to the renderer process
+export const assistantsApi = {
   getAssistants: () => ipcRenderer.invoke(GetAssistantsEvent),
   getHistory: (assistantId) => ipcRenderer.invoke(GetHistoryEvent, assistantId),
   addAssistantMessage: (assistantId, messages) =>

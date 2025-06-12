@@ -54,7 +54,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     }
 
     console.log('Clearing history for assistant:', assistant.id)
-    window.api.db.clearHistory(assistant.id)
+    window.api.assistants.clearHistory(assistant.id)
     setHistory(history ? { ...history, messages: [] } : undefined)
     setCurrentAssistantMessage(undefined)
     setImages([])
@@ -81,7 +81,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     setIsLoading(true)
     const base64Images = await getBase64Images()
 
-    const newHistory = await window.api.db.addAssistantMessage(assistant.id, [
+    const newHistory = await window.api.assistants.addAssistantMessage(assistant.id, [
       AssistantMessageFactory(MessageRole.USER, textInput, base64Images)
     ])
 
@@ -144,7 +144,10 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
       })
     }
 
-    const newHistory = await window.api.db.addAssistantMessage(assistant.id, messagesToInclude)
+    const newHistory = await window.api.assistants.addAssistantMessage(
+      assistant.id,
+      messagesToInclude
+    )
 
     setHistory(newHistory)
     setCurrentAssistantMessage(undefined)
@@ -197,7 +200,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
       setActivePage(Page.Setup)
       return
     }
-    window.api.db.getHistory(assistant.id).then(setHistory)
+    window.api.assistants.getHistory(assistant.id).then(setHistory)
   }, [assistant])
 
   useEffect(() => {

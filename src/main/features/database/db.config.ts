@@ -1,31 +1,11 @@
 import defaultAssistants from '@global/resources/default-assistants.json'
-import {
-  Assistant,
-  AssistantFormData,
-  AssistantHistory,
-  AssistantMessage
-} from '@global/types/assistant'
-import { app, ipcMain } from 'electron'
+import { Assistant, AssistantHistory } from '@global/types/assistant'
+import { Config } from '@global/types/config'
+import { DBType } from '@main/features/database/db.type'
+import { app } from 'electron'
 import fs from 'fs/promises'
 import { JSONFilePreset } from 'lowdb/node'
 import path from 'path'
-import {
-  addAssistantMessage,
-  clearHistory,
-  deleteAssistant,
-  getAssistants,
-  getHistory,
-  saveAssistant
-} from '@main/features/database/assistants.service'
-import {
-  GetAssistantsEvent,
-  GetHistoryEvent,
-  AddAssistantMessageEvent,
-  ClearHistoryEvent,
-  SaveAssistantEvent,
-  DeleteAssistantEvent
-} from '@global/const/db.event'
-import { DBType } from '@main/features/database/db.type'
 
 /*
  * This file is responsible for initializing the database and handling
@@ -34,14 +14,22 @@ import { DBType } from '@main/features/database/db.type'
  * The database is stored in the user data directory of the app.
  */
 
-const initialData: { assistants: Assistant[]; history: AssistantHistory[] } = {
+const initialData: { assistants: Assistant[]; history: AssistantHistory[]; config: Config } = {
   assistants: defaultAssistants,
-  history: []
+  history: [],
+  config: {
+    window: {
+      width: 1024,
+      height: 768
+    },
+    shortcut: '',
+    runAtStartup: false
+  }
 }
 
 let db: DBType
 
-export async function initDB(): Promise<void> {
+export async function initDB(): Promise<DBType> {
   const file = path.join(app.getPath('userData'), 'db.json')
   // for debug purposes, remove the db file if env var is set
   if (process.env.VITE_DEBUG_CLEANUP) {
@@ -55,26 +43,6 @@ export async function initDB(): Promise<void> {
 
   db = await JSONFilePreset(file, initialData)
   await db.read()
+
+  return db
 }
-
-ipcMain.handle(GetAssistantsEvent, () => getAssistants(db))
-
-ipcMain.handle(GetHistoryEvent, (_event, assistantId) => getHistory(db, assistantId))
-
-ipcMain.handle(
-  AddAssistantMessageEvent,
-  (_event, assistantId: string, messages: AssistantMessage[]) =>
-    addAssistantMessage(db, assistantId, messages)
-)
-
-ipcMain.handle(ClearHistoryEvent, (_event, assistantId: string) => clearHistory(db, assistantId))
-
-ipcMain.handle(
-  SaveAssistantEvent,
-  (_event, assistantData: AssistantFormData, assistantId: string | undefined) =>
-    saveAssistant(db, assistantData, assistantId)
-)
-
-ipcMain.handle(DeleteAssistantEvent, (_event, assistantId: string) =>
-  deleteAssistant(db, assistantId)
-)

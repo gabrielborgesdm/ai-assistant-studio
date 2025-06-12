@@ -7,10 +7,10 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@global': resolve('src/global'),
-        '@resources': resolve('/resources'),
-        '@main': resolve('src/main'),
-        '@preload': resolve('src/preload')
+        '@global': resolve(__dirname, 'src/global'),
+        '@resources': resolve(__dirname, 'resources'),
+        '@main': resolve(__dirname, 'src/main'),
+        '@preload': resolve(__dirname, 'src/preload')
       }
     }
   },
@@ -18,21 +18,20 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@global': resolve('src/global'),
-        '@resources': resolve('/resources'),
-        '@main': resolve('src/main'),
-        '@preload': resolve('src/preload')
+        '@global': resolve(__dirname, 'src/global'),
+        '@resources': resolve(__dirname, 'resources'),
+        '@main': resolve(__dirname, 'src/main'),
+        '@preload': resolve(__dirname, 'src/preload')
       }
     }
   },
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src'),
-        '@global': resolve('src/global'),
-        '@': resolve('src/renderer/src'),
-
-        '@resources': resolve('/resources')
+        '@renderer': resolve(__dirname, 'src/renderer/src'),
+        '@global': resolve(__dirname, 'src/global'),
+        '@': resolve(__dirname, 'src/renderer/src'),
+        '@resources': resolve(__dirname, 'resources')
       }
     },
     plugins: [react()]

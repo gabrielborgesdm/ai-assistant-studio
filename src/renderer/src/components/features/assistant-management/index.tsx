@@ -41,7 +41,6 @@ export const AssistantManagement = ({
           </CardContent>
         </Card>
       </div>
-      {/* <FloatingChatDialog /> */}
     </div>
   )
 }

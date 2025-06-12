@@ -1,5 +1,6 @@
 appId: com.electron.app
-productName: ai-assistant-studio
+icon: build/icon
+productName: Ai Studio
 directories:
   buildResources: build
 files:
@@ -12,17 +13,17 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: ai-assistant-studio
+  executableName: AI Studio
+
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false

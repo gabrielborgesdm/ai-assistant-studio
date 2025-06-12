@@ -18,7 +18,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
   const [activeAssistant, setActiveAssistant] = useState<Assistant | undefined>(undefined)
 
   const loadAssistants = async (): Promise<void> => {
-    const assistants = await window.api.db.getAssistants()
+    const assistants = await window.api.assistants.getAssistants()
     setAssistants(assistants)
   }
 
@@ -26,7 +26,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
     if (assistants.length === 1) {
       throw new Error('Cannot remove the last assistant')
     }
-    window.api.db.deleteAssistant(assistantId)
+    window.api.assistants.deleteAssistant(assistantId)
     const filteredAssistants = assistants.filter((assistant) => assistant.id !== assistantId)
     setAssistants(filteredAssistants)
     setActiveAssistant(filteredAssistants[0])

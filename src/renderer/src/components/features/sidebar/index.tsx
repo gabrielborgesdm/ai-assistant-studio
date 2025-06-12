@@ -16,7 +16,7 @@ import { useAssistantContext } from '@renderer/provider/AssistantProvider'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
-import { Bot, History, Moon, Sun } from 'lucide-react'
+import { Bot, History, Moon, Settings, Sun } from 'lucide-react'
 
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } = useAssistantContext()
@@ -128,6 +128,14 @@ export const SidebarComponent = (): React.ReactElement => {
               <span className="flex items-center gap-2 font-small">
                 {isDark ? <Moon size={18} /> : <Sun size={18} />}
                 {isDark ? 'Dark' : 'Light'} Mode
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem className="cursor-pointer" onClick={() => setActivePage(Page.Config)}>
+            <SidebarMenuButton className="flex items-center justify-between">
+              <span className="flex items-center gap-2 font-small">
+                <Settings size={18} />
+                Settings
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>

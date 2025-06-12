@@ -68,11 +68,12 @@ yarn build:linux
 
 ---
 
-## 📚 References
+## 📚 Shoutouts
 
 - [Electron](https://www.electronjs.org/)
 - [Shadcn](https://ui.shadcn.com/)
 - [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
 - [Ollama API Docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
+- [shortcut-recorder-hook](https://github.com/BlazeStorm001/shortcut-recorder-hook)
 
 ---

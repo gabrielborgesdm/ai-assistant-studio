@@ -1,20 +1,22 @@
 import { SidebarComponent } from '@/components/features/sidebar'
 import { ChatPage } from '@/components/pages/chat'
+import { SetupPage } from '@/components/pages/setup'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import { GlobalProvider } from '@/provider/GlobalProvider'
+import { PageProvider } from '@/provider/PageProvider'
+import { RequirementsProvider } from '@/provider/RequirementsProvider'
 import {
   Assistant,
   AssistantFormData,
   AssistantHistory,
   AssistantMessage
 } from '@global/types/assistant'
-import { ReactElement } from 'react'
-import { PageProvider } from '@/provider/PageProvider'
-import { SetupPage } from '@/components/pages/setup'
-import { RequirementsProvider } from '@/provider/RequirementsProvider'
+import { Config } from '@global/types/config'
 import { ModelDownload, OllamaModel } from '@global/types/model'
-import { GlobalProvider } from '@/provider/GlobalProvider'
-import { Toaster } from 'sonner'
 import { AssistantManagementPage } from '@renderer/components/pages/assistant-management'
+import { ReactElement } from 'react'
+import { Toaster } from 'sonner'
+import { ConfigPage } from './components/pages/config'
 
 /**
  * Global window object to expose API methods and data
@@ -34,7 +36,7 @@ declare global {
         listModels: () => Promise<string[]>
         searchOnlineModels: (query?: string) => Promise<OllamaModel[]>
       }
-      db: {
+      assistants: {
         getAssistants: () => Promise<Assistant[]>
         getHistory: (assistantId: string) => Promise<AssistantHistory | undefined>
         addAssistantMessage: (
@@ -50,6 +52,12 @@ declare global {
       }
       file: {
         selectImage: () => Promise<{ buffer: string; name: string; type: string } | undefined>
+      }
+      config: {
+        registerShortcut: (accelerator: string) => Promise<string | undefined>
+        registerStartup: (runAtStartup: boolean) => Promise<boolean>
+        getConfig: () => Promise<Config | undefined>
+        getOs: () => Promise<string>
       }
       cancel: (eventName: string) => void
     }
@@ -69,6 +77,7 @@ export default function App(): ReactElement {
                 <SetupPage />
                 <ChatPage />
                 <AssistantManagementPage />
+                <ConfigPage />
               </main>
             </RequirementsProvider>
           </SidebarProvider>

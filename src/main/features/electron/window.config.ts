@@ -57,6 +57,11 @@ export const setupWindowConfig = async (db: DBType): Promise<BrowserWindow> => {
   }
 
   mainWindow.on('ready-to-show', () => {
+    // Don't show right away if it auto started
+    if(process.argv.includes('--hidden')) {
+      return
+    }
+
     mainWindow?.show()
   })
 

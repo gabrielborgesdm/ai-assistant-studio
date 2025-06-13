@@ -10,6 +10,7 @@ interface UseManageModel {
   syncModelsAndOllamaStatus: (models?: InstalledModels, debounce?: boolean) => Promise<void>
   saveModel: (modelName: string) => Promise<void>
   checkRequirementsAreMet: () => boolean
+  checkOllamaRunning: () => Promise<boolean>
 }
 
 export const useManageModel = (): UseManageModel => {
@@ -78,7 +79,7 @@ export const useManageModel = (): UseManageModel => {
     }
 
     // Check if ollama is running
-    const isOllamaRunning = await window.api.ollama.checkOllamaRunning()
+    const isOllamaRunning = await checkOllamaRunning()
     setOllamaRunning(isOllamaRunning)
 
     if (isOllamaRunning) {
@@ -103,11 +104,16 @@ export const useManageModel = (): UseManageModel => {
     return requiredModels.every((model) => model.installed)
   }
 
+  const checkOllamaRunning = (): Promise<boolean> => {
+    return window.api.ollama.checkOllamaRunning()
+  }
+
   return {
     isModelInstalled,
     handleFinishedDownloading,
     syncModelsAndOllamaStatus,
     saveModel,
-    checkRequirementsAreMet
+    checkRequirementsAreMet,
+    checkOllamaRunning
   }
 }

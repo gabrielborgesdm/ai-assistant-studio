@@ -1,4 +1,4 @@
-import { SelectImageEvent } from '@global/const/file'
+import { SelectImageEvent } from '@global/const/file.event'
 import FileService from '@main/features/file/file.service'
 import { ipcMain } from 'electron'
 

@@ -7,12 +7,13 @@ import {
   getDownloadModelEventReply,
   ListModelsEvent,
   OllamaIsInstalledEvent,
-  SearchOnlineModelsEvent
+  SearchOnlineModelsEvent,
+  WarmupOllamaEvent
 } from '@global/const/ollama.event'
 import { Assistant, AssistantHistory } from '@global/types/assistant'
 import { ModelDownload } from '@global/types/model'
-import { ipcMain } from 'electron'
 import OllamaService from '@main/features/ollama/ollama.service'
+import { ipcMain } from 'electron'
 
 export const setupOllamaController = (): void => {
   const ollamaService = new OllamaService()
@@ -52,5 +53,7 @@ export const setupOllamaController = (): void => {
   ipcMain.handle(SearchOnlineModelsEvent, (_event, query: string) =>
     ollamaService.searchOnlineModels(query)
   )
+
+  ipcMain.handle(WarmupOllamaEvent, (_event, model: string) => ollamaService.warmupOllama(model))
 }
 

@@ -182,7 +182,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     })
   }
 
-  const validateRequirementsAndUpdateHistory = async (): Promise<void> => {
+  const validateRequirementsAndUpdateChat = async (): Promise<void> => {
     const requirementsMet = checkRequirementsAreMet()
     const isOllamaRunning = await checkOllamaRunning()
     if (!requirementsMet || !isOllamaRunning) {
@@ -190,7 +190,13 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
       setActivePage(Page.Setup)
       return
     }
+  }
+
+  // makes sure the chat is ready to go
+  const readyUpChat = async (): Promise<void> => {
+    await validateRequirementsAndUpdateChat()
     window.api.assistants.getHistory(assistant.id).then(setHistory)
+    window.api.ollama.warmupOllama(assistant.model)
   }
 
   /**
@@ -206,7 +212,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
 
   // Load the history when the assistant changes
   useEffect(() => {
-    validateRequirementsAndUpdateHistory()
+    readyUpChat()
   }, [assistant])
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { SelectImageEvent } from '@global/const/file'
+import { SelectImageEvent } from '@global/const/file.event'
 import { ipcRenderer } from 'electron'
 
 export const fileApi = {

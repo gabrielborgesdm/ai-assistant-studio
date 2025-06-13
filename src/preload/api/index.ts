@@ -1,4 +1,4 @@
-import { EventCancel } from '@global/const/event'
+import { EventCancel } from '@global/utils/event.utils'
 import { ipcRenderer } from 'electron'
 import { assistantsApi } from '@preload/api/assistants.api'
 import { fileApi } from '@preload/api/file.api'

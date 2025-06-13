@@ -126,6 +126,20 @@ export default class OllamaService {
     history.messages.unshift(AssistantMessageFactory(MessageRole.SYSTEM, assistant.systemBehaviour))
   }
 
+  warmupOllama = async (model: string): Promise<void> => {
+    try {
+      console.log('Warming up Ollama Model', model)
+      await this.ollama.generate({
+        model,
+        messages: [{ role: 'user', content: 'Hi' }],
+        stream: false,
+        keep_alive: '30m'
+      })
+    } catch (error) {
+      console.error('Error warming up Ollama:', error)
+    }
+  }
+
   checkOllamaRunning = async (): Promise<boolean> => {
     try {
       await this.ollama.list()

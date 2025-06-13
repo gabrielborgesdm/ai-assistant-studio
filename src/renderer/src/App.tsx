@@ -35,6 +35,7 @@ declare global {
         downloadModel: (model: ModelDownload, callback: (response) => void) => Promise<void>
         listModels: () => Promise<string[]>
         searchOnlineModels: (query?: string) => Promise<OllamaModel[]>
+        warmupOllama: (model: string) => Promise<void>
       }
       assistants: {
         getAssistants: () => Promise<Assistant[]>

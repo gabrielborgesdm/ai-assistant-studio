@@ -5,7 +5,8 @@ import {
   getDownloadModelEventReply,
   ListModelsEvent,
   OllamaIsInstalledEvent,
-  SearchOnlineModelsEvent
+  SearchOnlineModelsEvent,
+  WarmupOllamaEvent
 } from '@global/const/ollama.event'
 import { ipcRenderer } from 'electron'
 
@@ -40,5 +41,6 @@ export const ollamaApi = {
   },
   listModels: () => ipcRenderer.invoke(ListModelsEvent),
   checkOllamaRunning: () => ipcRenderer.invoke(OllamaIsInstalledEvent),
-  searchOnlineModels: (query: string) => ipcRenderer.invoke(SearchOnlineModelsEvent, query)
+  searchOnlineModels: (query: string) => ipcRenderer.invoke(SearchOnlineModelsEvent, query),
+  warmupOllama: (model: string) => ipcRenderer.invoke(WarmupOllamaEvent, model)
 }

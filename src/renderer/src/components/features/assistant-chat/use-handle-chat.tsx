@@ -182,6 +182,17 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     })
   }
 
+  const validateRequirementsAndUpdateHistory = async (): Promise<void> => {
+    const requirementsMet = checkRequirementsAreMet()
+    const isOllamaRunning = await checkOllamaRunning()
+    if (!requirementsMet || !isOllamaRunning) {
+      console.log('requirements not met')
+      setActivePage(Page.Setup)
+      return
+    }
+    window.api.assistants.getHistory(assistant.id).then(setHistory)
+  }
+
   /**
    * We don't want to persist the message until the assistant message is done generating, so when It's done the useEffect will trigger and persist the message.
    * We couldn't call the persistGeneratedMessage function directly because the callback holds the closure of when the function was created,
@@ -195,16 +206,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
 
   // Load the history when the assistant changes
   useEffect(() => {
-    console.log('checking requirements papi')
-    // Check if ollama is running and the required models installed, if not, redirect to setup page
-    const requirementsMet = checkRequirementsAreMet()
-    const isOllamaRunning = checkOllamaRunning()
-    if (!requirementsMet || !isOllamaRunning) {
-      console.log('requirements not met')
-      setActivePage(Page.Setup)
-      return
-    }
-    window.api.assistants.getHistory(assistant.id).then(setHistory)
+    validateRequirementsAndUpdateHistory()
   }, [assistant])
 
   useEffect(() => {

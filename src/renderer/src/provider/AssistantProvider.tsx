@@ -37,6 +37,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
     localStorage.setItem('activeAssistant', assistant.id)
   }
 
+
   useEffect(() => {
     loadAssistants()
   }, [])

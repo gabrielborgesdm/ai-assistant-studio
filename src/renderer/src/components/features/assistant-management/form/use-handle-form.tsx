@@ -1,3 +1,4 @@
+import { DEFAULT_OLLAMA_MODEL } from '@global/const/consts'
 import { AssistantData, AssistantFormData, assistantFormSchema } from '@global/types/assistant'
 import { OllamaModel } from '@global/types/model'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -52,7 +53,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     defaultValues: {
       title: assistant?.title || '',
       description: assistant?.description || '',
-      model: 'llama3.1:latest',
+      model: DEFAULT_OLLAMA_MODEL,
       ephemeral: assistant?.ephemeral || false,
       systemBehaviour: assistant?.systemBehaviour || '',
       prompt: assistant?.prompt || '',
@@ -107,12 +108,17 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   useEffect(() => {
     if (!availableModels.length) return
 
-    handleModelChange(assistant?.model || 'llama3.1:latest')
+    handleModelChange(assistant?.model || DEFAULT_OLLAMA_MODEL)
   }, [availableModels.length])
 
   useEffect(() => {
     validateTitle(title)
   }, [title])
+
+  useEffect(() => {
+    // warmup the model for auto completion
+    window.api.ollama.warmupOllama(DEFAULT_OLLAMA_MODEL)
+  }, [])
 
   return {
     onSubmit,

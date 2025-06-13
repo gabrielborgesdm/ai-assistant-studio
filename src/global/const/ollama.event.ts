@@ -1,5 +1,5 @@
 import { ModelDownload } from '@global/types/model'
-import { EventCancel, EventReply } from '@global/const/event'
+import { EventCancel, EventReply } from '@global/utils/event.utils'
 
 export const ChatEvent = 'ollama-chat'
 export const ChatEventReply = EventReply(ChatEvent)
@@ -16,3 +16,6 @@ export const getDownloadModelEventCancel = (model: ModelDownload): string =>
 export const ListModelsEvent = 'ollama-list-models'
 
 export const SearchOnlineModelsEvent = 'ollama-search-online-models'
+
+export const WarmupOllamaEvent = 'ollama-warmup-ollama'
+

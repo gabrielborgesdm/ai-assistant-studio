@@ -3,6 +3,7 @@ import { DownloadModelEvent } from '@global/const/ollama.event'
 import { ModelDownload } from '@global/types/model'
 import { CopyButton } from '@renderer/components/shared/CopyButton'
 import { LoadingDots } from '@renderer/components/shared/LoadingDots'
+import { LoadingText } from '@renderer/components/shared/LoadingText'
 import { Badge } from '@renderer/components/ui/badge'
 import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
@@ -46,10 +47,12 @@ export const ModelStatusCard = ({
         setProgress(0)
         setIsDownloading(false)
         console.error('Error downloading model:', model.name, result.error)
-        toast('Error downloading model', {
-          description: result.error,
-          action: <CopyButton onClick={() => handleCopy(result.error)} />
-        })
+        if (result.error !== 'canceled') {
+          toast('Error downloading model', {
+            description: result.error,
+            action: <CopyButton onClick={() => handleCopy(result.error)} />
+          })
+        }
         return
       }
       if (result.done) {
@@ -85,11 +88,15 @@ export const ModelStatusCard = ({
     return (
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span>
-            {' '}
-            {progress === 100 ? 'Almost there' : 'Downloading'}
-            <LoadingDots />
-          </span>
+          {progress >= 100 ? (
+            <LoadingText />
+          ) : (
+            <span>
+              {' '}
+              Downloading
+              <LoadingDots />
+            </span>
+          )}
           <span>{Math.round(progress)}%</span>
         </div>
         <div className="flex justify-between items-center gap-3">

@@ -15,7 +15,7 @@ import { Config } from '@global/types/config'
 import { ModelDownload, OllamaModel } from '@global/types/model'
 import { AssistantManagementPage } from '@renderer/components/pages/assistant-management'
 import { ReactElement } from 'react'
-import { Toaster } from 'sonner'
+import { Toaster } from '@renderer/components/ui/sonner'
 import { ConfigPage } from './components/pages/config'
 
 /**
@@ -83,7 +83,11 @@ export default function App(): ReactElement {
           </SidebarProvider>
         </PageProvider>
       </GlobalProvider>
-      <Toaster position="bottom-left" />
+      <Toaster
+        position="bottom-center"
+        toastOptions={{ style: { maxWidth: '300px' }, duration: 3000 }}
+        closeButton
+      />
     </div>
   )
 }

@@ -30,35 +30,34 @@ export const ImageUploadSwitch = ({
         </div>
         <Switch id="allowImageUpload" checked={field.value} onCheckedChange={field.onChange} />
       </div>
-      {field.value && (
-        <div className="p-3 bg-secondary rounded-lg">
-          <p className="text-sm text-secondary-foreground">
-            <strong>Note:</strong> Only multimodal models support both image and text input. Check{' '}
-            {modelName && modelUrl ? (
-              <>
-                <span className="font-medium">{modelName}'s</span>{' '}
-                <a href={modelUrl} target="_blank" rel="noopener noreferrer" className="underline">
-                  website page
-                </a>{' '}
-                to see if it supports image upload.
-              </>
-            ) : (
-              <>
-                <span className="font-medium">Ollama</span>{' '}
-                <a
-                  href={'https://ollama.com/search?c=vision'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  website
-                </a>{' '}
-                for a list of multimodal models.
-              </>
-            )}
-          </p>
-        </div>
-      )}
+
+      <div className="p-3 bg-secondary rounded-lg">
+        <p className="text-sm text-secondary-foreground">
+          <strong>Note:</strong> Only multimodal models support both image and text input. Check{' '}
+          {modelName && modelUrl ? (
+            <>
+              <span className="font-medium">{modelName}'s</span>{' '}
+              <a href={modelUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                website page
+              </a>{' '}
+              to see if it supports image upload.
+            </>
+          ) : (
+            <>
+              <span className="font-medium">Ollama</span>{' '}
+              <a
+                href={'https://ollama.com/search?c=vision'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                website
+              </a>{' '}
+              for a list of multimodal models.
+            </>
+          )}
+        </p>
+      </div>
     </div>
   )
 }

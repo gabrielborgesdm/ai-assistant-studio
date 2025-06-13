@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useTheme as useThemeNext } from 'next-themes'
 
-type Theme = 'dark' | 'light' | 'system'
+type Theme = 'dark' | 'light'
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -31,6 +32,7 @@ export function ThemeProvider({
   storageKey = 'vite-ui-theme',
   ...props
 }: ThemeProviderProps) {
+  const { setTheme: setThemeNext } = useThemeNext()
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   )
@@ -39,15 +41,6 @@ export function ThemeProvider({
     const root = document.documentElement as HTMLElement
 
     root.classList.remove('light', 'dark')
-
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-
-      root.classList.add(systemTheme)
-      return
-    }
 
     root.classList.add(theme)
     localStorage.setItem(storageKey, theme)
@@ -58,6 +51,7 @@ export function ThemeProvider({
     theme,
     isDark: theme === 'dark',
     setTheme: (theme: Theme) => {
+      setThemeNext(theme)
       localStorage.setItem(storageKey, theme)
       setTheme(theme)
     },

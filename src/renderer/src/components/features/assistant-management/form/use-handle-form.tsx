@@ -105,10 +105,10 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   }
 
   useEffect(() => {
-    if (!assistant || !availableModels.length) return
+    if (!availableModels.length) return
 
-    handleModelChange(assistant.model)
-  }, [assistant, availableModels.length])
+    handleModelChange(assistant?.model || 'llama3.1:latest')
+  }, [availableModels.length])
 
   useEffect(() => {
     validateTitle(title)

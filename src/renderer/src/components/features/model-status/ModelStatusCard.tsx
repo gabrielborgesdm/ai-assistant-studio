@@ -11,6 +11,7 @@ import { useHandleCopy } from '@renderer/hooks/use-handle-copy'
 import { CheckCircle, Circle, Download } from 'lucide-react'
 import { ReactElement, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { AnimatePresence, motion } from 'framer-motion'
 
 interface ModelStatusCardProps {
   model: ModelDownload
@@ -112,40 +113,47 @@ export const ModelStatusCard = ({
   if (model.installed && !shouldRenderWhenDownloaded) return <></>
 
   return (
-    <div
-      key={model.name}
-      className={`flex flex-col items-around justify-around border rounded-lg p-4 min-h-[95px] ${className}`}
-    >
-      {!!isDownloading && renderDownloadingComponent()}
-      {!isDownloading && (
-        <div className="flex items-center justify-between gap-3">
-          {!!shouldShowCheckButton &&
-            (model.installed ? (
-              <CheckCircle className="h-5 w-5 text-green-600" />
+    <AnimatePresence>
+      <div
+        className={`flex flex-col items-around justify-around border rounded-lg p-4 min-h-[95px] ${className}`}
+      >
+        {!!isDownloading && renderDownloadingComponent()}
+        {!isDownloading && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center justify-between gap-3"
+          >
+            {!!shouldShowCheckButton &&
+              (model.installed ? (
+                <CheckCircle className="h-5 w-5 text-green-600" />
+              ) : (
+                <Circle className="h-5 w-5" />
+              ))}
+            <div className="w-full">
+              <h4 title={model.name} className={`truncate overflow-hidden  font-medium `}>
+                {model.name}
+              </h4>
+
+              {!!model.size && <p className="text-sm">{model.size}</p>}
+              {!!description && <p className="text-sm text-muted-foreground">{description}</p>}
+            </div>
+
+            {model.installed ? (
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                Installed
+              </Badge>
             ) : (
-              <Circle className="h-5 w-5" />
-            ))}
-          <div className="w-full">
-            <h4 title={model.name} className={`truncate overflow-hidden  font-medium `}>
-              {model.name}
-            </h4>
-
-            {!!model.size && <p className="text-sm">{model.size}</p>}
-            {!!description && <p className="text-sm text-muted-foreground">{description}</p>}
-          </div>
-
-          {model.installed ? (
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              Installed
-            </Badge>
-          ) : (
-            <Button size="sm" onClick={downloadModel}>
-              <Download className="h-4 w-4 mr-2" />
-              Download
-            </Button>
-          )}
-        </div>
-      )}
-    </div>
+              <Button size="sm" onClick={downloadModel}>
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            )}
+          </motion.div>
+        )}
+      </div>
+    </AnimatePresence>
   )
 }

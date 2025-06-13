@@ -56,6 +56,8 @@ export const ChatForm = ({
     saveModel(assistant.model)
   }, [assistant.model])
 
+  if (isLoading || isCheckingRequirements) return <></>
+
   if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements)
     return (
       <ModelStatusCard

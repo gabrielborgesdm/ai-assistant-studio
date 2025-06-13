@@ -30,7 +30,7 @@ interface useHandleChatProps {
 }
 
 export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
-  const { checkRequirementsAreMet } = useManageModel()
+  const { checkRequirementsAreMet, checkOllamaRunning } = useManageModel()
   const { setActivePage } = usePageContext()
   const { setIsSidebarDisabled } = useGlobalContext()
   const [history, setHistory] = useState<AssistantHistory | undefined>(undefined)
@@ -195,8 +195,12 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
 
   // Load the history when the assistant changes
   useEffect(() => {
+    console.log('checking requirements papi')
     // Check if ollama is running and the required models installed, if not, redirect to setup page
-    if (!checkRequirementsAreMet()) {
+    const requirementsMet = checkRequirementsAreMet()
+    const isOllamaRunning = checkOllamaRunning()
+    if (!requirementsMet || !isOllamaRunning) {
+      console.log('requirements not met')
       setActivePage(Page.Setup)
       return
     }

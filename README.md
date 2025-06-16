@@ -10,7 +10,7 @@
 
 ---
 
-## ✨ Features
+##  Features
 
 - ⚡ **Auto-Generated Assistants**  
   Easily create intelligent, contextual assistants in seconds — powered by AI-driven auto-generation. Whether you need a **conversational partner** or a **task performer** (like a proofreader, email writer, or markdown editor), just describe what you want, and the app will do the rest.
@@ -30,7 +30,6 @@
 - 🛠 **Effortless Setup**  
   The guided onboarding helps you install Ollama, choose your models, and get started without the technical hassle.
 
----
 
 ## 🖼 Preview
 
@@ -46,8 +45,6 @@
 
 ![Main Interface](public/chat-interface.png)
 
----
-
 ## 🎥 How It Works
 
 ### ✨ [Creating a Custom Assistant](https://youtu.be/4IcT_673Dac)
@@ -58,15 +55,11 @@ In this video, I create a **Proofreader assistant** using **Task mode**, which i
 
 After generating the initial assistant, I also **adjust the system instructions** to better tailor its behavior to my specific needs. This allows the assistant to follow more precise guidelines, ensuring more accurate and helpful responses.
 
----
-
 ## 🚀 Getting Started
 
 ### Installation
 
 Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-studio/releases) and download the latest version for your operating system.
-
----
 
 ## 🗺 Roadmap
 
@@ -84,7 +77,6 @@ Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-stud
 - 🔜 Planned: Contextual search over local markdown files using Langchain
 - 🔜 Planned: Support for ChatGPT and other cloud model backends
 
----
 
 ## 📚 Tech Stack & Shoutouts
 
@@ -98,7 +90,6 @@ This project wouldn’t be possible without:
 - [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
 - [shortcut-recorder-hook](https://github.com/BlazeStorm001/shortcut-recorder-hook)
 
----
 
 ## 🛠 Development
 

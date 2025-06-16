@@ -53,8 +53,9 @@ Sure! Here's a polished explanation you can use to accompany that section of you
 
 ### ✨ Creating a Custom Assistant
 
-
-![Create Assistant Demo](public/create-assistant.gif)
+<p align="center">
+  <img src="public/create-assistant.gif" alt="Create Assistant Demo" />
+</p>
 
 In this video, I create a **Proofreader assistant** using **Task mode**, which is designed to respond only to the **latest user message**—perfect for focused, one-shot tasks like grammar correction or rewriting.
 

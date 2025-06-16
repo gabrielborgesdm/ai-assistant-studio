@@ -1,6 +1,6 @@
 appId: com.electron.app
 icon: build/icon
-productName: Ai Studio
+productName: AI Assistant Studio
 directories:
   buildResources: build
 files:

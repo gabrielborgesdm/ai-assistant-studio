@@ -1,39 +1,123 @@
-# 🚀 AI Assistant Studio
 
-**AI Assistant Studio** lets you create, customize, and chat with your own AI assistants powered by local language models via [Ollama](https://ollama.com/).
+<p align="center">
+  <img src="./build/icon.png" alt="AI Assistant Studio Logo" width="50" />
+</p>
 
-## ✨ Key Features
+<h1 align="center">AI Assistant Studio</h1>
 
-- 🎨 **Fully Customizable**
-  Choose any Ollama model, craft custom prompts, and add specialized input fields for your unique use cases.
+<p align="center">
+  Create, customize, and chat with your own AI assistants powered by local language models via <a href="https://ollama.com/">Ollama</a>.
+</p>
 
-- 💬 **Multiple Conversations**
-  Create multiple chat sessions with each assistant, keeping your conversations organized and contextual.
+---
 
-- 🔒 **Privacy First**
-  Everything runs locally on your machine. Your data stays private, and you can work offline.
+## ✨ Features
 
-- ⚡ **Quick Access**
-  Open a floating AI window anytime with a keyboard shortcut, right over whatever you're working on.
+- ⚡ **Auto-Generated Assistants**  
+  Easily create intelligent, contextual assistants in seconds — powered by AI-driven auto-generation. Whether you need a **conversational partner** or a **task performer** (like a proofreader, email writer, or markdown editor), just describe what you want, and the app will do the rest.
 
-- 🛠 **Easy Setup**
-  The app helps you set up Ollama and download essential models to power your AI assistants.
+- 🎨 **Fully Customizable**  
+  Choose from any Ollama-compatible model, fine-tune behavior with custom instructions, and define input fields tailored to your workflow.
+
+- 💬 **Conversation Management**  
+  Keep your interactions organized with persistent history and support for multiple assistants.
+
+- 🔒 **Privacy First**  
+  100% local. No internet required. Your data stays on your machine — always.
+
+- ⌨️ **Quick Access Anywhere**  
+  Launch a floating assistant window instantly with a keyboard shortcut — on top of any app.
+
+- 🛠 **Effortless Setup**  
+  The guided onboarding helps you install Ollama, choose your models, and get started without the technical hassle.
+
+---
+
+## 🖼 Preview
+
+### 🧭 Welcome Screen  
+<!-- Insert welcome screen screenshot below -->
+![Welcome Screen](public/welcome-page.png)
+
+### 💻 Main App Interface  
+<!-- Insert main interface screenshot below -->
+![Main Interface](public/chat-interface.png)
+
+---
+
+## 🎥 How It Works
+
+Sure! Here's a polished explanation you can use to accompany that section of your README or documentation:
+
+---
+
+### ✨ Creating a Custom Assistant
+
+
+![Create Assistant Demo](public/create-assistant.mp4)
+
+In this video, I create a **Proofreader assistant** using **Task mode**, which is designed to respond only to the **latest user message**—perfect for focused, one-shot tasks like grammar correction or rewriting.
+
+After generating the initial assistant, I also **adjust the system instructions** to better tailor its behavior to my specific needs. This allows the assistant to follow more precise guidelines, ensuring more accurate and helpful responses.
+
+
+---
 
 ## 🚀 Getting Started
 
+### Installation
+
+Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-studio/releases) and download the latest version for your operating system.
+
+---
+
+## 🗺 Roadmap
+
+- ✅ Multiple assistant support with saved conversations  
+- ✅ Default assistants: Proofreader, Email Assistant, Markdown Helper, Multimodal (Gemma 3)  
+- ✅ Ollama model management with stream + cancellation support  
+- ✅ Modern UI powered by [Shadcn UI](https://ui.shadcn.com/) & [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)  
+- ✅ Image upload for vision models (Base64 support)  
+- ✅ AI-powered assistant behavior + instruction auto-generation  
+- ✅ Live model listing with metadata and variants via Ollama scraping  
+- ✅ Dynamic keyboard shortcut support (Windows & Linux)  
+- ✅ Streamed markdown rendering with code block highlighting  
+- ✅ Welcome/setup onboarding screen  
+- 🔄 In Progress: Multiple simultaneous chat sessions per assistant  
+- 🔜 Planned: Contextual search over local markdown files using Langchain  
+- 🔜 Planned: Support for ChatGPT and other cloud model backends  
+
+---
+
+## 📚 Tech Stack & Shoutouts
+
+This project wouldn’t be possible without:
+
+- [Electron](https://www.electronjs.org/)
+- [Shadcn UI](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [react-markdown](https://www.npmjs.com/package/react-markdown)
+- [react-syntax-highlighter](https://www.npmjs.com/package/react-syntax-highlighter)
+- [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
+- [shortcut-recorder-hook](https://github.com/BlazeStorm001/shortcut-recorder-hook)
+
+---
+
+## 🛠 Development
+
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16 or later)
+- [Node.js](https://nodejs.org/) (v16 or newer)
 - [Yarn](https://yarnpkg.com/)
-- [Ollama](https://ollama.com/) (for local model inference)
+- [Ollama](https://ollama.com/) — required for running local models
 
 ### Install Dependencies
 
 ```bash
 yarn
-```
+````
 
-### Development
+### Start in Development Mode
 
 ```bash
 yarn dev
@@ -42,38 +126,13 @@ yarn dev
 ### Build for Production
 
 ```bash
-# Windows
+# For Windows
 yarn build:win
 
-# macOS
+# For macOS
 yarn build:mac
 
-# Linux
+# For Linux
 yarn build:linux
 ```
 
-## 🗺 Roadmap
-
-- [X] Chat feature with conversation history
-- [X] JSON-based assistant management
-- [X] Default assistants (Proofreader, E-mail assistant, Markdown assistant)
-- [X] Welcome/Setup screen
-- [X] Functional Ollama Management Integration with Cancellable Requests and Stream Support
-- [X] [Shadcn](https://ui.shadcn.com/) UI integration && [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
-- [X] Image upload support for vision models (base64 encoding)
-- [ ] Dynamic Assistant Management with form powered by A.I. to help with assistant creation
-- [ ] Multiple chat sessions with each assistant support
-- [ ] Dynamic keyboard shortcut assignment support for Windows and Linux
-- [ ] Portable files (.exe and .deb) for running the software with cut releases
-
----
-
-## 📚 Shoutouts
-
-- [Electron](https://www.electronjs.org/)
-- [Shadcn](https://ui.shadcn.com/)
-- [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
-- [Ollama API Docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
-- [shortcut-recorder-hook](https://github.com/BlazeStorm001/shortcut-recorder-hook)
-
----

@@ -10,6 +10,7 @@ const AutoGrowingTextarea = (props: AutoGrowingTextareaProps): ReactElement => {
   const { value, watchedValue, className, ...rest } = props
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Update the height of the textarea when the value changes
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'

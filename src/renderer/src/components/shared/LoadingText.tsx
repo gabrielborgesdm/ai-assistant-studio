@@ -8,7 +8,7 @@ export const LoadingText = (): ReactElement => {
   const [statusIndex, setStatusIndex] = useState(0)
 
   useEffect(() => {
-    // Set up an interval to cycle through status messages every 30 seconds
+    // Set up an interval to cycle through status messages every 60 seconds
     const interval = setInterval(() => {
       // If the last status message has been reached, clear the interval
       setStatusIndex((prev) => {

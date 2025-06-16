@@ -1,6 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Page } from '@renderer/pages'
-import { createContext, ReactElement, ReactNode, useContext, useMemo, useState } from 'react'
+import {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
 interface PageContextType {
   activePage: string
@@ -29,6 +37,11 @@ export const PageProvider = ({ children }: { children: ReactNode }): ReactElemen
     }
     return <></>
   }
+
+  // To avoid showing the page with the scroll at the bottom
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [activePage])
 
   const [isSidebarDisabled, setIsSidebarDisabled] = useState(false)
 

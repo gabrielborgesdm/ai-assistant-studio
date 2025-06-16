@@ -1,4 +1,3 @@
-
 <p align="center">
   <img src="./build/icon.png" alt="AI Assistant Studio Logo" width="50" />
 </p>
@@ -35,28 +34,29 @@
 
 ## 🖼 Preview
 
-### 🧭 Welcome Screen  
+### 🧭 Welcome Screen
+
 <!-- Insert welcome screen screenshot below -->
+
 ![Welcome Screen](public/welcome-page.png)
 
-### 💻 Main App Interface  
+### 💻 Main App Interface
+
 <!-- Insert main interface screenshot below -->
+
 ![Main Interface](public/chat-interface.png)
 
 ---
 
 ## 🎥 How It Works
 
-### ✨ Creating a Custom Assistant
+### ✨ [Creating a Custom Assistant](https://youtu.be/4IcT_673Dac)
 
-<p align="center">
-  <img src="public/create-assistant.gif" alt="Create Assistant Demo" />
-</p>
+<p align="center"> <a href="https://youtu.be/4IcT_673Dac" target="_blank"> <img src="public/create-assistant.gif" alt="Watch Assistant Creation Demo" width="600" /> </a> </p>
 
 In this video, I create a **Proofreader assistant** using **Task mode**, which is designed to respond only to the **latest user message**—perfect for focused, one-shot tasks like grammar correction or rewriting.
 
 After generating the initial assistant, I also **adjust the system instructions** to better tailor its behavior to my specific needs. This allows the assistant to follow more precise guidelines, ensuring more accurate and helpful responses.
-
 
 ---
 
@@ -70,19 +70,19 @@ Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-stud
 
 ## 🗺 Roadmap
 
-- ✅ Multiple assistant support with saved conversations  
-- ✅ Default assistants: Proofreader, Email Assistant, Markdown Helper, Multimodal (Gemma 3)  
-- ✅ Ollama model management with stream + cancellation support  
-- ✅ Modern UI powered by [Shadcn UI](https://ui.shadcn.com/) & [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)  
-- ✅ Image upload for vision models (Base64 support)  
-- ✅ AI-powered assistant behavior + instruction auto-generation  
-- ✅ Live model listing with metadata and variants via Ollama scraping  
-- ✅ Dynamic keyboard shortcut support (Windows & Linux)  
-- ✅ Streamed markdown rendering with code block highlighting  
-- ✅ Welcome/setup onboarding screen  
-- 🔄 In Progress: Multiple simultaneous chat sessions per assistant  
-- 🔜 Planned: Contextual search over local markdown files using Langchain  
-- 🔜 Planned: Support for ChatGPT and other cloud model backends  
+- ✅ Multiple assistant support with saved conversations
+- ✅ Default assistants: Proofreader, Email Assistant, Markdown Helper, Multimodal (Gemma 3)
+- ✅ Ollama model management with stream + cancellation support
+- ✅ Modern UI powered by [Shadcn UI](https://ui.shadcn.com/) & [Shadcn Chat](https://github.com/jakobhoeg/shadcn-chat)
+- ✅ Image upload for vision models (Base64 support)
+- ✅ AI-powered assistant behavior + instruction auto-generation
+- ✅ Live model listing with metadata and variants via Ollama scraping
+- ✅ Dynamic keyboard shortcut support (Windows & Linux)
+- ✅ Streamed markdown rendering with code block highlighting
+- ✅ Welcome/setup onboarding screen
+- 🔄 In Progress: Multiple simultaneous chat sessions per assistant
+- 🔜 Planned: Contextual search over local markdown files using Langchain
+- 🔜 Planned: Support for ChatGPT and other cloud model backends
 
 ---
 
@@ -112,7 +112,7 @@ This project wouldn’t be possible without:
 
 ```bash
 yarn
-````
+```
 
 ### Start in Development Mode
 
@@ -132,4 +132,3 @@ yarn build:mac
 # For Linux
 yarn build:linux
 ```
-

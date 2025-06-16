@@ -1,5 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { Config } from '@global/types/config'
 
 interface GlobalContextType {
@@ -33,19 +41,17 @@ export const GlobalProvider = ({ children }: { children: ReactNode }): ReactElem
     loadOs()
   }, [])
 
-  return (
-    <GlobalContext.Provider
-      value={{
-        isSidebarDisabled,
-        setIsSidebarDisabled,
-        config,
-        setConfig,
-        os
-      }}
-    >
-      {children}
-    </GlobalContext.Provider>
-  )
+  const contextValue = useMemo(() => {
+    return {
+      isSidebarDisabled,
+      setIsSidebarDisabled,
+      config,
+      setConfig,
+      os
+    }
+  }, [isSidebarDisabled, config, os])
+
+  return <GlobalContext.Provider value={contextValue}>{children}</GlobalContext.Provider>
 }
 
 export const useGlobalContext = (): GlobalContextType => {

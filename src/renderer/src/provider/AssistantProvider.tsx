@@ -1,6 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Assistant } from '@global/types/assistant'
-import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
+import { useManageModel } from '@renderer/components/features/model-status/use-manage-model'
+import {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
 interface AssistantContextType {
   assistants: Assistant[]
@@ -16,6 +25,7 @@ const AssistantContext = createContext<AssistantContextType | undefined>(undefin
 export const AssistantProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [assistants, setAssistants] = useState<Assistant[]>([])
   const [activeAssistant, setActiveAssistant] = useState<Assistant | undefined>(undefined)
+  const { saveModel } = useManageModel()
 
   const loadAssistants = async (): Promise<void> => {
     const assistants = await window.api.assistants.getAssistants()
@@ -36,7 +46,6 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
     setActiveAssistant(assistant)
     localStorage.setItem('activeAssistant', assistant.id)
   }
-
 
   useEffect(() => {
     loadAssistants()
@@ -60,20 +69,24 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
     }
   }, [assistants])
 
-  return (
-    <AssistantContext.Provider
-      value={{
-        assistants,
-        loadAssistants,
-        setAssistants,
-        activeAssistant,
-        setActiveAssistant: updateActiveAssistant,
-        removeAssistant
-      }}
-    >
-      {children}
-    </AssistantContext.Provider>
-  )
+  // Check if the assistant model is checked as installed
+  useEffect(() => {
+    if (!activeAssistant) return
+    saveModel(activeAssistant.model)
+  }, [activeAssistant])
+
+  const contextValue = useMemo(() => {
+    return {
+      assistants,
+      loadAssistants,
+      setAssistants,
+      activeAssistant,
+      setActiveAssistant: updateActiveAssistant,
+      removeAssistant
+    }
+  }, [assistants, activeAssistant])
+
+  return <AssistantContext.Provider value={contextValue}>{children}</AssistantContext.Provider>
 }
 
 export const useAssistantContext = (): AssistantContextType => {

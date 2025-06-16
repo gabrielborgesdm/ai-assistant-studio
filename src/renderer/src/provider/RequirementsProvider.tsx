@@ -1,6 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import { InstalledModels, ModelDownload, OllamaModel } from '@global/types/model'
-import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
 interface RequirementsContextType {
   models: InstalledModels | undefined
@@ -59,22 +67,22 @@ export const RequirementsProvider = ({ children }: { children: ReactNode }): Rea
     })
   }, [])
 
+  const contextValue = useMemo(() => {
+    return {
+      models,
+      availableModels,
+      ollamaRunning,
+      isCheckingRequirements,
+      updateModel,
+      updateModels,
+      getModelsFromLocalStorage,
+      setOllamaRunning,
+      setIsCheckingRequirements
+    }
+  }, [models, availableModels, ollamaRunning, isCheckingRequirements])
+
   return (
-    <RequirementsContext.Provider
-      value={{
-        models,
-        availableModels,
-        ollamaRunning,
-        isCheckingRequirements,
-        updateModel,
-        updateModels,
-        getModelsFromLocalStorage,
-        setOllamaRunning,
-        setIsCheckingRequirements
-      }}
-    >
-      {children}
-    </RequirementsContext.Provider>
+    <RequirementsContext.Provider value={contextValue}>{children}</RequirementsContext.Provider>
   )
 }
 

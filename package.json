@@ -53,6 +53,8 @@
     "ollama-models-search": "^1.0.1",
     "react-component-export-image": "^1.0.6",
     "react-hook-form": "^7.57.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^15.6.1",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
     "tw-animate-css": "^1.3.0",

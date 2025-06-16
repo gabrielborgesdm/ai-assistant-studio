@@ -24,5 +24,12 @@
     "prompt": "email: {{text}}\nGenerate a professional email based on the provided context\nReturn only the email text, nothing else.",
     "systemBehaviour": "You are an email assistant. Your task is to generate a professional email based on the provided context.",
     "model": "llama3.1:8b"
+  },
+  {
+    "id": "f2b3c4d5-6e7f-4a8b-9c0d-e1f2g3h4i5j7",
+    "title": "Gemma 3",
+    "description": "Overall assistant for general tasks. Warning: This is a heavy model and can be slow.",
+    "model": "gemma3:12b",
+    "allowImage": true
   }
 ]

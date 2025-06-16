@@ -57,7 +57,7 @@ export const ChatForm = ({
     return (
       <ModelStatusCard
         className="border-t border-0 rounded-none"
-        description="This assistant requires the model to be downloaded before you can chat with it."
+        description="You need to download the model before starting a chat with this assistant."
         shouldShowCheckButton={false}
         shouldRenderWhenDownloaded={false}
         model={ModelFactory({ name: assistant.model })}

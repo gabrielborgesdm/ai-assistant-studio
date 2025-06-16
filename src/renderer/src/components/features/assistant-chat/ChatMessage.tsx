@@ -3,6 +3,7 @@ import { AssistantMessage, MessageRole } from '@global/types/assistant'
 import { isCustomRole } from '@global/utils/role.utils'
 import { ImagesDisplay } from '@renderer/components/features/image/ImagesDisplay'
 import { CopyButton } from '@renderer/components/shared/CopyButton'
+import MarkdownRenderer from '@renderer/components/shared/MarkdownRenderer'
 import { cn } from '@renderer/lib/utils'
 import { ReactElement } from 'react'
 
@@ -62,12 +63,12 @@ export const ChatMessage = ({
           variant={getVariant(message.role)}
           isLoading={showLoadingIcon(isLoading, message)}
         >
-          {message.content}
+          <MarkdownRenderer markdown={message.content} />
           {message.images && message.images.length > 0 && (
             <ImagesDisplay
               images={message.images}
               shouldShowRemoveButton={false}
-              className="mt-2 grid-cols-3 md:grid-cols-3 lg:grid-cols-3"
+              className="mt-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-3"
             />
           )}
 

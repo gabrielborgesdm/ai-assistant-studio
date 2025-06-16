@@ -131,7 +131,7 @@ export const SidebarComponent = (): React.ReactElement => {
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem className="cursor-pointer" onClick={() => setActivePage(Page.Config)}>
+          <SidebarMenuItem className="cursor-pointer" onClick={() => handlePageChange(Page.Config)}>
             <SidebarMenuButton className="flex items-center justify-between">
               <span className="flex items-center gap-2 font-small">
                 <Settings size={18} />

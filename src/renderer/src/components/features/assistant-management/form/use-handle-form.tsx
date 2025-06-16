@@ -73,7 +73,6 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     setActivePage(Page.Chat)
     reset()
 
-    toast.success('Assistant saved successfully')
     setIsLoading(false)
   }
 

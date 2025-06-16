@@ -8,9 +8,7 @@
   Create, customize, and chat with your own AI assistants powered by local language models via <a href="https://ollama.com/">Ollama</a>.
 </p>
 
----
-
-##  Features
+## Features
 
 - ⚡ **Auto-Generated Assistants**  
   Easily create intelligent, contextual assistants in seconds — powered by AI-driven auto-generation. Whether you need a **conversational partner** or a **task performer** (like a proofreader, email writer, or markdown editor), just describe what you want, and the app will do the rest.

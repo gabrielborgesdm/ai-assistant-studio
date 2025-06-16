@@ -34,7 +34,6 @@ export const AssistantDropdown = ({ assistant }: { assistant: Assistant }): Reac
     try {
       removeAssistant(assistant.id)
       setActivePage(Page.Chat)
-      toast.success('Assistant deleted successfully')
     } catch (error: any) {
       toast.error(error.message)
     }

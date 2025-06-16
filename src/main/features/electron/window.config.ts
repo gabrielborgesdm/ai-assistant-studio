@@ -13,8 +13,8 @@ export const setupWindowConfig = async (db: DBType): Promise<BrowserWindow> => {
   const mainWindow = new BrowserWindow({
     width: config?.window?.width || 1024,
     height: config?.window?.height || 768,
-    minWidth: 600,
-    minHeight: 600,
+    minWidth: 400,
+    minHeight: 500,
     skipTaskbar: false,
     alwaysOnTop: true,
     autoHideMenuBar: true,

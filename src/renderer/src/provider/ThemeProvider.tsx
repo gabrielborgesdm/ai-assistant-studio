@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useTheme as useThemeNext } from 'next-themes'
 
 type Theme = 'dark' | 'light'
@@ -47,21 +47,23 @@ export function ThemeProvider({
     console.log(`Theme set to: ${theme}`)
   }, [theme])
 
-  const value = {
-    theme,
-    isDark: theme === 'dark',
-    setTheme: (theme: Theme) => {
-      setThemeNext(theme)
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
-    },
-    toggleTheme: () => {
-      setTheme(theme === 'dark' ? 'light' : 'dark')
+  const contextValue = useMemo(() => {
+    return {
+      theme,
+      isDark: theme === 'dark',
+      setTheme: (theme: Theme) => {
+        setThemeNext(theme)
+        localStorage.setItem(storageKey, theme)
+        setTheme(theme)
+      },
+      toggleTheme: () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark')
+      }
     }
-  }
+  }, [theme, storageKey])
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext.Provider {...props} value={contextValue}>
       {children}
     </ThemeProviderContext.Provider>
   )

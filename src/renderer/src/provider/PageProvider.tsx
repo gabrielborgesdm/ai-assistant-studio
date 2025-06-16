@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Page } from '@renderer/pages'
-import { createContext, ReactElement, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactElement, ReactNode, useContext, useMemo, useState } from 'react'
 
 interface PageContextType {
   activePage: string
@@ -32,20 +32,18 @@ export const PageProvider = ({ children }: { children: ReactNode }): ReactElemen
 
   const [isSidebarDisabled, setIsSidebarDisabled] = useState(false)
 
-  return (
-    <PageContext.Provider
-      value={{
-        activePage,
-        isSidebarDisabled,
-        pageProps,
-        setIsSidebarDisabled,
-        setActivePage: updateActivePage,
-        withActivePage
-      }}
-    >
-      {children}
-    </PageContext.Provider>
-  )
+  const contextValue = useMemo(() => {
+    return {
+      activePage,
+      isSidebarDisabled,
+      pageProps,
+      setIsSidebarDisabled,
+      setActivePage: updateActivePage,
+      withActivePage
+    }
+  }, [activePage, isSidebarDisabled, pageProps])
+
+  return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>
 }
 
 export const usePageContext = (): PageContextType => {

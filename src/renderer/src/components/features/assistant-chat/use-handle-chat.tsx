@@ -85,7 +85,6 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
       AssistantMessageFactory(MessageRole.USER, textInput, base64Images)
     ])
 
-    console.log('New history:', JSON.stringify(newHistory.messages))
 
     setHistory({ ...newHistory })
     setTextInput('')

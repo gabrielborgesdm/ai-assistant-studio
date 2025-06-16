@@ -1,135 +1,147 @@
-// @hidden
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface ScrollState {
-  isAtBottom: boolean;
-  autoScrollEnabled: boolean;
+  isAtBottom: boolean
+  autoScrollEnabled: boolean
 }
 
 interface UseAutoScrollOptions {
-  offset?: number;
-  smooth?: boolean;
-  content?: React.ReactNode;
+  offset?: number
+  smooth?: boolean
+  content?: React.ReactNode
 }
 
 export function useAutoScroll(options: UseAutoScrollOptions = {}) {
-  const { offset = 20, smooth = false, content } = options;
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const lastContentHeight = useRef(0);
-  const userHasScrolled = useRef(false);
+  const { offset = 5, smooth = false, content } = options
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const lastContentHeight = useRef(0)
 
   const [scrollState, setScrollState] = useState<ScrollState>({
     isAtBottom: true,
-    autoScrollEnabled: true,
-  });
+    autoScrollEnabled: true
+  })
 
+  // Soft check (with buffer) for UI hints
   const checkIsAtBottom = useCallback(
-    (element: HTMLElement) => {
-      const { scrollTop, scrollHeight, clientHeight } = element;
-      const distanceToBottom = Math.abs(
-        scrollHeight - scrollTop - clientHeight
-      );
-      return distanceToBottom <= offset;
+    (el: HTMLElement) => {
+      const dist = el.scrollHeight - el.scrollTop - el.clientHeight
+      return dist <= offset
     },
     [offset]
-  );
+  )
+
+  // Strict check (no buffer) for auto-scroll logic
+  const isReallyAtBottom = useCallback((el: HTMLElement) => {
+    return Math.floor(el.scrollTop + el.clientHeight) >= Math.floor(el.scrollHeight)
+  }, [])
 
   const scrollToBottom = useCallback(
     (instant?: boolean) => {
-      if (!scrollRef.current) return;
+      const el = scrollRef.current
+      if (!el) return
 
-      const targetScrollTop =
-        scrollRef.current.scrollHeight - scrollRef.current.clientHeight;
+      const target = el.scrollHeight - el.clientHeight
 
       if (instant) {
-        scrollRef.current.scrollTop = targetScrollTop;
+        el.scrollTop = target
       } else {
-        scrollRef.current.scrollTo({
-          top: targetScrollTop,
-          behavior: smooth ? "smooth" : "auto",
-        });
+        el.scrollTo({
+          top: target,
+          behavior: smooth ? 'smooth' : 'auto'
+        })
       }
 
       setScrollState({
         isAtBottom: true,
-        autoScrollEnabled: true,
-      });
-      userHasScrolled.current = false;
+        autoScrollEnabled: true
+      })
     },
     [smooth]
-  );
+  )
 
   const handleScroll = useCallback(() => {
-    if (!scrollRef.current) return;
+    const el = scrollRef.current
+    if (!el) return
 
-    const atBottom = checkIsAtBottom(scrollRef.current);
+    const atBottom = checkIsAtBottom(el)
+    const reallyAtBottom = isReallyAtBottom(el)
 
-    setScrollState((prev) => ({
-      isAtBottom: atBottom,
-      // Re-enable auto-scroll if at the bottom
-      autoScrollEnabled: atBottom ? true : prev.autoScrollEnabled,
-    }));
-  }, [checkIsAtBottom]);
-
-  useEffect(() => {
-    const element = scrollRef.current;
-    if (!element) return;
-
-    element.addEventListener("scroll", handleScroll, { passive: true });
-    return () => element.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
-
-  useEffect(() => {
-    const scrollElement = scrollRef.current;
-    if (!scrollElement) return;
-
-    const currentHeight = scrollElement.scrollHeight;
-    const hasNewContent = currentHeight !== lastContentHeight.current;
-
-    if (hasNewContent) {
-      if (scrollState.autoScrollEnabled) {
-        requestAnimationFrame(() => {
-          scrollToBottom(lastContentHeight.current === 0);
-        });
-      }
-      lastContentHeight.current = currentHeight;
+    if (!reallyAtBottom) {
+      // User scrolled up — disable auto-scroll
+      setScrollState((prev) => ({
+        ...prev,
+        isAtBottom: atBottom,
+        autoScrollEnabled: false
+      }))
+    } else {
+      // Only re-enable if previously disabled
+      setScrollState((prev) => {
+        if (!prev.autoScrollEnabled) {
+          return {
+            isAtBottom: true,
+            autoScrollEnabled: true
+          }
+        }
+        return prev
+      })
     }
-  }, [content, scrollState.autoScrollEnabled, scrollToBottom]);
+  }, [checkIsAtBottom, isReallyAtBottom])
 
   useEffect(() => {
-    const element = scrollRef.current;
-    if (!element) return;
+    const el = scrollRef.current
+    if (!el) return
+
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+
+    const currentHeight = el.scrollHeight
+    const hasNewContent = currentHeight !== lastContentHeight.current
+
+    if (hasNewContent && scrollState.autoScrollEnabled) {
+      setTimeout(() => {
+        scrollToBottom(lastContentHeight.current === 0)
+      }, 0) // delay ensures layout settles first
+    }
+
+    lastContentHeight.current = currentHeight
+  }, [content, scrollState.autoScrollEnabled, scrollToBottom])
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
 
     const resizeObserver = new ResizeObserver(() => {
       if (scrollState.autoScrollEnabled) {
-        scrollToBottom(true);
+        scrollToBottom(true)
       }
-    });
+    })
 
-    resizeObserver.observe(element);
-    return () => resizeObserver.disconnect();
-  }, [scrollState.autoScrollEnabled, scrollToBottom]);
+    resizeObserver.observe(el)
+    return () => resizeObserver.disconnect()
+  }, [scrollState.autoScrollEnabled, scrollToBottom])
 
   const disableAutoScroll = useCallback(() => {
-    const atBottom = scrollRef.current
-      ? checkIsAtBottom(scrollRef.current)
-      : false;
+    const el = scrollRef.current
+    if (!el) return
 
-    // Only disable if not at bottom
-    if (!atBottom) {
-      userHasScrolled.current = true;
+    if (!isReallyAtBottom(el)) {
       setScrollState((prev) => ({
         ...prev,
-        autoScrollEnabled: false,
-      }));
+        autoScrollEnabled: false
+      }))
     }
-  }, [checkIsAtBottom]);
+  }, [isReallyAtBottom])
 
   return {
     scrollRef,
     isAtBottom: scrollState.isAtBottom,
     autoScrollEnabled: scrollState.autoScrollEnabled,
     scrollToBottom: () => scrollToBottom(false),
-    disableAutoScroll,
-  };
+    disableAutoScroll
+  }
 }

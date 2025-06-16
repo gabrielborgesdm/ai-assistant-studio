@@ -39,7 +39,7 @@ export const ChatForm = ({
   const inputRef = useRef<HTMLTextAreaElement>(null)
   usePasteOnRightClick(inputRef, setTextInput)
 
-  const { isModelInstalled, saveModel } = useManageModel()
+  const { isModelInstalled } = useManageModel()
   const { isCheckingRequirements } = useRequirementsContext()
 
   const { setIsSidebarDisabled } = useGlobalContext()
@@ -51,10 +51,6 @@ export const ChatForm = ({
       }
     }
   }, [isLoading])
-
-  useEffect(() => {
-    saveModel(assistant.model)
-  }, [assistant.model])
 
 
   if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements)

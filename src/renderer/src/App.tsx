@@ -13,10 +13,11 @@ import {
 } from '@global/types/assistant'
 import { Config } from '@global/types/config'
 import { ModelDownload, OllamaModel } from '@global/types/model'
-import { AssistantManagementPage } from '@renderer/components/pages/assistant-management'
+import { AssistantManagementPage } from '@/components/pages/assistant-management'
 import { ReactElement } from 'react'
-import { Toaster } from '@renderer/components/ui/sonner'
-import { ConfigPage } from './components/pages/config'
+import { Toaster } from '@/components/ui/sonner'
+import { ConfigPage } from '@/components/pages/config'
+import { AssistantProvider } from '@/provider/AssistantProvider'
 
 /**
  * Global window object to expose API methods and data
@@ -72,23 +73,21 @@ export default function App(): ReactElement {
         <PageProvider>
           <SidebarProvider defaultOpen>
             <RequirementsProvider>
-              <SidebarComponent />
-              <main className="flex flex-row w-full">
-                {/* The Setup Page is the initial page */}
-                <SetupPage />
-                <ChatPage />
-                <AssistantManagementPage />
-                <ConfigPage />
-              </main>
+              <AssistantProvider>
+                <SidebarComponent />
+                <main className="flex flex-row w-full">
+                  {/* The Setup Page is the initial page */}
+                  <SetupPage />
+                  <ChatPage />
+                  <AssistantManagementPage />
+                  <ConfigPage />
+                </main>
+              </AssistantProvider>
             </RequirementsProvider>
           </SidebarProvider>
         </PageProvider>
       </GlobalProvider>
-      <Toaster
-        position="bottom-center"
-        toastOptions={{ style: { maxWidth: '300px' }, duration: 3000 }}
-        closeButton
-      />
+      <Toaster toastOptions={{ style: { maxWidth: '300px' }, duration: 3000 }} closeButton />
     </div>
   )
 }

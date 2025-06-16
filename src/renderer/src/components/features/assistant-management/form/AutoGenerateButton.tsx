@@ -57,10 +57,12 @@ export const GenerateBehaviourButton = ({
     return configuration
   }, [title, description, ephemeral, systemBehaviour])
 
+  // Reset the history when the title or description changes
   useEffect(() => {
     setHistory({ ...history, messages: [] })
   }, [title, description])
 
+  // Update the field value when the internal value state changes
   useEffect(() => {
     setValue(fieldName, fieldValue)
   }, [fieldValue])

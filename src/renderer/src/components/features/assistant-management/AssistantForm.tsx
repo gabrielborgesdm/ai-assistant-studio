@@ -11,9 +11,9 @@ import { InputError } from '@renderer/components/shared/form/InputError'
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { Label } from '@renderer/components/ui/label'
-import { GenerateBehaviourButton } from './form/AutoGenerateButton'
-import OllamaModelSelector from './form/OllamaModelSelector'
-import { useHandleForm } from './form/use-handle-form'
+import { GenerateBehaviourButton } from '@/components/features/assistant-management/form/AutoGenerateButton'
+import OllamaModelSelector from '@/components/features/assistant-management/form/OllamaModelSelector'
+import { useHandleForm } from '@/components/features/assistant-management/form/use-handle-form'
 
 interface AssistantFormProps {
   assistant?: AssistantData

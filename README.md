@@ -47,10 +47,6 @@
 
 ## 🎥 How It Works
 
-Sure! Here's a polished explanation you can use to accompany that section of your README or documentation:
-
----
-
 ### ✨ Creating a Custom Assistant
 
 <p align="center">

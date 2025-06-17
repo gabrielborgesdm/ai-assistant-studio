@@ -29,10 +29,6 @@ export const setupTray = (app: Electron.App, mainWindow: BrowserWindow | null): 
     mainWindow?.show()
   })
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow?.show()
-  })
-
   mainWindow.on('close', (event) => {
     if (!isQuitting) {
       console.log('Minimizing app')

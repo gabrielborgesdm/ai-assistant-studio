@@ -26,7 +26,8 @@ export const RequiredModelsComponent = ({ models }: RequiredModelsComponentProps
           )}
           Required Models
         </CardTitle>
-        <CardDescription>These are required for AI Assistant Studio to function</CardDescription>
+        <CardDescription>Required for AI Assistant Studio’s auto-completion features.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {Object.values(models)
@@ -34,6 +35,10 @@ export const RequiredModelsComponent = ({ models }: RequiredModelsComponentProps
           .map((model, index) => (
             <ModelStatusCard key={model.name + index} model={model} />
           ))}
+
+          <CardDescription>
+            Hang tight — this should only take a couple of minutes.
+          </CardDescription>
       </CardContent>
     </Card>
   )

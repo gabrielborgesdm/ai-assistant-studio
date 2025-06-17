@@ -1,19 +1,20 @@
-import { DBType } from '@main/features/database/db.type'
-import { BrowserWindow, shell } from 'electron'
-import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
+import { DBType } from '@main/features/database/db.type'
 import icon from '@resources/logo.png?asset'
+import { BrowserWindow, shell } from 'electron'
+import { app } from 'electron/main'
+import { join } from 'path'
 
 let resizeTimeout: NodeJS.Timeout | null = null
 
-export const setupWindowConfig = async (db: DBType): Promise<BrowserWindow> => {
+export const setupWindowConfig = async (_: Electron.App, db: DBType ): Promise<BrowserWindow> => {
   await db.read()
 
   const config = db.data?.config
   const mainWindow = new BrowserWindow({
     width: config?.window?.width || 1024,
     height: config?.window?.height || 768,
-    minWidth: 400,
+    minWidth: 450,
     minHeight: 500,
     skipTaskbar: false,
     alwaysOnTop: true,
@@ -57,12 +58,11 @@ export const setupWindowConfig = async (db: DBType): Promise<BrowserWindow> => {
   }
 
   mainWindow.on('ready-to-show', () => {
-    // Don't show right away if it auto started
-    if(process.argv.includes('--hidden')) {
+    if(process.argv.includes('--hidden') || process.execArgv.includes('--hidden') || app.getLoginItemSettings().wasOpenedAtLogin) {
       return
     }
-
     mainWindow?.show()
+    
   })
 
   return mainWindow

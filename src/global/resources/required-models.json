@@ -1,7 +1,7 @@
 [
   {
-    "name": "llama3.1:8b",
-    "size": "4.9GB",
+    "name": "llama3.2:3b",
+    "size": "2GB",
     "info": "Used for the default assistants and some A.I. auto-genertion features",
     "required": true
   }

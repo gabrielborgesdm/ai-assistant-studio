@@ -194,7 +194,6 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   const readyUpChat = async (): Promise<void> => {
     await validateRequirementsAndUpdateChat()
     window.api.assistants.getHistory(assistant.id).then((history) => {
-      console.log('history loaded', history)
       setHistory(HistoryFactory(history?.assistantId || '', history?.messages || []))
     })
     window.api.ollama.warmupOllama(assistant.model)

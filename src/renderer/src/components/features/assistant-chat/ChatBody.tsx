@@ -23,7 +23,6 @@ export const ChatBody = ({
   const { handleCopy } = useHandleCopy()
 
   const renderDescription = (): ReactElement => {
-    console.log('history', history)
     if (!history) return <></>
     if (!assistant.description || history?.messages?.length || currentAssistantMessage) return <></>
     return <p className="text-center text-sm italic">{assistant.description}</p>

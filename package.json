@@ -1,7 +1,7 @@
 {
   "name": "ai-assistant-studio",
   "version": "1.0.0",
-  "description": "AI Assistant Studio lets you create, customize, and chat with your own AI assistants powered by local language models via Ollama.",
+  "description": "Create, customize, and chat with your own AI assistants powered by local language models via Ollama.",
   "main": "./out/main/index.js",
   "author": "Gabriel Borges",
   "homepage": "https://github.com/gabrielborgesdm/ai-assistant-studio",

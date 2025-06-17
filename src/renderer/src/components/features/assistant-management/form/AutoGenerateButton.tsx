@@ -112,6 +112,7 @@ export const GenerateBehaviourButton = ({
             type: 'onChange',
             message: res.error
           })
+          setIsGenerating(false)
           return
         }
 

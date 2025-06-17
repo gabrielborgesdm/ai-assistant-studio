@@ -29,7 +29,7 @@ export const AssistantModeCheck = ({
           <input
             type="radio"
             value="false"
-            className="accent-primary dark:accent-neutral-600 w-3 h-3"
+            className="accent-primary dark:accent-slate-600 w-3 h-3"
             checked={!field.value}
             onChange={() => field.onChange(false)}
           />

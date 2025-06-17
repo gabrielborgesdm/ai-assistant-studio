@@ -56,7 +56,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
       ephemeral: assistant?.ephemeral || false,
       systemBehaviour: assistant?.systemBehaviour || '',
       prompt: assistant?.prompt || '',
-      allowImageUpload: assistant?.allowImage || false
+      allowImage: assistant?.allowImage || false
     }
   })
 
@@ -64,6 +64,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   const title = useWatch({ control, name: 'title' })
 
   const onSubmit = async (values: AssistantFormData): Promise<void> => {
+    console.log('submitting', values)
     if (!validateTitle(title)) return
     setIsLoading(true)
     const savedAssistant = await window.api.assistants.saveAssistant(values, assistant?.id)

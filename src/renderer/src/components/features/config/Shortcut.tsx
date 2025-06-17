@@ -32,7 +32,6 @@ export const Shortcut = (): ReactElement => {
     ]
     return numpadKeys.map((key) => ['Control', 'Shift', key])
   }, [])
-  console.log('excludedNumpadShortcuts', excludedNumpadShortcuts)
   const { shortcut, isRecording, startRecording, stopRecording } = useShortcutRecorder({
     onChange: (newShortcut) => {
       if (!config) return

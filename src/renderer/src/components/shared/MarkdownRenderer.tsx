@@ -7,11 +7,11 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
   return (
     <ReactMarkdown
       components={{
-        code({ node, inline, className, children, ...props }) {
+        code({   className, children, ...props } ) {
           const match = /language-(\w+)/.exec(className || '')
           const codeString = String(children).replace(/\n$/, '')
 
-          return !inline ? (
+          return  (
             <div className="relative my-4 rounded-2xl overflow-hidden shadow bg-zinc-900 text-sm group">
               <button
                 onClick={() => navigator.clipboard.writeText(codeString)}
@@ -30,9 +30,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
                 {codeString}
               </SyntaxHighlighter>
             </div>
-          ) : (
-            <code className="bg-zinc-200 text-zinc-800 px-1 rounded">{children}</code>
-          )
+          ) 
         }
       }}
     >

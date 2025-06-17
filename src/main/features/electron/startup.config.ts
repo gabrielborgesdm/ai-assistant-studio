@@ -14,6 +14,5 @@ export const setupStartup = async (mainWindow: BrowserWindow | null, db: DBType)
     return
   }
 
-  const shortcutService = new ElectronSettingsService(mainWindow, db)
-  shortcutService.registerOpenAtStartup(config.runAtStartup)
+  new ElectronSettingsService(mainWindow, db)
 }

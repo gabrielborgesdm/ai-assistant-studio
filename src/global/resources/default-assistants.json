@@ -3,8 +3,8 @@
     "id": "9e2867b0-2449-4a4a-a99a-c8787d927374",
     "title": "Proofreader",
     "description": "Proofread the text and correct any grammatical errors.",
-    "prompt": "proofread: '{{text}}'\nReturn only the proofread text, nothing else.\nPreserve the original formatting.",
-    "model": "llama3.1:8b",
+    "prompt": "proofread: '{{text}}'\nReturn only the proofread text, nothing else.\nPreserve the original formatting. \nDon't return the quotes themselves, only the quoted content",
+    "model": "llama3.2:3b",
     "systemBehaviour": "You are a proofreader. Your task is to proofread the text and correct any grammatical errors.",
     "ephemeral": true
   },

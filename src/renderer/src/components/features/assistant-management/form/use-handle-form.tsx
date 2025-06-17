@@ -8,7 +8,6 @@ import { usePageContext } from '@renderer/provider/PageProvider'
 import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 import { useEffect, useState } from 'react'
 import { Control, FieldErrors, useForm, useWatch } from 'react-hook-form'
-import { toast } from 'sonner'
 
 export interface UseHandleForm {
   onSubmit: (values: AssistantFormData) => Promise<void>

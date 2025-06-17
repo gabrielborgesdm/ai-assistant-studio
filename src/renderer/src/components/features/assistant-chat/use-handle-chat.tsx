@@ -7,7 +7,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import { useManageModel } from '../model-status/use-manage-model'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { fileToBase64 } from '@global/utils/file.utils'
-import { AssistantMessageFactory } from '@global/factories/assistant.factory'
+import { AssistantMessageFactory, HistoryFactory } from '@global/factories/assistant.factory'
 
 interface useHandleChatProps {
   images: File[]
@@ -55,7 +55,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
 
     console.log('Clearing history for assistant:', assistant.id)
     window.api.assistants.clearHistory(assistant.id)
-    setHistory(history ? { ...history, messages: [] } : undefined)
+    setHistory(HistoryFactory(history?.assistantId || '', []))
     setCurrentAssistantMessage(undefined)
     setImages([])
   }
@@ -84,7 +84,6 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     const newHistory = await window.api.assistants.addAssistantMessage(assistant.id, [
       AssistantMessageFactory(MessageRole.USER, textInput, base64Images)
     ])
-
 
     setHistory({ ...newHistory })
     setTextInput('')
@@ -194,7 +193,10 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   // makes sure the chat is ready to go
   const readyUpChat = async (): Promise<void> => {
     await validateRequirementsAndUpdateChat()
-    window.api.assistants.getHistory(assistant.id).then(setHistory)
+    window.api.assistants.getHistory(assistant.id).then((history) => {
+      console.log('history loaded', history)
+      setHistory(HistoryFactory(history?.assistantId || '', history?.messages || []))
+    })
     window.api.ollama.warmupOllama(assistant.model)
   }
 

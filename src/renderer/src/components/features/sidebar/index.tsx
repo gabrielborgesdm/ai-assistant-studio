@@ -57,6 +57,10 @@ export const SidebarComponent = (): React.ReactElement => {
     }
   }
 
+  const footerClassName = cn('flex items-center justify-between', {
+    disabled: isSidebarDisabled
+  })
+
   if (activePage === Page.Setup) {
     return <></>
   }
@@ -109,7 +113,7 @@ export const SidebarComponent = (): React.ReactElement => {
                 <SidebarMenuButton
                   onClick={() => handlePageChange(Page.AssistantManagement)}
                   isActive={activePage === Page.AssistantManagement && !pageProps}
-                  className="flex items-center justify-between"
+                  className={footerClassName}
                 >
                   <span className="flex items-center gap-2 font-small">
                     <Bot size={18} />
@@ -124,7 +128,7 @@ export const SidebarComponent = (): React.ReactElement => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem className="cursor-pointer" onClick={() => toggleTheme()}>
-            <SidebarMenuButton className="flex items-center justify-between">
+            <SidebarMenuButton className={footerClassName}>
               <span className="flex items-center gap-2 font-small">
                 {isDark ? <Moon size={18} /> : <Sun size={18} />}
                 {isDark ? 'Dark' : 'Light'} Mode
@@ -132,7 +136,7 @@ export const SidebarComponent = (): React.ReactElement => {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem className="cursor-pointer" onClick={() => handlePageChange(Page.Config)}>
-            <SidebarMenuButton className="flex items-center justify-between">
+            <SidebarMenuButton className={footerClassName}>
               <span className="flex items-center gap-2 font-small">
                 <Settings size={18} />
                 Settings

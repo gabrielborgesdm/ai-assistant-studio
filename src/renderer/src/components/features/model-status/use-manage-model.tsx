@@ -43,7 +43,8 @@ export const useManageModel = (): UseManageModel => {
     syncModelsAndOllamaStatus(modelsToBeSynced)
   }
 
-  const handleFinishedDownloading = (): void => {
+  const handleFinishedDownloading = async (modelName: string): Promise<void> => {
+    await saveModel(modelName)
     syncModelsAndOllamaStatus()
   }
 
@@ -97,6 +98,7 @@ export const useManageModel = (): UseManageModel => {
 
   const checkRequirementsAreMet = (): boolean => {
     if (!models) return false
+    syncModelsAndOllamaStatus()
 
     const requiredModels = Object.values(models).filter((model) => model.required)
     console.log('requiredModels', requiredModels)

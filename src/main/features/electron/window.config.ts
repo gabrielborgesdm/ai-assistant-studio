@@ -2,12 +2,11 @@ import { is } from '@electron-toolkit/utils'
 import { DBType } from '@main/features/database/db.type'
 import icon from '@resources/logo.png?asset'
 import { BrowserWindow, shell } from 'electron'
-import { app } from 'electron/main'
 import { join } from 'path'
 
 let resizeTimeout: NodeJS.Timeout | null = null
 
-export const setupWindowConfig = async (_: Electron.App, db: DBType ): Promise<BrowserWindow> => {
+export const setupWindowConfig = async (app: Electron.App, db: DBType): Promise<BrowserWindow> => {
   await db.read()
 
   const config = db.data?.config
@@ -24,8 +23,11 @@ export const setupWindowConfig = async (_: Electron.App, db: DBType ): Promise<B
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
-    }
+    },
+    title: 'AI Assistant Studio'
   })
+
+  app.setName('AI Assistant Studio')
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -58,11 +60,14 @@ export const setupWindowConfig = async (_: Electron.App, db: DBType ): Promise<B
   }
 
   mainWindow.on('ready-to-show', () => {
-    if(process.argv.includes('--hidden') || process.execArgv.includes('--hidden') || app.getLoginItemSettings().wasOpenedAtLogin) {
+    if (
+      process.argv.includes('--hidden') ||
+      process.execArgv.includes('--hidden') ||
+      app.getLoginItemSettings().wasOpenedAtLogin
+    ) {
       return
     }
     mainWindow?.show()
-    
   })
 
   return mainWindow

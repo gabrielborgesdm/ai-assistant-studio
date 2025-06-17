@@ -42,14 +42,16 @@ export default class ElectronSettingsService {
 
   registerOpenAtStartup(runAtStartup: boolean): boolean {
     console.log(`Registering open at startup: ${runAtStartup}`)
-    app.setLoginItemSettings({
-      openAtLogin: runAtStartup,
-      args: ['--hidden']
-    })
 
+    
     try {
       this.db.data!.config.runAtStartup = runAtStartup
       this.db.write()
+      
+      app.setLoginItemSettings({
+        openAtLogin: runAtStartup,
+        args: ['--hidden']
+      })
     } catch (error) {
       console.error('Failed to update runAtStartup config:', error)
     }

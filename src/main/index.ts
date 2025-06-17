@@ -33,9 +33,9 @@ app.whenReady().then(async () => {
 
   ipcMain.on('ping', () => console.log('pong'))
 
-  mainWindow = await setupWindowConfig(db)
+  mainWindow = await setupWindowConfig(app, db)
   app.on('activate', async () => {
-    if (BrowserWindow.getAllWindows().length === 0) mainWindow = await setupWindowConfig(db)
+    if (BrowserWindow.getAllWindows().length === 0) mainWindow = await setupWindowConfig(app, db)
   })
 
   // 🟡 Config setups

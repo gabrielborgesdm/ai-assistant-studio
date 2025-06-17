@@ -140,6 +140,7 @@ export const ConfigComponent = (): ReactElement => {
                   </>
                 </FormSection>
               </FormGroup>
+             
               {!isLinux && (
                 <>
                   <hr />
@@ -161,7 +162,7 @@ export const ConfigComponent = (): ReactElement => {
                     </FormSection>
                   </FormGroup>
                 </>
-              )}
+              )} 
             </form>
           </CardContent>
         </Card>

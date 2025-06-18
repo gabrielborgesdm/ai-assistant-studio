@@ -16,7 +16,7 @@ import { useAssistantContext } from '@renderer/provider/AssistantProvider'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
-import { Bot, History, Moon, Settings, Sun } from 'lucide-react'
+import { Bot, Moon, Settings, Sun } from 'lucide-react'
 
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } = useAssistantContext()

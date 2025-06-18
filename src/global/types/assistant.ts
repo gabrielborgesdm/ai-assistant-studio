@@ -47,7 +47,7 @@ export const assistantFormSchema = z.object({
   ephemeral: z.boolean(),
   systemBehaviour: z.string().optional(),
   prompt: z.string().optional(),
-  allowImageUpload: z.boolean()
+  allowImage: z.boolean()
 })
 
 // Define the type based on the schema

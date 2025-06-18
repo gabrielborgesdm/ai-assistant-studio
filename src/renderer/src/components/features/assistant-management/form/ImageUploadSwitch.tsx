@@ -12,7 +12,7 @@ export const ImageUploadSwitch = ({
   modelName?: string
 }): React.ReactElement => {
   const { field } = useController({
-    name: 'allowImageUpload',
+    name: 'allowImage',
     control,
     defaultValue: false
   })
@@ -21,14 +21,14 @@ export const ImageUploadSwitch = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between p-4 border rounded-lg">
         <div className="space-y-1">
-          <Label htmlFor="allowImageUpload" className="font-medium">
+          <Label htmlFor="allowImage" className="font-medium">
             Allow Image Upload
           </Label>
           <p className="text-sm text-muted-foreground">
             Enable users to upload images along with text input.
           </p>
         </div>
-        <Switch id="allowImageUpload" checked={field.value} onCheckedChange={field.onChange} />
+        <Switch id="allowImage" checked={field.value} onCheckedChange={field.onChange} />
       </div>
 
       <div className="p-3 bg-secondary rounded-lg">

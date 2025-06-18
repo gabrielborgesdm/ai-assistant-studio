@@ -11,7 +11,7 @@ import { IpcMainEvent } from 'electron'
 import ollama from 'ollama'
 import { searchOllamaModels } from 'ollama-models-search'
 import defaultOllamaModels from '@global/resources/default-ollama-models.json'
-
+import { OllamaModel as SearchOllamaModel } from 'ollama-models-search'
 
 export default class OllamaService {
   OLLAMA_HOST: string = 'http://localhost:11434'
@@ -210,7 +210,7 @@ export default class OllamaService {
 
   searchOnlineModels = async (query: string): Promise<OllamaModel[]> => {
     try {
-      const response = await new Promise<OllamaModel[]>((resolve) => {
+      const response = await new Promise<SearchOllamaModel[]>((resolve) => {
         // If the request takes too long, resolve with the default stored models (Scraped at 2025-06-10)
         const timeout = setTimeout(() => {
           console.log('Took too long to search models, returning default models')
@@ -224,7 +224,22 @@ export default class OllamaService {
         })
       })
 
-      const favoriteModels = ['llama3.1', 'mistral-small', 'phi4', 'qwen2.5v']
+      const downloadedModels: { name: string; version: string }[] =
+        (await this.listModels().then((models) => {
+          return models.map((model) => {
+            const [name, version] = model.split(':')
+            return {
+              name,
+              version
+            }
+          })
+        })) || []
+
+      console.log('Downloaded models:', downloadedModels)
+
+      const favoriteModels = downloadedModels
+        .map((model) => model.name)
+        .concat(['llama3.1', 'mistral-small', 'phi4', 'qwen2.5v'])
 
       // Step 1: Create a Map to assign each favorite model a priority index (for sorting)
       const priorityMap = new Map(favoriteModels.map((name, index) => [name, index]))
@@ -237,14 +252,30 @@ export default class OllamaService {
         return aPriority - bPriority
       })
 
-      // Step 3: Mark models as recommended if they are in the favorites list
-      // We can break early since the list is sorted and all recommended models come first
-      for (const model of response) {
-        model.recommended = priorityMap.has(model.name)
-        if (!model.recommended) break
+      // Step 3: Format the searched model to our needs
+      const formattedResponse: OllamaModel[] = []
+      for (let i = 0; i < response.length; i++) {
+        const model: OllamaModel = response[i]
+
+        // Add latest version to the top
+        model.versions.unshift('latest')
+
+        // Filter the versions of the model that are installed
+        const versionsInstalled = downloadedModels.filter(
+          (downloadedModel) => downloadedModel.name === model.name
+        )
+
+        // Assign them to the formatted item
+        model.installedVersions = versionsInstalled.map(
+          (downloadedModel) => downloadedModel.version
+        )
+
+        // Assign an id to the model for frontend purposes
+        model.id = i
+        formattedResponse.push(model)
       }
 
-      return response
+      return formattedResponse
     } catch (error: any) {
       console.error('Error searching models:', error)
       throw error

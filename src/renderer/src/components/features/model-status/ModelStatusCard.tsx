@@ -8,10 +8,10 @@ import { Badge } from '@renderer/components/ui/badge'
 import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
 import { useHandleCopy } from '@renderer/hooks/use-handle-copy'
-import { CheckCircle, Circle, Download } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Download } from 'lucide-react'
 import { ReactElement, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { AnimatePresence, motion } from 'framer-motion'
 
 interface ModelStatusCardProps {
   model: ModelDownload
@@ -24,7 +24,6 @@ interface ModelStatusCardProps {
 }
 export const ModelStatusCard = ({
   model,
-  shouldShowCheckButton = true,
   shouldRenderWhenDownloaded = true,
   className,
   description,
@@ -126,12 +125,6 @@ export const ModelStatusCard = ({
             transition={{ duration: 0.5 }}
             className="flex items-center justify-between gap-3"
           >
-            {!!shouldShowCheckButton &&
-              (model.installed ? (
-                <CheckCircle className="h-5 w-5 text-green-600" />
-              ) : (
-                <Circle className="h-5 w-5" />
-              ))}
             <div className="w-full">
               <h4 title={model.name} className={`truncate overflow-hidden  font-medium `}>
                 {model.name}

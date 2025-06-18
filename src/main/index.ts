@@ -13,6 +13,7 @@ import { setupOllamaController } from '@main/features/ollama/ollama.controller'
 import { setupShortcut } from '@main/features/electron/shortcut.config'
 import { setupStartup } from '@main/features/electron/startup.config'
 import { setupElectronSettingsController } from '@main/features/electron/electron-settings.controller'
+import { setupMenu } from '@main/features/electron/menu.config'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -33,6 +34,7 @@ app.whenReady().then(async () => {
 
   ipcMain.on('ping', () => console.log('pong'))
 
+  setupMenu()
   mainWindow = await setupWindowConfig(app, db)
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) mainWindow = await setupWindowConfig(app, db)
@@ -46,9 +48,7 @@ app.whenReady().then(async () => {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  app.quit()
 })
 
 app.on('will-quit', () => {

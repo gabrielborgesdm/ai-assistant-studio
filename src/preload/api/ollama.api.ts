@@ -33,7 +33,6 @@ export const ollamaApi = {
     ipcRenderer.send(DownloadModelEvent, model)
 
     const listener = (_event: Electron.IpcRendererEvent, result): void => {
-      console.log('reply being called in the listener result', result)
       callback(result)
     }
 

@@ -77,6 +77,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   }
 
   const handleModelChange = (value: string): void => {
+    console.log('received model', value)
     setValue('model', value)
     const modelWithoutVersion = value.split(':')[0]
     setSelectedModel(availableModels.find((model) => model.name === modelWithoutVersion))
@@ -103,12 +104,6 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
 
     return true
   }
-
-  useEffect(() => {
-    if (!availableModels.length) return
-
-    handleModelChange(assistant?.model || DEFAULT_OLLAMA_MODEL)
-  }, [availableModels.length])
 
   useEffect(() => {
     validateTitle(title)

@@ -8,7 +8,9 @@ export interface ModelDownload {
 }
 
 export interface OllamaModel extends OllamaModelType {
+  id?: number
   recommended?: boolean
+  installedVersions?: string[]
 }
 
 export interface InstalledModels {

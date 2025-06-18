@@ -95,13 +95,13 @@ export const SidebarComponent = (): React.ReactElement => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel className="flex gap-1 items-center">
             <History />
             Chat History
           </SidebarGroupLabel>
           <SidebarGroupContent></SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

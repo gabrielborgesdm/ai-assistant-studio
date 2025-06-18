@@ -16,7 +16,7 @@ import { useAssistantContext } from '@renderer/provider/AssistantProvider'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
 import { useTheme } from '@renderer/provider/ThemeProvider'
-import { Bot, History, Moon, Settings, Sun } from 'lucide-react'
+import { Bot, Moon, Settings, Sun } from 'lucide-react'
 
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } = useAssistantContext()
@@ -57,6 +57,10 @@ export const SidebarComponent = (): React.ReactElement => {
     }
   }
 
+  const footerClassName = cn('flex items-center justify-between', {
+    disabled: isSidebarDisabled
+  })
+
   if (activePage === Page.Setup) {
     return <></>
   }
@@ -91,13 +95,13 @@ export const SidebarComponent = (): React.ReactElement => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel className="flex gap-1 items-center">
             <History />
             Chat History
           </SidebarGroupLabel>
           <SidebarGroupContent></SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -109,7 +113,7 @@ export const SidebarComponent = (): React.ReactElement => {
                 <SidebarMenuButton
                   onClick={() => handlePageChange(Page.AssistantManagement)}
                   isActive={activePage === Page.AssistantManagement && !pageProps}
-                  className="flex items-center justify-between"
+                  className={footerClassName}
                 >
                   <span className="flex items-center gap-2 font-small">
                     <Bot size={18} />
@@ -124,7 +128,7 @@ export const SidebarComponent = (): React.ReactElement => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem className="cursor-pointer" onClick={() => toggleTheme()}>
-            <SidebarMenuButton className="flex items-center justify-between">
+            <SidebarMenuButton className={footerClassName}>
               <span className="flex items-center gap-2 font-small">
                 {isDark ? <Moon size={18} /> : <Sun size={18} />}
                 {isDark ? 'Dark' : 'Light'} Mode
@@ -132,7 +136,7 @@ export const SidebarComponent = (): React.ReactElement => {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem className="cursor-pointer" onClick={() => handlePageChange(Page.Config)}>
-            <SidebarMenuButton className="flex items-center justify-between">
+            <SidebarMenuButton className={footerClassName}>
               <span className="flex items-center gap-2 font-small">
                 <Settings size={18} />
                 Settings

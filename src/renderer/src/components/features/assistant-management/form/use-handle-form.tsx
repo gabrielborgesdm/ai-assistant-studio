@@ -56,7 +56,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
       ephemeral: assistant?.ephemeral || false,
       systemBehaviour: assistant?.systemBehaviour || '',
       prompt: assistant?.prompt || '',
-      allowImageUpload: assistant?.allowImage || false
+      allowImage: assistant?.allowImage || false
     }
   })
 
@@ -64,6 +64,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   const title = useWatch({ control, name: 'title' })
 
   const onSubmit = async (values: AssistantFormData): Promise<void> => {
+    console.log('submitting', values)
     if (!validateTitle(title)) return
     setIsLoading(true)
     const savedAssistant = await window.api.assistants.saveAssistant(values, assistant?.id)
@@ -76,6 +77,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   }
 
   const handleModelChange = (value: string): void => {
+    console.log('received model', value)
     setValue('model', value)
     const modelWithoutVersion = value.split(':')[0]
     setSelectedModel(availableModels.find((model) => model.name === modelWithoutVersion))
@@ -102,12 +104,6 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
 
     return true
   }
-
-  useEffect(() => {
-    if (!availableModels.length) return
-
-    handleModelChange(assistant?.model || DEFAULT_OLLAMA_MODEL)
-  }, [availableModels.length])
 
   useEffect(() => {
     validateTitle(title)

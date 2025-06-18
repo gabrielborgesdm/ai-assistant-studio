@@ -1,3 +1,4 @@
+import { ModelStatusCard } from '@/components/features/model-status/ModelStatusCard'
 import { InstalledModels } from '@global/types/model'
 import {
   Card,
@@ -6,9 +7,7 @@ import {
   CardHeader,
   CardTitle
 } from '@renderer/components/ui/card'
-import { CheckCircle, Circle } from 'lucide-react'
 import { ReactElement } from 'react'
-import { ModelStatusCard } from '@/components/features/model-status/ModelStatusCard'
 
 interface RequiredModelsComponentProps {
   models: InstalledModels
@@ -18,15 +17,9 @@ export const RequiredModelsComponent = ({ models }: RequiredModelsComponentProps
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          {Object.values(models).every((m) => m.installed) ? (
-            <CheckCircle className="h-5 w-5 text-green-600" />
-          ) : (
-            <Circle className="h-5 w-5 text-slate-400" />
-          )}
-          Required Models
-        </CardTitle>
-        <CardDescription>Required for AI Assistant Studio’s auto-completion features.
+        <CardTitle className="flex items-center gap-2">Required Models</CardTitle>
+        <CardDescription>
+          Required for AI Assistant Studio’s auto-completion features.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -36,9 +29,7 @@ export const RequiredModelsComponent = ({ models }: RequiredModelsComponentProps
             <ModelStatusCard key={model.name + index} model={model} />
           ))}
 
-          <CardDescription>
-            Hang tight — this should only take a couple of minutes.
-          </CardDescription>
+        <CardDescription>Hang tight — this should only take a couple of minutes.</CardDescription>
       </CardContent>
     </Card>
   )

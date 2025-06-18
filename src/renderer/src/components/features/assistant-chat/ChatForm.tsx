@@ -65,6 +65,7 @@ export const ChatForm = ({
           setIsSidebarDisabled(true)
         }}
         onFinishedDownloading={() => {
+          console.log('Finished downloading model')
           setIsSidebarDisabled(false)
         }}
       />

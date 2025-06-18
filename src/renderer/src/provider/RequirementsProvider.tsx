@@ -47,6 +47,7 @@ export const RequirementsProvider = ({ children }: { children: ReactNode }): Rea
   }
 
   const updateModel = (payload: ModelDownload): void => {
+    console.log('calling update model:', payload)
     const modelsCopy = { ...models }
     modelsCopy[payload.name] = { ...modelsCopy[payload.name], ...payload }
     localStorage.setItem('models', JSON.stringify(models))

@@ -1,6 +1,6 @@
 import { Assistant, AssistantHistory } from '@global/types/assistant'
 import { Button } from '@renderer/components/ui/button'
-import { Pause, Trash2 } from 'lucide-react'
+import { BrushCleaning, MessageSquare, MessageSquareX, Pause, Trash2 } from 'lucide-react'
 import { ReactElement } from 'react'
 import { AssistantDropdown } from '@/components/features/assistant-chat/AssistantDropdown'
 import { cn } from '@renderer/lib/utils'
@@ -52,7 +52,7 @@ export const ChatHeader = ({
             onClick={handleClearHistory}
             title="Clear chat history"
           >
-            <Trash2 />
+            <BrushCleaning />
           </Button>
         )}
         <AssistantDropdown assistant={assistant} />

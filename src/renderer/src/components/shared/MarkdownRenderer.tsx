@@ -2,16 +2,24 @@ import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { ClipboardCopy } from 'lucide-react'
+import rehypeRaw from 'rehype-raw'
+import { useMemo } from 'react'
+import { ReactElement } from 'react'
 
-const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
+const MarkdownRenderer = ({ markdown }: { markdown: string }): ReactElement => {
+  const formattedMarkdown = useMemo(() => {
+    return markdown.replace(/<think>/g, '<pre>').replace(/<\/think>/g, '</pre>')
+  }, [markdown])
+
   return (
     <ReactMarkdown
+      rehypePlugins={[rehypeRaw]}
       components={{
-        code({   className, children, ...props } ) {
+        code({ className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '')
           const codeString = String(children).replace(/\n$/, '')
 
-          return  (
+          return (
             <div className="relative my-4 rounded-2xl overflow-hidden shadow bg-zinc-900 text-sm group">
               <button
                 onClick={() => navigator.clipboard.writeText(codeString)}
@@ -30,11 +38,14 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }) => {
                 {codeString}
               </SyntaxHighlighter>
             </div>
-          ) 
+          )
+        },
+        pre({ children }) {
+          return <div className="italic text-muted-foreground text-sm">{children}</div>
         }
       }}
     >
-      {markdown}
+      {formattedMarkdown}
     </ReactMarkdown>
   )
 }

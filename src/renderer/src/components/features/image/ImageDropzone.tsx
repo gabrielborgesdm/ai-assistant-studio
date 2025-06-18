@@ -32,7 +32,7 @@ export const ChatImageDropzone = ({ onAddImage, enabled, children }: Props): Rea
     const item = Array.from(e.clipboardData?.items || []).find((i) => i.type.startsWith('image/'))
     if (item) {
       const file = item.getAsFile()
-      if (file) onAddImage(file)
+      if (file && enabled) onAddImage(file)
       e.preventDefault()
     }
   }

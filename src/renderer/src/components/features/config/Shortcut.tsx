@@ -5,6 +5,13 @@ import { FormGroup } from '@renderer/components/shared/form/FormGroup'
 import { FormSection } from '@renderer/components/shared/form/FormSection'
 import { InputError } from '@renderer/components/shared/form/InputError'
 import { Button } from '@renderer/components/ui/button'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent
+} from '@renderer/components/ui/card'
 import { Input } from '@renderer/components/ui/input'
 import { Label } from '@renderer/components/ui/label'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
@@ -102,67 +109,77 @@ export const Shortcut = (): ReactElement => {
   }
 
   return (
-    <FormGroup>
-      <FormSection>
-        <>
-          <Label>Shortcut key</Label>
-          {!isRecording && (
-            <>
-              <div className="flex flex-row items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="No shortcut assigned"
-                  value={config?.shortcut || ''}
-                  onClick={startRecording}
-                />
-                {config?.shortcut && (
-                  <Button
-                    type="button"
-                    onClick={() => handleChangeShortcut('')}
-                    variant="outline"
-                    title="Remove shortcut"
-                  >
-                    <Trash2 />
-                  </Button>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">Shortcut Assignment</CardTitle>
+        <CardDescription>Assign a shortcut to open and close the application</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-8">
+        <form>
+          <FormGroup>
+            <FormSection>
+              <>
+                <Label>Shortcut key</Label>
+                {!isRecording && (
+                  <>
+                    <div className="flex flex-row items-center gap-2">
+                      <Input
+                        type="text"
+                        placeholder="No shortcut assigned"
+                        value={config?.shortcut || ''}
+                        onClick={startRecording}
+                      />
+                      {config?.shortcut && (
+                        <Button
+                          type="button"
+                          onClick={() => handleChangeShortcut('')}
+                          variant="outline"
+                          title="Remove shortcut"
+                        >
+                          <Trash2 />
+                        </Button>
+                      )}
+                      {!config?.shortcut && (
+                        <Button
+                          type="button"
+                          onClick={startRecording}
+                          variant="outline"
+                          title="Record shortcut"
+                        >
+                          <Play />
+                        </Button>
+                      )}
+                    </div>
+                    <Description>Click to start recording a shortcut key.</Description>
+                    {shortcutError && <InputError error={shortcutError} />}
+                  </>
                 )}
-                {!config?.shortcut && (
-                  <Button
-                    type="button"
-                    onClick={startRecording}
-                    variant="outline"
-                    title="Record shortcut"
-                  >
-                    <Play />
-                  </Button>
+                {isRecording && (
+                  <>
+                    <div className="flex flex-row items-center gap-2">
+                      <Input
+                        type="text"
+                        placeholder="Recording..."
+                        value={shortcutValue}
+                        onClick={stopRecording}
+                      />
+                      <Button
+                        type="button"
+                        onClick={stopRecording}
+                        variant="outline"
+                        title="Cancel recording"
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                    <Description>Combine modifiers and a key to record a shortcut.</Description>
+                  </>
                 )}
-              </div>
-              <Description>Click to start recording a shortcut key.</Description>
-              {shortcutError && <InputError error={shortcutError} />}
-            </>
-          )}
-          {isRecording && (
-            <>
-              <div className="flex flex-row items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="Recording..."
-                  value={shortcutValue}
-                  onClick={stopRecording}
-                />
-                <Button
-                  type="button"
-                  onClick={stopRecording}
-                  variant="outline"
-                  title="Cancel recording"
-                >
-                  <X />
-                </Button>
-              </div>
-              <Description>Combine modifiers and a key to record a shortcut.</Description>
-            </>
-          )}
-        </>
-      </FormSection>
-    </FormGroup>
+              </>
+            </FormSection>
+          </FormGroup>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

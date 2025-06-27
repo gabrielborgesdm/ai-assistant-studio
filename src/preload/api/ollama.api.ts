@@ -1,6 +1,7 @@
 import {
   ChatEvent,
   ChatEventReply,
+  DeleteModelEvent,
   DownloadModelEvent,
   getDownloadModelEventReply,
   ListModelsEvent,
@@ -41,5 +42,6 @@ export const ollamaApi = {
   listModels: () => ipcRenderer.invoke(ListModelsEvent),
   checkOllamaRunning: () => ipcRenderer.invoke(OllamaIsInstalledEvent),
   searchOnlineModels: (query: string) => ipcRenderer.invoke(SearchOnlineModelsEvent, query),
-  warmupOllama: (model: string) => ipcRenderer.invoke(WarmupOllamaEvent, model)
+  warmupOllama: (model: string) => ipcRenderer.invoke(WarmupOllamaEvent, model),
+  deleteModel: (model: string) => ipcRenderer.invoke(DeleteModelEvent, model)
 }

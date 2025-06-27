@@ -19,3 +19,4 @@ export const SearchOnlineModelsEvent = 'ollama-search-online-models'
 
 export const WarmupOllamaEvent = 'ollama-warmup-ollama'
 
+export const DeleteModelEvent = 'ollama-delete-model'

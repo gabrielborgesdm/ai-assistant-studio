@@ -126,6 +126,7 @@ export default class OllamaService {
     history.messages.unshift(AssistantMessageFactory(MessageRole.SYSTEM, assistant.systemBehaviour))
   }
 
+  // Todo: check memory or running models before warming up
   warmupOllama = async (model: string): Promise<void> => {
     try {
       console.log('Warming up Ollama Model', model)
@@ -161,6 +162,18 @@ export default class OllamaService {
     return []
   }
 
+  deleteModel = async (model: string): Promise<boolean> => {
+    try {
+      const response = await this.ollama.delete({ model })
+      console.log('Model deleted:', model)
+      console.log(JSON.stringify(response, null, 2))
+      return true
+    } catch (error) {
+      console.error('Error deleting model:', error)
+      return false
+    }
+  }
+
   downloadModel = async (
     event: IpcMainEvent,
     eventReply: string,
@@ -168,6 +181,7 @@ export default class OllamaService {
     abort: AbortController
   ): Promise<void> => {
     try {
+      //Todo: use ollama npm pull and ollama.abort() to cancel the download
       const response = await axios.post(
         `${this.OLLAMA_HOST}/api/pull`,
         { model: model.name },

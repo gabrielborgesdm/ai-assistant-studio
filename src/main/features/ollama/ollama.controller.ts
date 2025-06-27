@@ -2,6 +2,7 @@
 import {
   ChatEvent,
   ChatEventCancel,
+  DeleteModelEvent,
   DownloadModelEvent,
   getDownloadModelEventCancel,
   getDownloadModelEventReply,
@@ -55,5 +56,6 @@ export const setupOllamaController = (): void => {
   )
 
   ipcMain.handle(WarmupOllamaEvent, (_event, model: string) => ollamaService.warmupOllama(model))
-}
 
+  ipcMain.handle(DeleteModelEvent, (_event, model: string) => ollamaService.deleteModel(model))
+}

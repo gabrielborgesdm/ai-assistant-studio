@@ -37,6 +37,7 @@ declare global {
         listModels: () => Promise<string[]>
         searchOnlineModels: (query?: string) => Promise<OllamaModel[]>
         warmupOllama: (model: string) => Promise<void>
+        deleteModel: (model: string) => Promise<boolean>
       }
       assistants: {
         getAssistants: () => Promise<Assistant[]>

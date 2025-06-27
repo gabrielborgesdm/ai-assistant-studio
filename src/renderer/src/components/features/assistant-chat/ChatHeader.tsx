@@ -1,9 +1,9 @@
+import { AssistantDropdown } from '@/components/features/assistant-chat/AssistantDropdown'
 import { Assistant, AssistantHistory } from '@global/types/assistant'
 import { Button } from '@renderer/components/ui/button'
-import { BrushCleaning, MessageSquare, MessageSquareX, Pause, Trash2 } from 'lucide-react'
-import { ReactElement } from 'react'
-import { AssistantDropdown } from '@/components/features/assistant-chat/AssistantDropdown'
 import { cn } from '@renderer/lib/utils'
+import { BrushCleaning, Pause } from 'lucide-react'
+import { ReactElement } from 'react'
 
 interface ChatHeaderProps {
   assistant: Assistant

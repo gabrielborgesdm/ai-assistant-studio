@@ -43,6 +43,8 @@ export const setupOllamaController = (): void => {
       abort.abort()
     })
 
+    console.log('test', model)
+
     // Call the function to stream the response passing the abort controller
     await ollamaService.downloadModel(event, eventReply, model, abort)
   })

@@ -40,6 +40,7 @@ const OllamaModelSelector = ({
   const loadModels = async (search?: string): Promise<void> => {
     setIsLoading(true)
     const models = await window.api.ollama.searchOnlineModels(search)
+    console.log('onlinemodels', models)
     setOnlineModels(models)
     setIsLoading(false)
   }
@@ -127,8 +128,8 @@ const OllamaModelSelector = ({
                       </div>
                       <div className="text-xs text-muted-foreground">{model.description}</div>
                       <div className="flex items-center  gap-2 mt-2">
-                        <Badge variant="outline">{model.updated}</Badge>
-                        <Badge variant="outline">{model.pulls}</Badge>
+                        {!!model.updated && <Badge variant="outline">{model.updated}</Badge>}
+                        {!!model.pulls && <Badge variant="outline">{model.pulls}</Badge>}
                       </div>
                       <span className="mt-2 text-xs text-left text-muted-foreground ">
                         Variants:
@@ -136,7 +137,7 @@ const OllamaModelSelector = ({
                       <div className="mt-2 flex flex-wrap gap-2 justify-start">
                         {model.versions.map((version) => (
                           <Button
-                            key={model.id + version}
+                            key={model.id + model.name + version}
                             variant="outline"
                             className={cn(
                               'version text-xs text-gray-500',

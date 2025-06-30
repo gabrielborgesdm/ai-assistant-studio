@@ -224,19 +224,29 @@ export default class OllamaService {
 
   searchOnlineModels = async (query: string): Promise<OllamaModel[]> => {
     try {
-      const response = await new Promise<SearchOllamaModel[]>((resolve) => {
+      const [response, isOffline] = await new Promise<[SearchOllamaModel[], boolean]>((resolve) => {
         // If the request takes too long, resolve with the default stored models (Scraped at 2025-06-10)
         const timeout = setTimeout(() => {
           console.log('Took too long to search models, returning default models')
-          resolve(defaultOllamaModels)
+          // Deep cloning the default models to avoid modifying the original json resource
+          resolve([structuredClone(defaultOllamaModels) as SearchOllamaModel[], true])
         }, 4000)
 
         searchOllamaModels({ query }).then((models) => {
           console.log('Successfully searched for Ollama models')
           clearTimeout(timeout)
-          resolve(models)
+          resolve([models, false])
         })
       })
+
+      let availableModels = response
+
+      // If we are offline, we need to manually filter the models to match the query
+      if (isOffline && query) {
+        availableModels = availableModels.filter((model) =>
+          model.name.includes(query.toLocaleLowerCase())
+        )
+      }
 
       const downloadedModels: { name: string; version: string }[] =
         (await this.listModels().then((models) => {
@@ -260,7 +270,7 @@ export default class OllamaService {
 
       // Step 2: Sort the response array based on the priority in favoriteModels
       // Models not in the favorites list get a large value (Infinity), so they appear last
-      response.sort((a, b) => {
+      availableModels.sort((a, b) => {
         const aPriority = priorityMap.has(a.name) ? priorityMap.get(a.name)! : Infinity
         const bPriority = priorityMap.has(b.name) ? priorityMap.get(b.name)! : Infinity
         return aPriority - bPriority
@@ -268,8 +278,8 @@ export default class OllamaService {
 
       // Step 3: Format the searched model to our needs
       const formattedResponse: OllamaModel[] = []
-      for (let i = 0; i < response.length; i++) {
-        const model: OllamaModel = response[i]
+      for (let i = 0; i < availableModels.length; i++) {
+        const model: OllamaModel = availableModels[i]
 
         // Add latest version to the top
         model.versions.unshift('latest')

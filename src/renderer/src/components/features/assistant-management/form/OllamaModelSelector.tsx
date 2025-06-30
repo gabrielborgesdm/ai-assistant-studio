@@ -2,51 +2,47 @@ import { Button } from '@renderer/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@renderer/components/ui/popover'
 import { cn } from '@renderer/lib/utils'
 
+import { OllamaModel } from '@global/types/model'
+import { Description } from '@renderer/components/shared/Description'
 import { FormGroup } from '@renderer/components/shared/form/FormGroup'
+import { InputError } from '@renderer/components/shared/form/InputError'
 import { Badge } from '@renderer/components/ui/badge'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList
 } from '@renderer/components/ui/command'
-import { Check, ChevronsUpDown } from 'lucide-react'
-import { memo, ReactElement, useMemo, useState } from 'react'
+import { Input } from '@renderer/components/ui/input'
 import { Label } from '@renderer/components/ui/label'
-import { InputError } from '@renderer/components/shared/form/InputError'
-import { Description } from '@renderer/components/shared/Description'
-import { OllamaModel } from '@global/types/model'
+import { Check, ChevronsUpDown, SearchIcon } from 'lucide-react'
+import { memo, ReactElement, useEffect, useState } from 'react'
 import { Control, FieldErrors, useWatch } from 'react-hook-form'
+import { AnimatedLoader } from '@renderer/components/shared/Loader'
 
 const OllamaModelSelector = ({
-  models,
   control,
   errors,
   handleModelChange
 }: {
-  models: OllamaModel[]
   control: Control<any>
   errors: FieldErrors
   handleModelChange: (value: string) => void
 }): ReactElement => {
   const selectedModelName = useWatch({ control, name: 'model' })
 
+  const [onlineModels, setOnlineModels] = useState<OllamaModel[]>([])
   const [open, setOpen] = useState(false)
+  const [filterTimeout, setFilterTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const filteredModels = useMemo(() => {
-    // put the selected model at the top
-    const selectedModelIndex = models.findIndex((model) => selectedModelName.includes(model.name))
-    console.log('selected model index', selectedModelIndex)
-    if (selectedModelIndex > -1) {
-      const copiedModels = [...models]
-      const model = copiedModels.splice(selectedModelIndex, 1)
-      return [...model, ...copiedModels]
-    }
-
-    return [...models]
-  }, [models, selectedModelName])
+  const loadModels = async (search?: string): Promise<void> => {
+    setIsLoading(true)
+    const models = await window.api.ollama.searchOnlineModels(search)
+    setOnlineModels(models)
+    setIsLoading(false)
+  }
 
   const handleSelectVersion = (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>,
@@ -59,16 +55,24 @@ const OllamaModelSelector = ({
     console.log('selected model', model.name, version)
     handleModelChange(`${model.name}:${version}`)
   }
-
-  // Hacky: Close the popover when the search input is cleared
-  // The Command from shadcn is buggy, when they empty the input, the list gets messed up
-  // For now, we close the popover when the search input is cleared,
-  // not the best solution but better than a messy list, later I'll replace the Command component
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.value === '') {
-      setOpen(false)
+    const value = e.target.value
+
+    // debounce search input, only load models when user stops typing for 500ms
+    if (filterTimeout) {
+      clearTimeout(filterTimeout)
     }
+    const loadModelsDebounced = setTimeout(() => {
+      loadModels(value)
+    }, 500)
+
+    setFilterTimeout(loadModelsDebounced)
   }
+
+  useEffect(() => {
+    if (onlineModels.length) return
+    loadModels()
+  }, [])
 
   return (
     <FormGroup>
@@ -88,15 +92,19 @@ const OllamaModelSelector = ({
         </PopoverTrigger>
         <PopoverContent className="w-80 p-0">
           <Command>
-            <CommandInput
-              placeholder="Search model..."
-              className="h-9 focus:outline-none"
-              onInput={handleSearch}
-            />
+            <div className="flex h-9 items-center gap-2 border-b px-3">
+              <SearchIcon className="size-4 shrink-0 opacity-50" />
+              <Input
+                className="h-9 focus:outline-none focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:shadow-none border-none shadow-none"
+                placeholder="Search model..."
+                onChange={handleSearch}
+              />
+              <AnimatedLoader className={cn('size-4', isLoading ? 'opacity-50' : 'opacity-0')} />
+            </div>
             <CommandList>
               <CommandEmpty>No model found.</CommandEmpty>
               <CommandGroup>
-                {filteredModels.map((model) => (
+                {onlineModels.map((model) => (
                   <CommandItem
                     key={model.id}
                     value={model.name}

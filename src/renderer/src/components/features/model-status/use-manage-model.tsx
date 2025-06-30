@@ -2,7 +2,6 @@ import { ModelFactory } from '@global/factories/model.factory'
 import requiredModels from '@global/resources/required-models.json'
 import { InstalledModels, ModelDownload } from '@global/types/model'
 import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
-import { useCallback } from 'react'
 
 interface UseManageModel {
   isModelInstalled: (model: string) => boolean

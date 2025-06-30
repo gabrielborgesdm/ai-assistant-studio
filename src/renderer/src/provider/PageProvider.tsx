@@ -12,9 +12,9 @@ import {
 
 interface PageContextType {
   activePage: string
-  isSidebarDisabled: boolean
+  isNavigationDisabled: boolean
   pageProps: Record<string, unknown> | undefined
-  setIsSidebarDisabled: (disabled: boolean) => void
+  setIsNavigationDisabled: (disabled: boolean) => void
   setActivePage: (page: string, props?: Record<string, unknown>) => void
   withActivePage: (pageName: string, Component: React.ComponentType) => ReactElement
 }
@@ -43,18 +43,18 @@ export const PageProvider = ({ children }: { children: ReactNode }): ReactElemen
     window.scrollTo({ top: 0 })
   }, [activePage])
 
-  const [isSidebarDisabled, setIsSidebarDisabled] = useState(false)
+  const [isNavigationDisabled, setIsNavigationDisabled] = useState(false)
 
   const contextValue = useMemo(() => {
     return {
       activePage,
-      isSidebarDisabled,
+      isNavigationDisabled,
       pageProps,
-      setIsSidebarDisabled,
+      setIsNavigationDisabled,
       setActivePage: updateActivePage,
       withActivePage
     }
-  }, [activePage, isSidebarDisabled, pageProps])
+  }, [activePage, isNavigationDisabled, pageProps])
 
   return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>
 }

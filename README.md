@@ -8,6 +8,14 @@
   Create, customize, and chat with your own AI assistants powered by local language models via <a href="https://ollama.com/">Ollama</a>.
 </p>
 
+![Welcome Screen](public/welcome-page.png)
+
+### 💻 Main App Interface
+
+<!-- Insert main interface screenshot below -->
+
+![Main Interface](public/chat-interface.png)
+
 ## Features
 
 - ⚡ **Auto-Generated Assistants**  
@@ -28,20 +36,6 @@
 - 🛠 **Effortless Setup**  
   The guided onboarding helps you install Ollama, choose your models, and get started without the technical hassle.
 
-
-## 🖼 Preview
-
-### 🧭 Welcome Screen
-
-<!-- Insert welcome screen screenshot below -->
-
-![Welcome Screen](public/welcome-page.png)
-
-### 💻 Main App Interface
-
-<!-- Insert main interface screenshot below -->
-
-![Main Interface](public/chat-interface.png)
 
 ## 🎥 How It Works
 

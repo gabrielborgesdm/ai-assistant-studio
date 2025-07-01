@@ -42,7 +42,7 @@ export const ChatForm = ({
   const { isModelInstalled } = useManageModel()
   const { isCheckingRequirements } = useRequirementsContext()
 
-  const { setIsSidebarDisabled } = useGlobalContext()
+  const { setIsNavigationDisabled } = useGlobalContext()
 
   useEffect(() => {
     if (!isLoading) {
@@ -51,7 +51,6 @@ export const ChatForm = ({
       }
     }
   }, [isLoading])
-
 
   if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements)
     return (
@@ -62,11 +61,11 @@ export const ChatForm = ({
         shouldRenderWhenDownloaded={false}
         model={ModelFactory({ name: assistant.model })}
         onStartedDownloading={() => {
-          setIsSidebarDisabled(true)
+          setIsNavigationDisabled(true)
         }}
         onFinishedDownloading={() => {
           console.log('Finished downloading model')
-          setIsSidebarDisabled(false)
+          setIsNavigationDisabled(false)
         }}
       />
     )

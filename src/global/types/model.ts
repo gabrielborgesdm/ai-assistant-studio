@@ -11,6 +11,8 @@ export interface OllamaModel extends OllamaModelType {
   id?: number
   recommended?: boolean
   installedVersions?: string[]
+  pull?: string
+  updated?: string
 }
 
 export interface InstalledModels {

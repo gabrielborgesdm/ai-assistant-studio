@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Page } from '@renderer/pages'
 import { useAssistantContext } from '@renderer/provider/AssistantProvider'
 import { usePageContext } from '@renderer/provider/PageProvider'
-import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 import { useEffect, useState } from 'react'
 import { Control, FieldErrors, useForm, useWatch } from 'react-hook-form'
 
@@ -17,12 +16,11 @@ export interface UseHandleForm {
   register: any
   watch: any
   errors: FieldErrors
-  availableModels: OllamaModel[]
   selectedModel: OllamaModel | undefined
   control: Control<AssistantFormData>
   ephemeral: boolean
   isLoading: boolean
-  handleModelChange: (value: string) => void
+  handleModelChange: (value: string, selectedModel?: OllamaModel) => void
   validateTitle: (title: string) => boolean
   setIsLoading: (isLoading: boolean) => void
   setError: any
@@ -34,7 +32,6 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
   const { assistants } = useAssistantContext()
   const [selectedModel, setSelectedModel] = useState<OllamaModel | undefined>(undefined)
   const { loadAssistants, setActiveAssistant } = useAssistantContext()
-  const { availableModels } = useRequirementsContext()
   const { setActivePage } = usePageContext()
   const [isLoading, setIsLoading] = useState(false)
   const {
@@ -52,7 +49,7 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     defaultValues: {
       title: assistant?.title || '',
       description: assistant?.description || '',
-      model: DEFAULT_OLLAMA_MODEL,
+      model: assistant?.model || DEFAULT_OLLAMA_MODEL,
       ephemeral: assistant?.ephemeral || false,
       systemBehaviour: assistant?.systemBehaviour || '',
       prompt: assistant?.prompt || '',
@@ -76,11 +73,10 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     setIsLoading(false)
   }
 
-  const handleModelChange = (value: string): void => {
+  const handleModelChange = (value: string, selectedModel?: OllamaModel): void => {
     console.log('received model', value)
     setValue('model', value)
-    const modelWithoutVersion = value.split(':')[0]
-    setSelectedModel(availableModels.find((model) => model.name === modelWithoutVersion))
+    setSelectedModel(selectedModel)
   }
 
   const validateTitle = (title: string): boolean => {
@@ -120,7 +116,6 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
     watch,
     register,
     errors,
-    availableModels,
     control,
     ephemeral,
     selectedModel,

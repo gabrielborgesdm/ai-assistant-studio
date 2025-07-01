@@ -29,7 +29,8 @@ export const ChatComponent = ({
     currentAssistantMessage,
     handleClearHistory,
     handleCancelMessageRequest,
-    handleSubmit
+    handleSubmit,
+    isNavigationDisabled
   } = useHandleChat(assistant)
 
   return (
@@ -50,6 +51,7 @@ export const ChatComponent = ({
               handleClearHistory={handleClearHistory}
               handleCancelMessageRequest={handleCancelMessageRequest}
               HeaderButton={HeaderButton}
+              isNavigationDisabled={isNavigationDisabled}
             />
             <ChatBody
               assistant={assistant}

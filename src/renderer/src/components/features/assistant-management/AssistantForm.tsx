@@ -22,7 +22,6 @@ interface AssistantFormProps {
 export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactElement => {
   const {
     errors,
-    availableModels,
     selectedModel,
     control,
     ephemeral,
@@ -72,7 +71,6 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
 
           <OllamaModelSelector
             control={control}
-            models={availableModels}
             handleModelChange={handleModelChange}
             errors={errors}
           />

@@ -23,12 +23,12 @@ export const SidebarComponent = (): React.ReactElement => {
 
   const { isDark, toggleTheme } = useTheme()
   const { setActivePage, activePage, pageProps } = usePageContext()
-  const { isSidebarDisabled } = useGlobalContext()
+  const { isNavigationDisabled } = useGlobalContext()
 
   const { toggleSidebar } = useSidebar()
 
   const handleAssistantSelect = (assistantId: string): void => {
-    if (isSidebarDisabled) return
+    if (isNavigationDisabled) return
 
     const selectedAssistant = assistants.find((assistant) => assistant.id === assistantId)
     if (selectedAssistant) {
@@ -42,7 +42,7 @@ export const SidebarComponent = (): React.ReactElement => {
   }
 
   const handlePageChange = (page: string): void => {
-    if (isSidebarDisabled) return
+    if (isNavigationDisabled) return
     console.log(page)
     setActivePage(page)
     checkShouldToggleMenu()
@@ -58,7 +58,7 @@ export const SidebarComponent = (): React.ReactElement => {
   }
 
   const footerClassName = cn('flex items-center justify-between', {
-    disabled: isSidebarDisabled
+    disabled: isNavigationDisabled
   })
 
   if (activePage === Page.Setup) {
@@ -79,7 +79,7 @@ export const SidebarComponent = (): React.ReactElement => {
                 <SidebarMenuItem
                   key={assistant.id}
                   className={cn('cursor-pointer', {
-                    disabled: isSidebarDisabled
+                    disabled: isNavigationDisabled
                   })}
                 >
                   <SidebarMenuButton
@@ -107,7 +107,7 @@ export const SidebarComponent = (): React.ReactElement => {
             <SidebarMenu>
               <SidebarMenuItem
                 className={cn('cursor-pointer', {
-                  disabled: isSidebarDisabled
+                  disabled: isNavigationDisabled
                 })}
               >
                 <SidebarMenuButton

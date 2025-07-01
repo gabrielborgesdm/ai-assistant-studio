@@ -11,8 +11,8 @@ import {
 import { Config } from '@global/types/config'
 
 interface GlobalContextType {
-  isSidebarDisabled: boolean
-  setIsSidebarDisabled: (disabled: boolean) => void
+  isNavigationDisabled: boolean
+  setIsNavigationDisabled: (disabled: boolean) => void
   config: Config | undefined
   setConfig: (config: Config | undefined) => void
   os: string | undefined
@@ -21,7 +21,7 @@ interface GlobalContextType {
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined)
 
 export const GlobalProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [isSidebarDisabled, setIsSidebarDisabled] = useState(false)
+  const [isNavigationDisabled, setIsNavigationDisabled] = useState(false)
   const [config, setConfig] = useState<Config | undefined>(undefined)
   const [os, setOs] = useState<string | undefined>(undefined)
 
@@ -43,13 +43,13 @@ export const GlobalProvider = ({ children }: { children: ReactNode }): ReactElem
 
   const contextValue = useMemo(() => {
     return {
-      isSidebarDisabled,
-      setIsSidebarDisabled,
+      isNavigationDisabled,
+      setIsNavigationDisabled,
       config,
       setConfig,
       os
     }
-  }, [isSidebarDisabled, config, os])
+  }, [isNavigationDisabled, config, os])
 
   return <GlobalContext.Provider value={contextValue}>{children}</GlobalContext.Provider>
 }

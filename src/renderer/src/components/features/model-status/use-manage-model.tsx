@@ -2,7 +2,6 @@ import { ModelFactory } from '@global/factories/model.factory'
 import requiredModels from '@global/resources/required-models.json'
 import { InstalledModels, ModelDownload } from '@global/types/model'
 import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
-import { useCallback } from 'react'
 
 interface UseManageModel {
   isModelInstalled: (model: string) => boolean
@@ -22,10 +21,7 @@ export const useManageModel = (): UseManageModel => {
     setOllamaRunning
   } = useRequirementsContext()
 
-  const isModelInstalled = useCallback(
-    (model: string): boolean => models?.[model]?.installed ?? false,
-    [models]
-  )
+  const isModelInstalled = (model: string): boolean => models?.[model]?.installed ?? false
 
   /*
    * Save a model into the models list if it doesn't exist
@@ -44,6 +40,7 @@ export const useManageModel = (): UseManageModel => {
   }
 
   const handleFinishedDownloading = async (modelName: string): Promise<void> => {
+    console.log('Finished downloading model', modelName)
     await saveModel(modelName)
     syncModelsAndOllamaStatus()
   }

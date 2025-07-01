@@ -11,6 +11,7 @@ interface ChatHeaderProps {
   HeaderButton?: ReactElement
   handleClearHistory: () => void
   handleCancelMessageRequest: () => void
+  isNavigationDisabled?: boolean
   history: AssistantHistory | undefined
 }
 
@@ -20,7 +21,8 @@ export const ChatHeader = ({
   HeaderButton,
   handleClearHistory,
   handleCancelMessageRequest,
-  history
+  history,
+  isNavigationDisabled
 }: ChatHeaderProps): React.ReactElement => {
   const hasMessages = history?.messages && history.messages.length > 0
 
@@ -55,7 +57,7 @@ export const ChatHeader = ({
             <BrushCleaning />
           </Button>
         )}
-        <AssistantDropdown assistant={assistant} />
+        <AssistantDropdown assistant={assistant} disabled={isNavigationDisabled} />
       </div>
     </header>
   )

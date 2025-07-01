@@ -27,12 +27,13 @@ interface useHandleChatProps {
   handleClearHistory: () => void
   handleCancelMessageRequest: () => void
   handleSubmit: (e: FormEvent) => Promise<void>
+  isNavigationDisabled: boolean
 }
 
 export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   const { checkRequirementsAreMet, checkOllamaRunning } = useManageModel()
   const { setActivePage } = usePageContext()
-  const { setIsSidebarDisabled } = useGlobalContext()
+  const { setIsNavigationDisabled, isNavigationDisabled } = useGlobalContext()
   const [history, setHistory] = useState<AssistantHistory | undefined>(undefined)
   const [textInput, setTextInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -216,7 +217,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   }, [assistant])
 
   useEffect(() => {
-    setIsSidebarDisabled(isLoading)
+    setIsNavigationDisabled(isLoading)
   }, [isLoading])
 
   return {
@@ -236,6 +237,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     images,
     onRemoveImage,
     onAddImage,
-    onClickAttachFile
+    onClickAttachFile,
+    isNavigationDisabled
   }
 }

@@ -25,7 +25,7 @@ export const ChatHeader = ({
   isNavigationDisabled
 }: ChatHeaderProps): React.ReactElement => {
   const hasMessages = history?.messages && history.messages.length > 0
-
+a = 5
   return (
     <header className="flex items-center justify-between p-4 border-b">
       <div className="flex gap-2 items-center">
@@ -62,3 +62,5 @@ export const ChatHeader = ({
     </header>
   )
 }
+
+echo this is a test

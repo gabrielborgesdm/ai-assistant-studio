@@ -12,6 +12,7 @@ export interface Assistant {
   prompt?: string
   systemBehaviour?: string
   allowImage?: boolean
+  contextPath?: string
 }
 
 export type AssistantData = Omit<Assistant, 'id'> & { id?: string | undefined }
@@ -47,7 +48,8 @@ export const assistantFormSchema = z.object({
   ephemeral: z.boolean(),
   systemBehaviour: z.string().optional(),
   prompt: z.string().optional(),
-  allowImage: z.boolean()
+  allowImage: z.boolean(),
+  contextPath: z.string().optional()
 })
 
 // Define the type based on the schema

@@ -14,6 +14,7 @@ import { Label } from '@renderer/components/ui/label'
 import { GenerateBehaviourButton } from '@/components/features/assistant-management/form/AutoGenerateButton'
 import OllamaModelSelector from '@/components/features/assistant-management/form/OllamaModelSelector'
 import { useHandleForm } from '@/components/features/assistant-management/form/use-handle-form'
+import { ContextPathInput } from './form/ContextPathInput'
 
 interface AssistantFormProps {
   assistant?: AssistantData
@@ -77,6 +78,12 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
         </FormSection>
         <FormSection>
           <AssistantModeCheck control={control} errors={errors} />
+        </FormSection>
+        <FormSection>
+          <FormGroup>
+            <ContextPathInput control={control} setValue={setValue} />
+            <InputError error={errors.contextPath?.message as string} />
+          </FormGroup>
         </FormSection>
         <FormSection>
           <FormGroup>

@@ -15,6 +15,12 @@ import { GenerateBehaviourButton } from '@/components/features/assistant-managem
 import OllamaModelSelector from '@/components/features/assistant-management/form/OllamaModelSelector'
 import { useHandleForm } from '@/components/features/assistant-management/form/use-handle-form'
 import { ContextPathInput } from './form/ContextPathInput'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion'
 
 interface AssistantFormProps {
   assistant?: AssistantData
@@ -52,24 +58,6 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
             <InputError error={errors.title?.message as string} />
           </FormGroup>
 
-          <FormGroup>
-            <Label htmlFor="description">Assistant Description (Optional)</Label>
-            <AutoGrowingTextarea
-              id="description"
-              className="min-h-[100px]"
-              placeholder="e.g. This assistant helps you with proofreading and editing your text. It can correct grammar, spelling, and punctuation."
-              {...register('description')}
-            />
-            <Description>
-              Describe what your assistant does.{' '}
-              <strong>
-                This description can be used to automatically generate the assistant's instructions
-                and behavior.
-              </strong>
-            </Description>
-            <InputError error={errors.description?.message as string} />
-          </FormGroup>
-
           <OllamaModelSelector
             control={control}
             handleModelChange={handleModelChange}
@@ -79,95 +67,123 @@ export const AssistantForm = ({ assistant }: AssistantFormProps): React.ReactEle
         <FormSection>
           <AssistantModeCheck control={control} errors={errors} />
         </FormSection>
-        <FormSection>
-          <FormGroup>
-            <ContextPathInput control={control} setValue={setValue} />
-            <InputError error={errors.contextPath?.message as string} />
-          </FormGroup>
-        </FormSection>
-        <FormSection>
-          <FormGroup>
-            <div className="flex items-center justify-between max-w-full">
-              <Label htmlFor="systemBehaviour">Assistant Behaviour (Optional)</Label>
-              <GenerateBehaviourButton
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
-                setError={setError}
-                clearErrors={clearErrors}
-                autoGenerateAssistant={systemBehaviourAutoGenerateAssistant}
-                control={control}
-                setValue={setValue}
-                fieldName="systemBehaviour"
-              />
-            </div>
-            <AutoGrowingTextarea
-              id="systemBehaviour"
-              watchedValue={watch('systemBehaviour')}
-              placeholder='e.g. "You are a friendly tutor that explains complex topics in simple terms."'
-              {...register('systemBehaviour')}
-            />
 
-            <InputError error={errors.systemBehaviour?.message as string} />
-            <Description>
-              Define how the assistant should behave during conversations. This sets its
-              personality, tone, and general context for responses.
-            </Description>
-          </FormGroup>
-          <FormGroup>
-            <div className="flex items-center justify-between max-w-full">
-              <Label htmlFor="prompt">
-                {ephemeral ? 'Instruction' : 'Initial Instruction'}
-                {' (Optional)'}
-              </Label>
-              <GenerateBehaviourButton
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
-                setError={setError}
-                clearErrors={clearErrors}
-                autoGenerateAssistant={instructionAutoGenerateAssistant}
-                control={control}
-                setValue={setValue}
-                fieldName="prompt"
-              />
-            </div>
-            <AutoGrowingTextarea
-              id="prompt"
-              watchedValue={watch('prompt')}
-              placeholder={
-                ephemeral
-                  ? 'e.g. "Correct the following text for grammar and spelling:"'
-                  : 'e.g. "Write a professional email about the following issue:"'
-              }
-              {...register('prompt')}
-            />
-            <div className="space-y-1">
-              {ephemeral ? (
-                <Description>
-                  This instruction will be combined with the user's input every time they send a
-                  message.
-                </Description>
-              ) : (
-                <Description>
-                  This instruction will be combined with the user's input the first time they send a
-                  message.
-                </Description>
-              )}
-              <p className="text-xs text-muted-foreground italic">
-                You can use the variable <code className="px-1 rounded text-xs">{'{{text}}'}</code>{' '}
-                to define where the user’s message will be inserted. If not provided, it will be
-                appended at the end.
-              </p>
-            </div>
-            <InputError error={errors.prompt?.message as string} />
-          </FormGroup>
-        </FormSection>
-        <FormSection>
-          <ImageUploadSwitch
-            modelUrl={selectedModel?.url}
-            modelName={selectedModel?.name}
-            control={control}
-          />
-        </FormSection>
+        <div>
+          <Accordion type="multiple">
+            <AccordionItem value="Advanced Settings">
+              <AccordionTrigger>Advanced Settings</AccordionTrigger>
+              <AccordionContent>
+                <FormSection>
+                  <ImageUploadSwitch
+                    modelUrl={selectedModel?.url}
+                    modelName={selectedModel?.name}
+                    control={control}
+                  />
+                </FormSection>
+                <FormSection>
+                  <FormGroup>
+                    <ContextPathInput control={control} setValue={setValue} />
+                    <InputError error={errors.contextPath?.message as string} />
+                  </FormGroup>
+                </FormSection>
+                <FormGroup>
+                  <Label htmlFor="description">Assistant Description (Optional)</Label>
+                  <AutoGrowingTextarea
+                    id="description"
+                    className="min-h-[100px]"
+                    placeholder="e.g. This assistant helps you with proofreading and editing your text. It can correct grammar, spelling, and punctuation."
+                    {...register('description')}
+                  />
+                  <Description>
+                    Describe what your assistant does.{' '}
+                    <strong>
+                      This description can be used to automatically generate the assistant's
+                      instructions and behavior.
+                    </strong>
+                  </Description>
+                  <InputError error={errors.description?.message as string} />
+                </FormGroup>
+                <FormSection>
+                  <FormGroup>
+                    <div className="flex items-center justify-between max-w-full">
+                      <Label htmlFor="systemBehaviour">Assistant Behaviour (Optional)</Label>
+                      <GenerateBehaviourButton
+                        isLoading={isLoading}
+                        setIsLoading={setIsLoading}
+                        setError={setError}
+                        clearErrors={clearErrors}
+                        autoGenerateAssistant={systemBehaviourAutoGenerateAssistant}
+                        control={control}
+                        setValue={setValue}
+                        fieldName="systemBehaviour"
+                      />
+                    </div>
+                    <AutoGrowingTextarea
+                      id="systemBehaviour"
+                      watchedValue={watch('systemBehaviour')}
+                      placeholder='e.g. "You are a friendly tutor that explains complex topics in simple terms."'
+                      {...register('systemBehaviour')}
+                    />
+
+                    <InputError error={errors.systemBehaviour?.message as string} />
+                    <Description>
+                      Define how the assistant should behave during conversations. This sets its
+                      personality, tone, and general context for responses.
+                    </Description>
+                  </FormGroup>
+                  <FormGroup>
+                    <div className="flex items-center justify-between max-w-full">
+                      <Label htmlFor="prompt">
+                        {ephemeral ? 'Instruction' : 'Initial Instruction'}
+                        {' (Optional)'}
+                      </Label>
+                      <GenerateBehaviourButton
+                        isLoading={isLoading}
+                        setIsLoading={setIsLoading}
+                        setError={setError}
+                        clearErrors={clearErrors}
+                        autoGenerateAssistant={instructionAutoGenerateAssistant}
+                        control={control}
+                        setValue={setValue}
+                        fieldName="prompt"
+                      />
+                    </div>
+                    <AutoGrowingTextarea
+                      id="prompt"
+                      watchedValue={watch('prompt')}
+                      placeholder={
+                        ephemeral
+                          ? 'e.g. "Correct the following text for grammar and spelling:"'
+                          : 'e.g. "Write a professional email about the following issue:"'
+                      }
+                      {...register('prompt')}
+                    />
+                    <div className="space-y-1">
+                      {ephemeral ? (
+                        <Description>
+                          This instruction will be combined with the user's input every time they
+                          send a message.
+                        </Description>
+                      ) : (
+                        <Description>
+                          This instruction will be combined with the user's input the first time
+                          they send a message.
+                        </Description>
+                      )}
+                      <p className="text-xs text-muted-foreground italic">
+                        You can use the variable{' '}
+                        <code className="px-1 rounded text-xs">{'{{text}}'}</code> to define where
+                        the user’s message will be inserted. If not provided, it will be appended at
+                        the end.
+                      </p>
+                    </div>
+                    <InputError error={errors.prompt?.message as string} />
+                  </FormGroup>
+                </FormSection>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
 
         <Button type="submit" className="ml-auto mt-4 align-right w-full" disabled={isLoading}>
           Save Assistant

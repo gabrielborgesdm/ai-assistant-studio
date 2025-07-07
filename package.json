@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@hookform/resolvers": "^5.0.1",
     "@langchain/community": "^0.3.48",
+    "@langchain/core": "^0.3.62",
     "@langchain/ollama": "^0.2.3",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-avatar": "^1.1.10",

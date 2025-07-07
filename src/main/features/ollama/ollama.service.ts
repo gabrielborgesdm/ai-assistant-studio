@@ -12,25 +12,41 @@ import ollama from 'ollama'
 import { searchOllamaModels } from 'ollama-models-search'
 import defaultOllamaModels from '@global/resources/default-ollama-models.json'
 import { OllamaModel as SearchOllamaModel } from 'ollama-models-search'
+import { RagService } from '../rag/rag.service'
 
 export default class OllamaService {
   OLLAMA_HOST: string = 'http://localhost:11434'
   ollama: any
+  ragService: RagService
 
   constructor() {
     this.ollama = (ollama as any).default
+    this.ragService = RagService.getInstance()
   }
 
-  streamOllamaChatResponse = async (
+  async streamOllamaChatResponse(
     assistant: Assistant,
     history: AssistantHistory,
     event: IpcMainEvent,
     abort: AbortController
-  ): Promise<void> => {
+  ): Promise<void> {
     try {
       this.addsystemBehaviourToHistory(history, assistant)
       this.removeAssistantMessageHistoryIfEphemeral(history, assistant)
       this.applyPromptToUserMessage(history, assistant)
+
+      // If a contextPath is provided in the assistant's configuration,
+      // use the RagService to retrieve relevant context from the specified directory.
+      if (assistant.contextPath) {
+        const userMessage = history.messages[history.messages.length - 1].content
+        // Get the context from the RagService based on the user's message.
+        const context = await this.ragService.getContext(assistant.contextPath, userMessage)
+
+        // Prepend the retrieved context to the user's message to provide
+        // the model with relevant information for generating a response.
+        history.messages[history.messages.length - 1].content =
+          `Here is some context to help you answer the user's question:\n\n${context}\n\n--------------------\n\n${userMessage}`
+      }
 
       const response = await await this.ollama.chat({
         model: assistant.model,
@@ -61,10 +77,7 @@ export default class OllamaService {
   }
 
   // If it's ephemeral we keep only the last message and the system message
-  removeAssistantMessageHistoryIfEphemeral = (
-    history: AssistantHistory,
-    assistant: Assistant
-  ): void => {
+  removeAssistantMessageHistoryIfEphemeral(history: AssistantHistory, assistant: Assistant): void {
     if (assistant.ephemeral) {
       const systemMessages = history.messages.filter(
         (message) => message.role === MessageRole.SYSTEM
@@ -80,7 +93,7 @@ export default class OllamaService {
    * For ephemeral assistants, we always format the user message with the prompt, to make sure the A.I. will follow the instructions
    * this approach is necessary because relying only on the system message is not enough to make the A.I. follow what is being asked
    */
-  applyPromptToUserMessage = (history: AssistantHistory, assistant: Assistant): void => {
+  applyPromptToUserMessage(history: AssistantHistory, assistant: Assistant): void {
     const countUserMessages = history.messages.filter(
       (message) => message.role === MessageRole.USER
     ).length
@@ -113,7 +126,7 @@ export default class OllamaService {
   }
 
   // Adds the system behavior to the message history if it's not already there
-  addsystemBehaviourToHistory = (history: AssistantHistory, assistant: Assistant): void => {
+  addsystemBehaviourToHistory(history: AssistantHistory, assistant: Assistant): void {
     if (!assistant.systemBehaviour) {
       return
     }
@@ -127,7 +140,7 @@ export default class OllamaService {
   }
 
   // Todo: check memory or running models before warming up
-  warmupOllama = async (model: string): Promise<void> => {
+  async warmupOllama(model: string): Promise<void> {
     try {
       console.log('Warming up Ollama Model', model)
       await this.ollama.generate({
@@ -141,7 +154,7 @@ export default class OllamaService {
     }
   }
 
-  checkOllamaRunning = async (): Promise<boolean> => {
+  async checkOllamaRunning(): Promise<boolean> {
     try {
       await this.ollama.list()
       return true
@@ -151,7 +164,7 @@ export default class OllamaService {
     return false
   }
 
-  listModels = async (): Promise<string[]> => {
+  async listModels(): Promise<string[]> {
     try {
       const response = await this.ollama.list()
       const models = response?.models?.map((model) => model.name)
@@ -162,7 +175,7 @@ export default class OllamaService {
     return []
   }
 
-  deleteModel = async (model: string): Promise<boolean> => {
+  async deleteModel(model: string): Promise<boolean> {
     try {
       const response = await this.ollama.delete({ model })
       console.log('Model deleted:', model)
@@ -174,12 +187,12 @@ export default class OllamaService {
     }
   }
 
-  downloadModel = async (
+  async downloadModel(
     event: IpcMainEvent,
     eventReply: string,
     model: ModelDownload,
     abort: AbortController
-  ): Promise<void> => {
+  ): Promise<void> {
     try {
       //Todo: use ollama npm pull and ollama.abort() to cancel the download
       const response = await axios.post(
@@ -222,7 +235,7 @@ export default class OllamaService {
     }
   }
 
-  searchOnlineModels = async (query: string): Promise<OllamaModel[]> => {
+  async searchOnlineModels(query: string): Promise<OllamaModel[]> {
     try {
       const [response, isOffline] = await new Promise<[SearchOllamaModel[], boolean]>((resolve) => {
         // If the request takes too long, resolve with the default stored models (Scraped at 2025-06-10)

@@ -19,4 +19,16 @@ export default class FileService {
 
     return undefined
   }
+
+  getDirectoryPath = async (): Promise<string | undefined> => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory']
+    })
+
+    if (!result.canceled && result.filePaths?.length > 0) {
+      return result.filePaths[0]
+    }
+
+    return undefined
+  }
 }

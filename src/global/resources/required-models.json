@@ -2,7 +2,13 @@
   {
     "name": "llama3.2:3b",
     "size": "2GB",
-    "info": "Used for the default assistants and some A.I. auto-genertion features",
+    "info": "Used for the default assistants and some A.I. auto-generation features",
+    "required": true
+  },
+  {
+    "name": "nomic-embed-text:v1.5",
+    "size": "274MB",
+    "info": "Used for efficient context search, optimized for retrieving relevant information from large datasets.",
     "required": true
   }
 ]

@@ -54,6 +54,7 @@ declare global {
         deleteAssistant: (assistantId: string) => Promise<void>
       }
       file: {
+        getDirectoryPath: () => Promise<string | undefined>
         selectImage: () => Promise<{ buffer: string; name: string; type: string } | undefined>
       }
       config: {

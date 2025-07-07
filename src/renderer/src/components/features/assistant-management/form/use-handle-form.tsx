@@ -53,7 +53,8 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
       ephemeral: assistant?.ephemeral || false,
       systemBehaviour: assistant?.systemBehaviour || '',
       prompt: assistant?.prompt || '',
-      allowImage: assistant?.allowImage || false
+      allowImage: assistant?.allowImage || false,
+      contextPath: assistant?.contextPath || ''
     }
   })
 

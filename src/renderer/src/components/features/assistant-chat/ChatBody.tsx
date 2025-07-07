@@ -2,7 +2,7 @@ import { ChatMessage } from '@/components/features/assistant-chat/ChatMessage'
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { useHandleCopy } from '@renderer/hooks/use-handle-copy'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect } from 'react'
 
 interface ChatBodyProps {
   assistant: Assistant
@@ -19,7 +19,6 @@ export const ChatBody = ({
   isLoading,
   shouldShowAvatar = true
 }: ChatBodyProps): ReactElement => {
-  
   const { handleCopy } = useHandleCopy()
 
   const renderDescription = (): ReactElement => {
@@ -27,6 +26,10 @@ export const ChatBody = ({
     if (!assistant.description || history?.messages?.length || currentAssistantMessage) return <></>
     return <p className="text-center text-sm italic">{assistant.description}</p>
   }
+
+  useEffect(() => {
+    console.log(history)
+  }, [history])
 
   return (
     <div className="flex flex-1 relative">

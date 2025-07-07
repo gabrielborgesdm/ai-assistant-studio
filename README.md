@@ -10,32 +10,39 @@
 
 ![Welcome Screen](public/welcome-page.png)
 
+## Features
+
+⚡ **Create Assistants in Seconds**
+Quickly set up helpful assistants just by describing what you need — like a proofreader, email helper, or markdown editor. The app handles the rest.
+
+🎨 **Real-time Ollama Models Listing**
+Models are pulled in real-time from the Ollama website, so you always see the latest available options — including custom variants created by the community.
+
+📂 **Use Your Own Files for Context**
+You can now connect assistants to your local files for smarter, more relevant responses. Just head to the assistant’s Advanced settings and choose a folder.
+
+💬 **Keep Conversations Organized**
+Keep your interactions organized with persistent history and support for multiple assistants.
+
+🔒 **Local-Only by Design**
+No servers, no cloud. Everything runs on your device and stays private.
+
+⌨️ **Dynamic Shortcut Assignment**
+Use a simple keyboard shortcut to bring up your assistant over any app — super handy when multitasking.
+
+🛠 **Easy Setup**
+A step-by-step guide helps you install everything you need and choose your models, no tech background required.
+
 ### 💻 Main App Interface
 
 <!-- Insert main interface screenshot below -->
 
 ![Main Interface](public/chat-interface.png)
 
-## Features
+## Installation
+[![GitHub release](https://img.shields.io/github/v/release/gabrielborgesdm/ai-assistant-studio)](https://github.com/gabrielborgesdm/ai-assistant-studio/releases)
 
-- ⚡ **Auto-Generated Assistants**  
-  Easily create intelligent, contextual assistants in seconds — powered by AI-driven auto-generation. Whether you need a **conversational partner** or a **task performer** (like a proofreader, email writer, or markdown editor), just describe what you want, and the app will do the rest.
-
-- 🎨 **Fully Customizable**  
-  Choose from any Ollama-compatible model, fine-tune behavior with custom instructions, and define input fields tailored to your workflow.
-
-- 💬 **Conversation Management**  
-  Keep your interactions organized with persistent history and support for multiple assistants.
-
-- 🔒 **Privacy First**  
-  100% local. No internet required. Your data stays on your machine — always.
-
-- ⌨️ **Quick Access Anywhere**  
-  Launch a floating assistant window instantly with a keyboard shortcut — on top of any app.
-
-- 🛠 **Effortless Setup**  
-  The guided onboarding helps you install Ollama, choose your models, and get started without the technical hassle.
-
+Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-studio/releases) and download the latest version for your operating system.
 
 ## 🎥 How It Works
 
@@ -46,12 +53,6 @@
 In this video, I create a **Proofreader assistant** using **Task mode**, which is designed to respond only to the **latest user message**—perfect for focused, one-shot tasks like grammar correction or rewriting.
 
 After generating the initial assistant, I also **adjust the system instructions** to better tailor its behavior to my specific needs. This allows the assistant to follow more precise guidelines, ensuring more accurate and helpful responses.
-
-## 🚀 Getting Started
-
-### Installation
-
-Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-studio/releases) and download the latest version for your operating system.
 
 ## 🗺 Roadmap
 
@@ -65,8 +66,8 @@ Head to the [releases page](https://github.com/gabrielborgesdm/ai-assistant-stud
 - ✅ Dynamic keyboard shortcut support (Windows & Linux)
 - ✅ Streamed markdown rendering with code block highlighting
 - ✅ Welcome/setup onboarding screen
-- 🔄 In Progress: Multiple simultaneous chat sessions per assistant
-- 🔜 Planned: Contextual search over local markdown files using Langchain
+- ✅ Contextual search over local markdown files using Langchain
+- 🔜 Planned: Multiple simultaneous chat sessions per assistant
 - 🔜 Planned: Support for ChatGPT and other cloud model backends
 
 

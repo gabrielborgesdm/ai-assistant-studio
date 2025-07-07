@@ -21,7 +21,7 @@
 📂 **Use Your Own Files for Context**:
   You can connect assistants to your local files for smarter, more relevant responses. Just head to the assistant’s Advanced settings and choose a folder.
 
-💬 **Keep Conversations Organized**
+💬 **Keep Conversations Organized**:
   Keep your interactions organized with persistent history and support for multiple assistants.
 
 🔒 **Local-Only by Design**:

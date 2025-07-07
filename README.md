@@ -12,26 +12,26 @@
 
 ## Features
 
-⚡ **Create Assistants in Seconds**
-Quickly set up helpful assistants just by describing what you need — like a proofreader, email helper, or markdown editor. The app handles the rest.
+⚡ **Create Assistants in Seconds**:
+   Quickly set up helpful assistants just by describing what you need — like a proofreader, email helper, or markdown editor. The app handles the rest.
 
-🎨 **Real-time Ollama Models Listing**
-Models are pulled in real-time from the Ollama website, so you always see the latest available options — including custom variants created by the community.
+🎨 **Real-time Ollama Models Listing**:
+   Models are pulled in real-time from the Ollama website, so you always see the latest available options — including custom variants created by the community.
 
-📂 **Use Your Own Files for Context**
-You can now connect assistants to your local files for smarter, more relevant responses. Just head to the assistant’s Advanced settings and choose a folder.
+📂 **Use Your Own Files for Context**:
+  You can connect assistants to your local files for smarter, more relevant responses. Just head to the assistant’s Advanced settings and choose a folder.
 
 💬 **Keep Conversations Organized**
-Keep your interactions organized with persistent history and support for multiple assistants.
+  Keep your interactions organized with persistent history and support for multiple assistants.
 
-🔒 **Local-Only by Design**
-No servers, no cloud. Everything runs on your device and stays private.
+🔒 **Local-Only by Design**:
+  No servers, no cloud. Everything runs on your device and stays private.
 
-⌨️ **Dynamic Shortcut Assignment**
-Use a simple keyboard shortcut to bring up your assistant over any app — super handy when multitasking.
+⌨️ **Dynamic Shortcut Assignment**:
+  Use a simple keyboard shortcut to bring up your assistant over any app — super handy when multitasking.
 
-🛠 **Easy Setup**
-A step-by-step guide helps you install everything you need and choose your models, no tech background required.
+🛠 **Easy Setup**:
+  A step-by-step guide helps you install everything you need and choose your models, no tech background required.
 
 ### 💻 Main App Interface
 

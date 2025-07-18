@@ -17,11 +17,7 @@ export default defineConfig({
     // Exclude node_modules, dist, and out directories from tests
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'out'],
     // Enable rich UI for test results
-    ui: true,
     // Configure the UI host and port
-    uiOptions: {
-      host: '127.0.0.1',
-      port: 51204,
-    },
+    ui: true,
   },
 })

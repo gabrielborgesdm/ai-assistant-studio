@@ -55,6 +55,10 @@ export const ChatForm = ({
 
   const checkShouldShowDownloadingCard = (): void => {
     console.log('Checking should show downloading card')
+    console.log('isModelInstalled', isModelInstalled(assistant.model))
+    console.log('isCheckingRequirements', isCheckingRequirements)
+    console.log('isLoading', isLoading)
+    console.log('assistant.model', assistant.model)
     if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements) {
       setShouldShowDownloadingCard(true)
     } else {
@@ -64,7 +68,7 @@ export const ChatForm = ({
 
   useEffect(() => {
     checkShouldShowDownloadingCard()
-  }, [isLoading, isModelInstalled(assistant.model), isCheckingRequirements])
+  }, [isLoading, isModelInstalled(assistant.model), isCheckingRequirements, assistant.model])
 
   if (shouldShowDownloadingCard)
     return (

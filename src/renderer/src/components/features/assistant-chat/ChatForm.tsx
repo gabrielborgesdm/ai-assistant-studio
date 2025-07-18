@@ -12,7 +12,7 @@ import { cn } from '@renderer/lib/utils'
 import { useGlobalContext } from '@renderer/provider/GlobalProvider'
 import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
 import { Image, SendHorizonal } from 'lucide-react'
-import { ReactElement, useEffect, useRef } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 
 interface ChatFormProps {
   assistant: Assistant
@@ -43,6 +43,7 @@ export const ChatForm = ({
   const { isCheckingRequirements } = useRequirementsContext()
 
   const { setIsNavigationDisabled } = useGlobalContext()
+  const [shouldShowDownloadingCard, setShouldShowDownloadingCard] = useState(false)
 
   useEffect(() => {
     if (!isLoading) {
@@ -52,7 +53,20 @@ export const ChatForm = ({
     }
   }, [isLoading])
 
-  if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements)
+  const checkShouldShowDownloadingCard = (): void => {
+    console.log('Checking should show downloading card')
+    if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements) {
+      setShouldShowDownloadingCard(true)
+    } else {
+      setShouldShowDownloadingCard(false)
+    }
+  }
+
+  useEffect(() => {
+    checkShouldShowDownloadingCard()
+  }, [isLoading, isModelInstalled(assistant.model), isCheckingRequirements])
+
+  if (shouldShowDownloadingCard)
     return (
       <ModelStatusCard
         className="border-t border-0 rounded-none"
@@ -66,6 +80,7 @@ export const ChatForm = ({
         onFinishedDownloading={() => {
           console.log('Finished downloading model')
           setIsNavigationDisabled(false)
+          checkShouldShowDownloadingCard()
         }}
       />
     )

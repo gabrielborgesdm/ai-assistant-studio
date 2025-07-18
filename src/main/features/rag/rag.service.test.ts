@@ -42,7 +42,7 @@ describe('RagService', () => {
   })
 
   it('should retrieve context based on a query', async () => {
-    const ragService = RagService.getInstance()
+    const ragService = new RagService()
     const query = 'What is software engineering?'
 
     console.log(`\nExecuting RAG test with query: "${query}"`)
@@ -62,7 +62,7 @@ describe('RagService', () => {
 
   // The idea is to test if the contextual search is working
   it('should retrieve context based on a non direct query', async () => {
-    const ragService = RagService.getInstance()
+    const ragService = new RagService()
     const query = 'What city is mentioned?'
 
     console.log(`\nExecuting RAG test with query: "${query}"`)

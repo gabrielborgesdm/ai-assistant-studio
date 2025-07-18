@@ -57,10 +57,10 @@ export const ModelStatusCard = ({
       }
       if (result.done) {
         // Timeout to debounce the animation
-        setTimeout(() => {
+        setTimeout(async () => {
           // If shouldRenderWhenDownloaded is set to false, no need to update the ui when finished downloading
           // because the component will be unmounted anyways
-          handleFinishedDownloading(model.name)
+          await handleFinishedDownloading(model.name)
           onFinishedDownloading?.()
           if (!shouldRenderWhenDownloaded) {
             return

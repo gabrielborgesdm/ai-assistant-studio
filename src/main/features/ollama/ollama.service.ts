@@ -21,7 +21,7 @@ export default class OllamaService {
 
   constructor() {
     this.ollama = (ollama as any).default
-    this.ragService = RagService.getInstance()
+    this.ragService = new RagService()
   }
 
   async streamOllamaChatResponse(

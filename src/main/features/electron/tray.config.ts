@@ -5,7 +5,8 @@ import { BrowserWindow, Menu, nativeImage, Tray } from 'electron'
 let isQuitting = false
 
 export const setupTray = (app: Electron.App, mainWindow: BrowserWindow | null): void => {
-  if (!mainWindow) {
+  console.log('Setting up tray', process.env['ENV'])
+  if (!mainWindow || process.env['ENV'] === 'development') {
     return
   }
   // 🟡 Tray setup

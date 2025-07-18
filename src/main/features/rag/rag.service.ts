@@ -9,22 +9,8 @@ import { DEFAULT_OLLAMA_EMBEDDINGS_MODEL } from '@global/const/consts'
  * Service for handling Retrieval-Augmented Generation (RAG) functionalities.
  * This service is responsible for processing local documents, creating vector embeddings,
  * and retrieving relevant context to be injected into the assistant's prompt.
- * It follows a singleton pattern to ensure a single instance throughout the application.
  */
 export class RagService {
-  private static instance: RagService
-
-  /**
-   * Returns the singleton instance of the RagService.
-   * @returns The singleton instance of the RagService.
-   */
-  public static getInstance(): RagService {
-    if (!RagService.instance) {
-      RagService.instance = new RagService()
-    }
-    return RagService.instance
-  }
-
   /**
    * Retrieves relevant context from documents in a specified directory based on a user query.
    * @param contextPath - The path to the directory containing the context documents.

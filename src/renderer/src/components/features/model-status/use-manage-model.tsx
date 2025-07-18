@@ -42,7 +42,6 @@ export const useManageModel = (): UseManageModel => {
   const handleFinishedDownloading = async (modelName: string): Promise<void> => {
     console.log('Finished downloading model', modelName)
     await saveModel(modelName)
-    syncModelsAndOllamaStatus()
   }
 
   /*

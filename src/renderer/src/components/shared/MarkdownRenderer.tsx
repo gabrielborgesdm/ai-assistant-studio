@@ -19,6 +19,21 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }): ReactElement => {
           const match = /language-(\w+)/.exec(className || '')
           const codeString = String(children).replace(/\n$/, '')
 
+          if (!codeString || codeString === 'undefined') return ''
+
+          // count lines
+          const lines = codeString.split('\n')
+          const lineCount = lines.length
+
+          // return it for single line codes
+          if (lineCount === 1) {
+            return (
+              <span className="inline-flex items-center bg-zinc-900 italic rounded px-2 text-white">
+                {codeString}
+              </span>
+            )
+          }
+
           return (
             <div className="relative my-4 rounded-2xl overflow-hidden shadow bg-zinc-900 text-sm group">
               <button

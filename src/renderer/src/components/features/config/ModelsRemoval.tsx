@@ -106,7 +106,7 @@ export const ModelsRemoval = (): ReactElement => {
                       </TableCell>
                       <TableCell className="flex items-center gap-2">
                         <Button
-                          variant="destructive"
+                          variant="outline"
                           type="button"
                           className={cn(isLoading && 'disabled')}
                           title="Delete model"

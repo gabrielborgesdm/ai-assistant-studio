@@ -21,15 +21,23 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }): ReactElement => {
 
           if (!codeString || codeString === 'undefined') return ''
 
-          // count lines
-          const lines = codeString.split('\n')
-          const lineCount = lines.length
-
-          // return it for single line codes
-          if (lineCount === 1) {
+          // count words if less than 2 words, return it as a span
+          if (codeString.split(' ').length < 2) {
             return (
-              <span className="inline-flex items-center bg-zinc-900 italic rounded px-2 text-white">
-                {codeString}
+              <span className="inline-flex items-center italic" style={oneDark}>
+                <SyntaxHighlighter
+                  style={oneDark}
+                  language={match?.[1] || 'javascript'}
+                  PreTag="div"
+                  customStyle={{
+                    margin: 0,
+                    padding: '5px',
+                    borderRadius: '10px'
+                  }}
+                  {...props}
+                >
+                  {codeString}
+                </SyntaxHighlighter>
               </span>
             )
           }
@@ -47,7 +55,7 @@ const MarkdownRenderer = ({ markdown }: { markdown: string }): ReactElement => {
                 style={oneDark}
                 language={match?.[1] || 'javascript'}
                 PreTag="div"
-                customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }}
+                customStyle={{ margin: 0, padding: '1rem' }}
                 {...props}
               >
                 {codeString}

@@ -1,5 +1,6 @@
 import { ChatEventReply } from '@global/const/ollama.event'
 import { AssistantMessageFactory } from '@global/factories/assistant.factory'
+import defaultOllamaModels from '@global/resources/default-ollama-models.json'
 import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
 import { ModelDownload, OllamaModel } from '@global/types/model'
 import { OllamaDownloadStreamResponse, OllamaMessageStreamResponse } from '@global/types/ollama'
@@ -9,10 +10,8 @@ import { isCustomRole } from '@global/utils/role.utils'
 import axios from 'axios'
 import { IpcMainEvent } from 'electron'
 import ollama from 'ollama'
-import { searchOllamaModels } from 'ollama-models-search'
-import defaultOllamaModels from '@global/resources/default-ollama-models.json'
-import { OllamaModel as SearchOllamaModel } from 'ollama-models-search'
-import { RagService } from '../rag/rag.service'
+import { OllamaModel as SearchOllamaModel, searchOllamaModels } from 'ollama-models-search'
+import { RagService } from '@main/features/rag/rag.service'
 
 export default class OllamaService {
   OLLAMA_HOST: string = 'http://localhost:11434'
@@ -35,17 +34,22 @@ export default class OllamaService {
       this.removeAssistantMessageHistoryIfEphemeral(history, assistant)
       this.applyPromptToUserMessage(history, assistant)
 
-      // If a contextPath is provided in the assistant's configuration,
-      // use the RagService to retrieve relevant context from the specified directory.
+      const userMessage = history.messages[history.messages.length - 1].content
+
+      // If a contextPath is provided, check user intent to see if a search is necessary.
       if (assistant.contextPath) {
-        const userMessage = history.messages[history.messages.length - 1].content
+        console.log('User intent requires context search. Searching...')
         // Get the context from the RagService based on the user's message.
         const context = await this.ragService.getContext(assistant.contextPath, userMessage)
 
         // Prepend the retrieved context to the user's message to provide
         // the model with relevant information for generating a response.
-        history.messages[history.messages.length - 1].content =
-          `Here is some context to help you answer the user's question:\n\n${context}\n\n--------------------\n\n${userMessage}`
+        if (context) {
+          history.messages[history.messages.length - 1].content =
+            `Here is some context to help you answer the user's question:\n\n${context}\n\n--------------------\n\n${userMessage}`
+        } else {
+          console.log('No context found for the user query.')
+        }
       }
 
       const response = await await this.ollama.chat({
@@ -75,6 +79,42 @@ export default class OllamaService {
       event.reply(ChatEventReply, { error: `Error: ${error.message}`, done: true })
     }
   }
+
+  // tried this, but it wasn't as good as the current approach, keeping the code because it might be useful in the future
+  // async shouldSearchForContext(userMessage: string): Promise<boolean> {
+  //   try {
+  //     console.log('Checking user intent for context search...')
+  //     const response = await this.ollama.chat({
+  //       model: DEFAULT_OLLAMA_MODEL,
+  //       messages: [
+  //         {
+  //           role: 'system',
+  //           content: `You are a binary classifier. Your job is to determine whether answering the user's question requires additional external context or documents.
+
+  //           Analyze this message:
+  //           ${userMessage}
+
+  //           If it does, respond ONLY with: true
+  //           If it does NOT, respond ONLY with: false
+
+  //           Do not explain or add anything else.`
+  //         }
+  //       ],
+  //       stream: false,
+  //       options: {
+  //         temperature: 0
+  //       }
+  //     })
+
+  //     const decision = response.message.content.trim().toLowerCase()
+  //     console.log(`Intent to search context: ${decision}`)
+  //     return decision === 'true'
+  //   } catch (error) {
+  //     console.error('Error detecting user intent:', error)
+  //     // Default to false if intent detection fails to avoid unnecessary searches
+  //     return false
+  //   }
+  // }
 
   // If it's ephemeral we keep only the last message and the system message
   removeAssistantMessageHistoryIfEphemeral(history: AssistantHistory, assistant: Assistant): void {

@@ -3,6 +3,7 @@ import { FaissStore } from '@langchain/community/vectorstores/faiss'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
+import { DocxLoader } from '@langchain/community/document_loaders/fs/docx'
 import { DEFAULT_OLLAMA_EMBEDDINGS_MODEL } from '@global/const/consts'
 
 /**
@@ -45,7 +46,8 @@ export class RagService {
     // Load documents from the specified directory, supporting .txt and .md files.
     const directoryLoader = new DirectoryLoader(contextPath, {
       '.txt': (path) => new TextLoader(path),
-      '.md': (path) => new TextLoader(path)
+      '.md': (path) => new TextLoader(path),
+      '.docx': (path) => new DocxLoader(path)
     })
 
     console.log('Loading documents...')

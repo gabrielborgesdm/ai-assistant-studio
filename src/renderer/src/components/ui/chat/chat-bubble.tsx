@@ -2,8 +2,8 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import MessageLoading from './message-loading'
 import { Button, ButtonProps } from '../button'
+import AnimatedLoadingMessage from '@/components/shared/AnimatedLoadingMessage'
 
 // ChatBubble
 const chatBubbleVariant = cva('flex gap-2 max-w-[60%] items-end relative group', {
@@ -97,7 +97,7 @@ const ChatBubbleMessage = React.forwardRef<HTMLDivElement, ChatBubbleMessageProp
     >
       {isLoading ? (
         <div className="flex items-center space-x-2">
-          <MessageLoading />
+          <AnimatedLoadingMessage />
         </div>
       ) : (
         children

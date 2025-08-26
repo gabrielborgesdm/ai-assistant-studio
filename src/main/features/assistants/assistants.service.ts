@@ -2,16 +2,19 @@ import {
   Assistant,
   AssistantFormData,
   AssistantHistory,
-  AssistantMessage
-} from '@global/types/assistant'
-import { DBType } from '@main/features/database/db.type'
-import { AssistantDataFactory, HistoryFactory } from '@global/factories/assistant.factory'
+  AssistantMessage,
+} from "@global/types/assistant";
+import { DBType } from "@main/features/database/db.type";
+import {
+  AssistantDataFactory,
+  HistoryFactory,
+} from "@global/factories/assistant.factory";
 
 export default class AssistantService {
-  db: DBType
+  db: DBType;
 
   constructor(db: DBType) {
-    this.db = db
+    this.db = db;
   }
 
   /*
@@ -20,44 +23,49 @@ export default class AssistantService {
    * @returns An array of assistants.
    */
   getAssistants = async (): Promise<Assistant[]> => {
-    await this.db.read()
-    return this.db.data?.assistants || []
-  }
+    await this.db.read();
+    return this.db.data?.assistants || [];
+  };
 
   saveAssistant = async (
     assistantData: AssistantFormData,
-    assistantId: string | undefined
+    assistantId: string | undefined,
   ): Promise<Assistant> => {
-    await this.db.read()
+    await this.db.read();
 
     // This is to ensure that base models are saved with the latest tag
     // In the near future I'll probably implment a proper versioning system
-    let model = assistantData.model
-    if (!model.includes(':')) {
-      model = `${model}:latest`
+    let model = assistantData.model;
+    if (!model.includes(":")) {
+      model = `${model}:latest`;
     }
 
-    const assistant = AssistantDataFactory({ ...assistantData, model }, assistantId)
-    const isNewAssistant = !assistant.id
+    const assistant = AssistantDataFactory(
+      { ...assistantData, model },
+      assistantId,
+    );
+    const isNewAssistant = !assistant.id;
     if (isNewAssistant) {
-      assistant.id = crypto.randomUUID()
-      this.db.data.assistants.push(assistant as Assistant)
+      assistant.id = crypto.randomUUID();
+      this.db.data.assistants.push(assistant as Assistant);
     } else {
-      const foundAssistantIndex = this.db.data?.assistants.findIndex((a) => a.id === assistant.id)
+      const foundAssistantIndex = this.db.data?.assistants.findIndex(
+        (a) => a.id === assistant.id,
+      );
 
       // If the assistant is not found, throw an error
       // This should never happen
       if (foundAssistantIndex === -1) {
-        throw new Error('Assistant not found')
+        throw new Error("Assistant not found");
       }
 
-      this.db.data.assistants[foundAssistantIndex] = assistant as Assistant
+      this.db.data.assistants[foundAssistantIndex] = assistant as Assistant;
     }
 
-    await this.db.write()
+    await this.db.write();
 
-    return assistant as Assistant
-  }
+    return assistant as Assistant;
+  };
 
   /*
    * Retrieves a specific assistant from the database by its ID.
@@ -65,11 +73,13 @@ export default class AssistantService {
    * @param assistantId - The ID of the assistant to retrieve.
    * @returns The assistant object if found, otherwise undefined.
    */
-  getHistory = async (assistantId: string): Promise<AssistantHistory | undefined> => {
-    const histories: AssistantHistory[] = this.db.data?.history
+  getHistory = async (
+    assistantId: string,
+  ): Promise<AssistantHistory | undefined> => {
+    const histories: AssistantHistory[] = this.db.data?.history;
 
-    return histories.find((history) => history.assistantId === assistantId)
-  }
+    return histories.find((history) => history.assistantId === assistantId);
+  };
 
   /*
    * Adds a message to the assistant history.
@@ -81,45 +91,45 @@ export default class AssistantService {
    */
   addAssistantMessage = async (
     assistantId: string,
-    messages: AssistantMessage[]
+    messages: AssistantMessage[],
   ): Promise<AssistantHistory> => {
-    await this.db.read()
-    const histories: AssistantHistory[] = this.db.data?.history
-    let filteredHistory = await this.getHistory(assistantId)
+    await this.db.read();
+    const histories: AssistantHistory[] = this.db.data?.history;
+    let filteredHistory = await this.getHistory(assistantId);
 
     if (!filteredHistory) {
-      filteredHistory = HistoryFactory(assistantId, [...messages])
+      filteredHistory = HistoryFactory(assistantId, [...messages]);
     } else {
-      filteredHistory.messages = [...filteredHistory.messages, ...messages]
+      filteredHistory.messages = [...filteredHistory.messages, ...messages];
     }
 
-    histories.push(filteredHistory)
+    histories.push(filteredHistory);
     // Push without needing to wait
-    this.db.write()
+    this.db.write();
 
-    return filteredHistory
-  }
+    return filteredHistory;
+  };
 
   clearHistory = async (assistantId: string): Promise<void> => {
-    console.log('Clearing history for assistantId:', assistantId)
+    console.log("Clearing history for assistantId:", assistantId);
 
-    await this.db.read()
+    await this.db.read();
     if (!this.db.data.history?.length) {
-      console.log('No histories found')
-      return
+      console.log("No histories found");
+      return;
     }
     this.db.data.history = this.db.data?.history.filter(
-      (history) => history.assistantId !== assistantId
-    )
-    console.log('Cleaning history', assistantId)
-    this.db.write()
-  }
+      (history) => history.assistantId !== assistantId,
+    );
+    console.log("Cleaning history", assistantId);
+    this.db.write();
+  };
 
   deleteAssistant = async (assistantId: string): Promise<void> => {
-    await this.db.read()
+    await this.db.read();
     this.db.data.assistants = this.db.data?.assistants.filter(
-      (assistant) => assistant.id !== assistantId
-    )
-    await this.db.write()
-  }
+      (assistant) => assistant.id !== assistantId,
+    );
+    await this.db.write();
+  };
 }

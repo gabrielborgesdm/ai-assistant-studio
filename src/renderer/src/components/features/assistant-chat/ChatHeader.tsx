@@ -1,18 +1,18 @@
-import { AssistantDropdown } from '@/components/features/assistant-chat/AssistantDropdown'
-import { Assistant, AssistantHistory } from '@global/types/assistant'
-import { Button } from '@renderer/components/ui/button'
-import { cn } from '@renderer/lib/utils'
-import { BrushCleaning, Pause } from 'lucide-react'
-import { ReactElement } from 'react'
+import { AssistantDropdown } from "@/components/features/assistant-chat/AssistantDropdown";
+import { Assistant, AssistantHistory } from "@global/types/assistant";
+import { Button } from "@renderer/components/ui/button";
+import { cn } from "@renderer/lib/utils";
+import { BrushCleaning, Pause } from "lucide-react";
+import { ReactElement } from "react";
 
 interface ChatHeaderProps {
-  assistant: Assistant
-  isLoading: boolean
-  HeaderButton?: ReactElement
-  handleClearHistory: () => void
-  handleCancelMessageRequest: () => void
-  isNavigationDisabled?: boolean
-  history: AssistantHistory | undefined
+  assistant: Assistant;
+  isLoading: boolean;
+  HeaderButton?: ReactElement;
+  handleClearHistory: () => void;
+  handleCancelMessageRequest: () => void;
+  isNavigationDisabled?: boolean;
+  history: AssistantHistory | undefined;
 }
 
 export const ChatHeader = ({
@@ -22,9 +22,9 @@ export const ChatHeader = ({
   handleClearHistory,
   handleCancelMessageRequest,
   history,
-  isNavigationDisabled
+  isNavigationDisabled,
 }: ChatHeaderProps): React.ReactElement => {
-  const hasMessages = history?.messages && history.messages.length > 0
+  const hasMessages = history?.messages && history.messages.length > 0;
 
   return (
     <header className="flex items-center justify-between p-4 border-b">
@@ -49,7 +49,7 @@ export const ChatHeader = ({
           <Button
             variant="ghost"
             size="icon"
-            className={cn(!hasMessages && 'disabled')}
+            className={cn(!hasMessages && "disabled")}
             disabled={!hasMessages}
             onClick={handleClearHistory}
             title="Clear chat history"
@@ -57,8 +57,11 @@ export const ChatHeader = ({
             <BrushCleaning />
           </Button>
         )}
-        <AssistantDropdown assistant={assistant} disabled={isNavigationDisabled} />
+        <AssistantDropdown
+          assistant={assistant}
+          disabled={isNavigationDisabled}
+        />
       </div>
     </header>
-  )
-}
+  );
+};

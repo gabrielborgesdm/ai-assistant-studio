@@ -1,50 +1,50 @@
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Assistant } from '@global/types/assistant'
-import { Page } from '@renderer/pages'
-import { useAssistantContext } from '@renderer/provider/AssistantProvider'
-import { usePageContext } from '@renderer/provider/PageProvider'
-import { CopyPlus, Edit, MoreVertical, SquareX } from 'lucide-react'
-import { ReactElement } from 'react'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Assistant } from "@global/types/assistant";
+import { Page } from "@renderer/pages";
+import { useAssistantContext } from "@renderer/provider/AssistantProvider";
+import { usePageContext } from "@renderer/provider/PageProvider";
+import { CopyPlus, Edit, MoreVertical, SquareX } from "lucide-react";
+import { ReactElement } from "react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export const AssistantDropdown = ({
   assistant,
-  disabled
+  disabled,
 }: {
-  assistant: Assistant
-  disabled?: boolean
+  assistant: Assistant;
+  disabled?: boolean;
 }): ReactElement => {
-  const { setActivePage } = usePageContext()
-  const { removeAssistant } = useAssistantContext()
+  const { setActivePage } = usePageContext();
+  const { removeAssistant } = useAssistantContext();
 
   const handleEdit = (): void => {
     setActivePage(Page.AssistantManagement, {
-      assistant: assistant
-    })
-  }
+      assistant: assistant,
+    });
+  };
 
   const handleDuplicate = (): void => {
     setActivePage(Page.AssistantManagement, {
       assistant: assistant,
-      duplicate: true
-    })
-  }
+      duplicate: true,
+    });
+  };
 
   const handleDelete = (): void => {
     try {
-      removeAssistant(assistant.id)
-      setActivePage(Page.Chat)
+      removeAssistant(assistant.id);
+      setActivePage(Page.Chat);
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   return (
     <DropdownMenu>
@@ -53,7 +53,7 @@ export const AssistantDropdown = ({
           variant="ghost"
           size="icon"
           disabled={disabled}
-          className={cn(disabled && 'disabled')}
+          className={cn(disabled && "disabled")}
         >
           <MoreVertical className="h-5 w-5" />
         </Button>
@@ -73,5 +73,5 @@ export const AssistantDropdown = ({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};

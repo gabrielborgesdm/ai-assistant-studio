@@ -1,15 +1,19 @@
-import { ChatMessage } from '@/components/features/assistant-chat/ChatMessage'
-import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
-import { Assistant, AssistantHistory, MessageRole } from '@global/types/assistant'
-import { useHandleCopy } from '@renderer/hooks/use-handle-copy'
-import { ReactElement, useEffect } from 'react'
+import { ChatMessage } from "@/components/features/assistant-chat/ChatMessage";
+import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
+import {
+  Assistant,
+  AssistantHistory,
+  MessageRole,
+} from "@global/types/assistant";
+import { useHandleCopy } from "@renderer/hooks/use-handle-copy";
+import { ReactElement, useEffect } from "react";
 
 interface ChatBodyProps {
-  assistant: Assistant
-  history: AssistantHistory | undefined
-  currentAssistantMessage: string | undefined
-  isLoading: boolean
-  shouldShowAvatar?: boolean
+  assistant: Assistant;
+  history: AssistantHistory | undefined;
+  currentAssistantMessage: string | undefined;
+  isLoading: boolean;
+  shouldShowAvatar?: boolean;
 }
 
 export const ChatBody = ({
@@ -17,19 +21,26 @@ export const ChatBody = ({
   history,
   currentAssistantMessage,
   isLoading,
-  shouldShowAvatar = true
+  shouldShowAvatar = true,
 }: ChatBodyProps): ReactElement => {
-  const { handleCopy } = useHandleCopy()
+  const { handleCopy } = useHandleCopy();
 
   const renderDescription = (): ReactElement => {
-    if (!history) return <></>
-    if (!assistant.description || history?.messages?.length || currentAssistantMessage) return <></>
-    return <p className="text-center text-sm italic">{assistant.description}</p>
-  }
+    if (!history) return <></>;
+    if (
+      !assistant.description ||
+      history?.messages?.length ||
+      currentAssistantMessage
+    )
+      return <></>;
+    return (
+      <p className="text-center text-sm italic">{assistant.description}</p>
+    );
+  };
 
   useEffect(() => {
-    console.log(history)
-  }, [history])
+    console.log(history);
+  }, [history]);
 
   return (
     <div className="flex flex-1 relative">
@@ -48,7 +59,10 @@ export const ChatBody = ({
         {/* I chose to separate the current message from the history, since it gets updated really fast, It's better for performance to have it separate */}
         {currentAssistantMessage !== undefined && (
           <ChatMessage
-            message={{ content: currentAssistantMessage, role: MessageRole.ASSISTANT }}
+            message={{
+              content: currentAssistantMessage,
+              role: MessageRole.ASSISTANT,
+            }}
             shouldShowCopy={false}
             isLoading={isLoading}
             handleCopy={handleCopy}
@@ -57,5 +71,5 @@ export const ChatBody = ({
         )}
       </ChatMessageList>
     </div>
-  )
-}
+  );
+};

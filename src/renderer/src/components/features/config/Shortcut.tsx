@@ -1,118 +1,128 @@
-'use client'
+"use client";
 
-import { Description } from '@renderer/components/shared/Description'
-import { FormGroup } from '@renderer/components/shared/form/FormGroup'
-import { FormSection } from '@renderer/components/shared/form/FormSection'
-import { InputError } from '@renderer/components/shared/form/InputError'
-import { Button } from '@renderer/components/ui/button'
+import { Description } from "@renderer/components/shared/Description";
+import { FormGroup } from "@renderer/components/shared/form/FormGroup";
+import { FormSection } from "@renderer/components/shared/form/FormSection";
+import { InputError } from "@renderer/components/shared/form/InputError";
+import { Button } from "@renderer/components/ui/button";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent
-} from '@renderer/components/ui/card'
-import { Input } from '@renderer/components/ui/input'
-import { Label } from '@renderer/components/ui/label'
-import { useGlobalContext } from '@renderer/provider/GlobalProvider'
-import { Play, Trash2, X } from 'lucide-react'
-import { ReactElement, useMemo, useState } from 'react'
-import { useShortcutRecorder } from 'use-shortcut-recorder'
+  CardContent,
+} from "@renderer/components/ui/card";
+import { Input } from "@renderer/components/ui/input";
+import { Label } from "@renderer/components/ui/label";
+import { useGlobalContext } from "@renderer/provider/GlobalProvider";
+import { Play, Trash2, X } from "lucide-react";
+import { ReactElement, useMemo, useState } from "react";
+import { useShortcutRecorder } from "use-shortcut-recorder";
 
 export const Shortcut = (): ReactElement => {
-  const { os, config, setConfig } = useGlobalContext()
+  const { os, config, setConfig } = useGlobalContext();
 
-  const isMac = useMemo(() => os === 'darwin', [os])
+  const isMac = useMemo(() => os === "darwin", [os]);
 
-  const [shortcutError, setShortcutError] = useState<string | undefined>(undefined)
+  const [shortcutError, setShortcutError] = useState<string | undefined>(
+    undefined,
+  );
 
   // Deactivating Control + Shift + Numpad shortcuts because it's not working
   const excludedNumpadShortcuts = useMemo(() => {
     const numpadKeys = [
       ...new Array(9).fill(0).map((_, i) => `Numpad${i}`),
-      'NumpadAdd',
-      'NumpadSubtract',
-      'NumpadMultiply',
-      'NumpadDivide',
-      'NumpadDecimal',
-      'NumpadEnter'
-    ]
-    return numpadKeys.map((key) => ['Control', 'Shift', key])
-  }, [])
-  const { shortcut, isRecording, startRecording, stopRecording } = useShortcutRecorder({
-    onChange: (newShortcut) => {
-      if (!config) return
+      "NumpadAdd",
+      "NumpadSubtract",
+      "NumpadMultiply",
+      "NumpadDivide",
+      "NumpadDecimal",
+      "NumpadEnter",
+    ];
+    return numpadKeys.map((key) => ["Control", "Shift", key]);
+  }, []);
+  const { shortcut, isRecording, startRecording, stopRecording } =
+    useShortcutRecorder({
+      onChange: (newShortcut) => {
+        if (!config) return;
 
-      const mappedShortcut = newShortcut.map(mapKeyToElectronKey).join('+')
+        const mappedShortcut = newShortcut.map(mapKeyToElectronKey).join("+");
 
-      handleChangeShortcut(mappedShortcut)
-    },
-    excludedKeys: ['Escape'],
-    excludedShortcuts: [...excludedNumpadShortcuts]
-  })
+        handleChangeShortcut(mappedShortcut);
+      },
+      excludedKeys: ["Escape"],
+      excludedShortcuts: [...excludedNumpadShortcuts],
+    });
 
   const mapKeyToElectronKey = (key: string): string => {
     const modifierMap: Record<string, string> = {
-      Control: isMac ? 'CommandOrControl' : 'Control',
-      Meta: isMac ? 'Command' : 'Meta',
-      Alt: 'Alt',
-      AltGraph: 'AltGr'
-    }
+      Control: isMac ? "CommandOrControl" : "Control",
+      Meta: isMac ? "Command" : "Meta",
+      Alt: "Alt",
+      AltGraph: "AltGr",
+    };
 
-    if (modifierMap[key]) return modifierMap[key]
+    if (modifierMap[key]) return modifierMap[key];
 
-    if (key.startsWith('Key')) return key.slice(3) // A–Z
-    if (key.startsWith('Digit')) return key.slice(5) // 0–9
+    if (key.startsWith("Key")) return key.slice(3); // A–Z
+    if (key.startsWith("Digit")) return key.slice(5); // 0–9
 
-    if (key.startsWith('Numpad')) {
-      const np = key.slice(6).toLowerCase() // "1", "Add", etc.
+    if (key.startsWith("Numpad")) {
+      const np = key.slice(6).toLowerCase(); // "1", "Add", etc.
       const npMap: Record<string, string> = {
-        '0': 'num0',
-        '1': 'num1',
-        '2': 'num2',
-        '3': 'num3',
-        '4': 'num4',
-        '5': 'num5',
-        '6': 'num6',
-        '7': 'num7',
-        '8': 'num8',
-        '9': 'num9',
-        decimal: 'numdec',
-        add: 'numadd',
-        subtract: 'numsub',
-        multiply: 'nummult',
-        divide: 'numdiv'
-      }
-      return npMap[np] || key
+        "0": "num0",
+        "1": "num1",
+        "2": "num2",
+        "3": "num3",
+        "4": "num4",
+        "5": "num5",
+        "6": "num6",
+        "7": "num7",
+        "8": "num8",
+        "9": "num9",
+        decimal: "numdec",
+        add: "numadd",
+        subtract: "numsub",
+        multiply: "nummult",
+        divide: "numdiv",
+      };
+      return npMap[np] || key;
     }
 
-    return key
-  }
+    return key;
+  };
 
-  const shortcutValue = useMemo(() => shortcut.map(mapKeyToElectronKey).join('+'), [shortcut])
+  const shortcutValue = useMemo(
+    () => shortcut.map(mapKeyToElectronKey).join("+"),
+    [shortcut],
+  );
 
   const handleChangeShortcut = async (shortcut: string): Promise<void> => {
-    if (!config) return
+    if (!config) return;
 
     try {
-      const savedShortcut = await window.api.config.registerShortcut(shortcut)
-      console.log('Shortcut:', shortcut)
-      console.log('Saved shortcut:', savedShortcut)
+      const savedShortcut = await window.api.config.registerShortcut(shortcut);
+      console.log("Shortcut:", shortcut);
+      console.log("Saved shortcut:", savedShortcut);
     } catch (error) {
-      console.error('Failed to register shortcut:', error)
-      setShortcutError('Failed to register shortcut, try a different one')
-      return
+      console.error("Failed to register shortcut:", error);
+      setShortcutError("Failed to register shortcut, try a different one");
+      return;
     }
 
-    setConfig({ ...config, shortcut })
-    setShortcutError(undefined)
-  }
+    setConfig({ ...config, shortcut });
+    setShortcutError(undefined);
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">Shortcut Assignment</CardTitle>
-        <CardDescription>Assign a shortcut to open and close the application</CardDescription>
+        <CardTitle className="flex items-center gap-2">
+          Shortcut Assignment
+        </CardTitle>
+        <CardDescription>
+          Assign a shortcut to open and close the application
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
         <form>
@@ -126,13 +136,13 @@ export const Shortcut = (): ReactElement => {
                       <Input
                         type="text"
                         placeholder="No shortcut assigned"
-                        value={config?.shortcut || ''}
+                        value={config?.shortcut || ""}
                         onClick={startRecording}
                       />
                       {config?.shortcut && (
                         <Button
                           type="button"
-                          onClick={() => handleChangeShortcut('')}
+                          onClick={() => handleChangeShortcut("")}
                           variant="outline"
                           title="Remove shortcut"
                         >
@@ -150,7 +160,9 @@ export const Shortcut = (): ReactElement => {
                         </Button>
                       )}
                     </div>
-                    <Description>Click to start recording a shortcut key.</Description>
+                    <Description>
+                      Click to start recording a shortcut key.
+                    </Description>
                     {shortcutError && <InputError error={shortcutError} />}
                   </>
                 )}
@@ -172,7 +184,9 @@ export const Shortcut = (): ReactElement => {
                         <X />
                       </Button>
                     </div>
-                    <Description>Combine modifiers and a key to record a shortcut.</Description>
+                    <Description>
+                      Combine modifiers and a key to record a shortcut.
+                    </Description>
                   </>
                 )}
               </>
@@ -181,5 +195,5 @@ export const Shortcut = (): ReactElement => {
         </form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

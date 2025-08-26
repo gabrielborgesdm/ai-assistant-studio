@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Page } from '@renderer/pages'
+import { Page } from "@renderer/pages";
 import {
   createContext,
   ReactElement,
@@ -7,43 +7,58 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState
-} from 'react'
+  useState,
+} from "react";
 
 interface PageContextType {
-  activePage: string
-  isNavigationDisabled: boolean
-  pageProps: Record<string, unknown> | undefined
-  setIsNavigationDisabled: (disabled: boolean) => void
-  setActivePage: (page: string, props?: Record<string, unknown>) => void
-  withActivePage: (pageName: string, Component: React.ComponentType) => ReactElement
+  activePage: string;
+  isNavigationDisabled: boolean;
+  pageProps: Record<string, unknown> | undefined;
+  setIsNavigationDisabled: (disabled: boolean) => void;
+  setActivePage: (page: string, props?: Record<string, unknown>) => void;
+  withActivePage: (
+    pageName: string,
+    Component: React.ComponentType,
+  ) => ReactElement;
 }
 
-const PageContext = createContext<PageContextType | undefined>(undefined)
+const PageContext = createContext<PageContextType | undefined>(undefined);
 
-export const PageProvider = ({ children }: { children: ReactNode }): ReactElement => {
+export const PageProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement => {
   // The initial page is the setup page
-  const [activePage, setActivePage] = useState<string>(Page.Setup)
-  const [pageProps, setPageProps] = useState<Record<string, unknown> | undefined>(undefined)
+  const [activePage, setActivePage] = useState<string>(Page.Setup);
+  const [pageProps, setPageProps] = useState<
+    Record<string, unknown> | undefined
+  >(undefined);
 
-  const updateActivePage = (page: string, props?: Record<string, unknown> | undefined): void => {
-    setActivePage(page)
-    setPageProps(props ? { ...props } : undefined)
-  }
+  const updateActivePage = (
+    page: string,
+    props?: Record<string, unknown> | undefined,
+  ): void => {
+    setActivePage(page);
+    setPageProps(props ? { ...props } : undefined);
+  };
 
-  const withActivePage = (pageName: string, Component: React.ComponentType): ReactElement => {
+  const withActivePage = (
+    pageName: string,
+    Component: React.ComponentType,
+  ): ReactElement => {
     if (activePage === pageName) {
-      return <Component />
+      return <Component />;
     }
-    return <></>
-  }
+    return <></>;
+  };
 
   // To avoid showing the page with the scroll at the bottom
   useEffect(() => {
-    window.scrollTo({ top: 0 })
-  }, [activePage])
+    window.scrollTo({ top: 0 });
+  }, [activePage]);
 
-  const [isNavigationDisabled, setIsNavigationDisabled] = useState(false)
+  const [isNavigationDisabled, setIsNavigationDisabled] = useState(false);
 
   const contextValue = useMemo(() => {
     return {
@@ -52,17 +67,19 @@ export const PageProvider = ({ children }: { children: ReactNode }): ReactElemen
       pageProps,
       setIsNavigationDisabled,
       setActivePage: updateActivePage,
-      withActivePage
-    }
-  }, [activePage, isNavigationDisabled, pageProps])
+      withActivePage,
+    };
+  }, [activePage, isNavigationDisabled, pageProps]);
 
-  return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>
-}
+  return (
+    <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>
+  );
+};
 
 export const usePageContext = (): PageContextType => {
-  const context = useContext(PageContext)
+  const context = useContext(PageContext);
   if (!context) {
-    throw new Error('usePageContext must be used within a PageProvider')
+    throw new Error("usePageContext must be used within a PageProvider");
   }
-  return context
-}
+  return context;
+};

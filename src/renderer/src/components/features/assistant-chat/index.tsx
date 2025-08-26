@@ -1,21 +1,21 @@
-import { Assistant } from '@global/types/assistant'
-import { ChatBody } from '@renderer/components/features/assistant-chat/ChatBody'
-import { ChatForm } from '@renderer/components/features/assistant-chat/ChatForm'
-import { useHandleChat } from '@renderer/components/features/assistant-chat/use-handle-chat'
-import { ChatHeader } from '@renderer/components/features/assistant-chat/ChatHeader'
-import { ReactElement } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { Assistant } from "@global/types/assistant";
+import { ChatBody } from "@renderer/components/features/assistant-chat/ChatBody";
+import { ChatForm } from "@renderer/components/features/assistant-chat/ChatForm";
+import { useHandleChat } from "@renderer/components/features/assistant-chat/use-handle-chat";
+import { ChatHeader } from "@renderer/components/features/assistant-chat/ChatHeader";
+import { ReactElement } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ChatComponentProps {
-  assistant: Assistant
-  HeaderButton?: ReactElement
-  shouldShowAvatar?: boolean
+  assistant: Assistant;
+  HeaderButton?: ReactElement;
+  shouldShowAvatar?: boolean;
 }
 
 export const ChatComponent = ({
   assistant,
   HeaderButton,
-  shouldShowAvatar = true
+  shouldShowAvatar = true,
 }: ChatComponentProps): React.ReactElement => {
   const {
     images,
@@ -30,8 +30,8 @@ export const ChatComponent = ({
     handleClearHistory,
     handleCancelMessageRequest,
     handleSubmit,
-    isNavigationDisabled
-  } = useHandleChat(assistant)
+    isNavigationDisabled,
+  } = useHandleChat(assistant);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -75,5 +75,5 @@ export const ChatComponent = ({
         </div>
       </AnimatePresence>
     </div>
-  )
-}
+  );
+};

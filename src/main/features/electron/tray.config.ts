@@ -1,53 +1,58 @@
-import icon from '@resources/logo.png?asset'
-import macIcon from '@resources/mac-tray-logo.png?asset'
-import { BrowserWindow, Menu, nativeImage, Tray } from 'electron'
+import icon from "@resources/logo.png?asset";
+import macIcon from "@resources/mac-tray-logo.png?asset";
+import { BrowserWindow, Menu, nativeImage, Tray } from "electron";
 
-let isQuitting = false
+let isQuitting = false;
 
-export const setupTray = (app: Electron.App, mainWindow: BrowserWindow | null): void => {
-  console.log('Setting up tray', process.env['ENV'])
-  if (!mainWindow || process.env['ENV'] === 'development') {
-    return
+export const setupTray = (
+  app: Electron.App,
+  mainWindow: BrowserWindow | null,
+): void => {
+  console.log("Setting up tray", process.env["ENV"]);
+  if (!mainWindow || process.env["ENV"] === "development") {
+    return;
   }
   // 🟡 Tray setup
 
   // Handle different icons for mac and other platforms
-  const isMac = process.platform === 'darwin'
-  const trayIcon = isMac ? nativeImage.createFromPath(macIcon) : nativeImage.createFromPath(icon)
+  const isMac = process.platform === "darwin";
+  const trayIcon = isMac
+    ? nativeImage.createFromPath(macIcon)
+    : nativeImage.createFromPath(icon);
   if (isMac) {
     // Necessary for mac to auto handle sizing and color
-    trayIcon.setTemplateImage(true)
+    trayIcon.setTemplateImage(true);
   }
 
-  const tray = new Tray(trayIcon)
+  const tray = new Tray(trayIcon);
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Show', click: () => mainWindow?.show() },
+    { label: "Show", click: () => mainWindow?.show() },
     {
-      label: 'Quit',
+      label: "Quit",
       click: () => {
-        console.log('Quitting app')
-        isQuitting = true
-        tray?.destroy()
-        app.quit()
-      }
-    }
-  ])
+        console.log("Quitting app");
+        isQuitting = true;
+        tray?.destroy();
+        app.quit();
+      },
+    },
+  ]);
 
-  tray.setToolTip('AI Assistant Studio')
-  tray.setContextMenu(contextMenu)
+  tray.setToolTip("AI Assistant Studio");
+  tray.setContextMenu(contextMenu);
 
-  tray.on('click', () => {
-    mainWindow?.show()
-  })
+  tray.on("click", () => {
+    mainWindow?.show();
+  });
 
-  mainWindow.on('close', (event) => {
+  mainWindow.on("close", (event) => {
     if (!isQuitting) {
-      console.log('Minimizing app')
-      event.preventDefault()
-      mainWindow?.hide()
+      console.log("Minimizing app");
+      event.preventDefault();
+      mainWindow?.hide();
     } else {
-      console.log('Quitting app')
+      console.log("Quitting app");
     }
-  })
-}
+  });
+};

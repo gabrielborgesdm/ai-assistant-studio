@@ -1,3 +1,3 @@
 export const isCustomRole = (role: string): boolean => {
-  return role.includes('custom_')
-}
+  return role.includes("custom_");
+};

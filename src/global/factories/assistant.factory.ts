@@ -3,40 +3,40 @@ import {
   AssistantFormData,
   AssistantHistory,
   AssistantMessage,
-  MessageRole
-} from '@global/types/assistant'
+  MessageRole,
+} from "@global/types/assistant";
 
 export const AssistantDataFactory = (
   assistantData: AssistantFormData,
-  assistantId: string | undefined
+  assistantId: string | undefined,
 ): AssistantData => {
   return {
     id: assistantId || undefined,
-    ...assistantData
-  }
-}
+    ...assistantData,
+  };
+};
 
 export const HistoryFactory = (
   assistantId: string,
-  messages: AssistantMessage[] = []
+  messages: AssistantMessage[] = [],
 ): AssistantHistory => ({
   assistantId,
-  messages
-})
+  messages,
+});
 
 export const AssistantMessageFactory = (
   role: MessageRole,
   content: string,
-  images?: string[] | undefined
+  images?: string[] | undefined,
 ): AssistantMessage => {
   const message: AssistantMessage = {
     role,
-    content
-  }
+    content,
+  };
 
   if (images?.length) {
-    message.images = images
+    message.images = images;
   }
 
-  return message
-}
+  return message;
+};

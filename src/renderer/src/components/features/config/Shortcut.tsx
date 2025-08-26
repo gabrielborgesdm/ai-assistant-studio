@@ -44,7 +44,11 @@ export const Shortcut = (): ReactElement => {
   const { shortcut, isRecording, startRecording, stopRecording } =
     useShortcutRecorder({
       onChange: (newShortcut) => {
-        if (!config) return;
+        console.log("newShortcut", newShortcut);
+        if (!config) {
+          console.error("No config found");
+          return;
+        }
 
         const mappedShortcut = newShortcut.map(mapKeyToElectronKey).join("+");
 
@@ -98,7 +102,11 @@ export const Shortcut = (): ReactElement => {
   );
 
   const handleChangeShortcut = async (shortcut: string): Promise<void> => {
-    if (!config) return;
+    console.log("shortcut", shortcut);
+    if (!config) {
+      console.error("No config found");
+      return;
+    }
 
     try {
       const savedShortcut = await window.api.config.registerShortcut(shortcut);

@@ -18,6 +18,7 @@ export const setupElectronSettingsController = (
   const shortcutService = new ElectronSettingsService(mainWindow, db);
 
   ipcMain.handle(RegisterShortcutEvent, (_event, accelerator: string) => {
+    console.log("Registering shortcut:", accelerator);
     return shortcutService.registerShortcut(accelerator);
   });
 

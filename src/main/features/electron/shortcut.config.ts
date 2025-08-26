@@ -1,6 +1,7 @@
 import { DBType } from "@main/features/database/db.type";
 import { BrowserWindow } from "electron";
 import ElectronSettingsService from "@main/features/electron/electron-settings.service";
+import { ConfigRepository } from "@main/features/database/repository/config-repository";
 
 export const setupShortcut = async (
   mainWindow: BrowserWindow | null,
@@ -11,12 +12,23 @@ export const setupShortcut = async (
   }
 
   await db.read();
-  const config = db.data?.config;
-  if (!config.shortcut) {
-    console.log("No shortcut found");
+  const configRepository = new ConfigRepository();
+  try {
+    const config = await configRepository.getConfig();
+    console.log("config", config);
+    
+    
+    const shortcutService = new ElectronSettingsService(mainWindow, db);
+    
+    if (!config?.shortcut) {
+      console.log("No shortcut found");
+      return;
+    }
+    shortcutService.registerShortcut(config.shortcut);
+  } catch (error) {
+    console.error("Failed to get config:", error);
     return;
   }
 
-  const shortcutService = new ElectronSettingsService(mainWindow, db);
-  shortcutService.registerShortcut(config.shortcut);
+  
 };

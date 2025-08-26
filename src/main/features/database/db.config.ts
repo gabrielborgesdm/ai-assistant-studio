@@ -1,11 +1,15 @@
+import "reflect-metadata";
+import { DataSource } from "typeorm";
+
 import defaultAssistants from "@global/resources/default-assistants.json";
 import { Assistant, AssistantHistory } from "@global/types/assistant";
-import { Config } from "@global/types/config";
 import { DBType } from "@main/features/database/db.type";
 import { app } from "electron";
 import fs from "fs/promises";
 import { JSONFilePreset } from "lowdb/node";
 import path from "path";
+import { Config } from "./models/config";
+console.log("config", Config);
 
 /*
  * This file is responsible for initializing the database and handling
@@ -17,21 +21,19 @@ import path from "path";
 const initialData: {
   assistants: Assistant[];
   history: AssistantHistory[];
-  config: Config;
 } = {
   assistants: defaultAssistants,
   history: [],
-  config: {
-    window: {
-      width: 1024,
-      height: 768,
-    },
-    shortcut: "",
-    runAtStartup: false,
-  },
 };
 
 let db: DBType;
+
+export const AppDataSource = new DataSource({
+  type: "better-sqlite3",
+  database: path.join(app.getPath("userData"), "app.db"),
+  synchronize: true,
+  entities: [Config],
+});
 
 export async function initDB(): Promise<DBType> {
   const file = path.join(app.getPath("userData"), "db.json");
@@ -47,6 +49,15 @@ export async function initDB(): Promise<DBType> {
 
   db = await JSONFilePreset(file, initialData);
   await db.read();
+
+  // --- SQL (TypeORM) init ---
+  if (!AppDataSource.isInitialized) {
+    await AppDataSource.initialize();
+    console.log(
+      "TypeORM initialized with entities:",
+      AppDataSource.entityMetadatas.map((e) => e.name),
+    );
+  }
 
   return db;
 }

@@ -1,8 +1,6 @@
 export interface Config {
-  window: {
-    width: number;
-    height: number;
-  };
+  windowWidth: number;
+  windowHeight: number;
   shortcut: string;
   runAtStartup: boolean;
 }

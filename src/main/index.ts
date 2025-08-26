@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -35,10 +36,10 @@ app.whenReady().then(async () => {
   ipcMain.on("ping", () => console.log("pong"));
 
   setupMenu();
-  mainWindow = await setupWindowConfig(app, db);
+  mainWindow = await setupWindowConfig(app);
   app.on("activate", async () => {
     if (BrowserWindow.getAllWindows().length === 0)
-      mainWindow = await setupWindowConfig(app, db);
+      mainWindow = await setupWindowConfig(app);
   });
 
   // 🟡 Config setups

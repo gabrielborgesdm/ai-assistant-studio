@@ -1,21 +1,25 @@
 import { is } from "@electron-toolkit/utils";
-import { DBType } from "@main/features/database/db.type";
 import icon from "@resources/logo.png?asset";
 import { BrowserWindow, shell } from "electron";
 import { join } from "path";
+import { ConfigRepository } from "@main/features/database/repository/config-repository";
 
 let resizeTimeout: NodeJS.Timeout | null = null;
 
 export const setupWindowConfig = async (
   app: Electron.App,
-  db: DBType,
 ): Promise<BrowserWindow> => {
-  await db.read();
 
-  const config = db.data?.config;
+  const configRepository = new ConfigRepository();
+  const config = await configRepository.getConfig();
+  console.log(
+    "current window config",
+    config?.windowWidth,
+    config?.windowHeight,
+  );
   const mainWindow = new BrowserWindow({
-    width: config?.window?.width || 1024,
-    height: config?.window?.height || 768,
+    width: config?.windowWidth || 1024,
+    height: config?.windowHeight || 768,
     minWidth: 450,
     minHeight: 500,
     skipTaskbar: false,
@@ -37,22 +41,25 @@ export const setupWindowConfig = async (
     return { action: "deny" };
   });
 
-  mainWindow.on("resize", () => {
+  mainWindow.on("resize", async () => {
     if (!mainWindow) return;
 
     if (resizeTimeout) {
       clearTimeout(resizeTimeout);
     }
 
-    resizeTimeout = setTimeout(() => {
+    resizeTimeout = setTimeout(async () => {
       const [width, height] = mainWindow.getSize();
       if (!width || !height) return;
 
-      if (db.data?.config?.window) {
-        db.data.config.window.width = width;
-        db.data.config.window.height = height;
-        db.write();
-      }
+      console.log("saveConfig", {
+        windowWidth: width,
+        windowHeight: height,
+      });
+      await configRepository.saveConfig({
+        windowWidth: width,
+        windowHeight: height,
+      });
     }, 3000);
   });
 

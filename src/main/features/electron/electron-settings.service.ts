@@ -1,17 +1,13 @@
-import { globalShortcut, BrowserWindow } from "electron";
-import { DBType } from "@main/features/database/db.type";
-import { app } from "electron";
-import { ConfigRepository } from "@main/features/database/repository/config-repository";
 import { Config } from "@global/types/config";
+import { ConfigRepository } from "@main/features/electron/model/config.repository";
+import { app, BrowserWindow, globalShortcut } from "electron";
 
 export default class ElectronSettingsService {
   mainWindow: BrowserWindow;
-  db: DBType;
   configRepository: ConfigRepository;
 
-  constructor(mainWindow: BrowserWindow, db: DBType) {
+  constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
-    this.db = db;
     this.configRepository = new ConfigRepository();
   }
 

@@ -8,7 +8,7 @@ import { app } from "electron";
 import fs from "fs/promises";
 import { JSONFilePreset } from "lowdb/node";
 import path from "path";
-import { Config } from "./models/config";
+import { Config } from "@main/features/electron/model/config.model";
 console.log("config", Config);
 
 /*

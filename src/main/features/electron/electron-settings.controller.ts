@@ -6,16 +6,14 @@ import {
 } from "@global/const/config.event";
 import ElectronSettingsService from "@main/features/electron/electron-settings.service";
 import { BrowserWindow, ipcMain } from "electron";
-import { DBType } from "@main/features/database/db.type";
 
 export const setupElectronSettingsController = (
-  db: DBType,
   mainWindow: BrowserWindow | null,
 ): void => {
   if (!mainWindow) {
     throw new Error("Main window is not initialized");
   }
-  const shortcutService = new ElectronSettingsService(mainWindow, db);
+  const shortcutService = new ElectronSettingsService(mainWindow);
 
   ipcMain.handle(RegisterShortcutEvent, (_event, accelerator: string) => {
     console.log("Registering shortcut:", accelerator);

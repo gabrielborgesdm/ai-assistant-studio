@@ -1,25 +1,20 @@
-import { DBType } from "@main/features/database/db.type";
-import { BrowserWindow } from "electron";
 import ElectronSettingsService from "@main/features/electron/electron-settings.service";
-import { ConfigRepository } from "@main/features/database/repository/config-repository";
+import { ConfigRepository } from "@main/features/electron/model/config.repository";
+import { BrowserWindow } from "electron";
 
 export const setupShortcut = async (
   mainWindow: BrowserWindow | null,
-  db: DBType,
 ): Promise<void> => {
-  if (!mainWindow || !db) {
+  if (!mainWindow) {
     throw new Error("Main window is not initialized");
   }
 
-  await db.read();
   const configRepository = new ConfigRepository();
   try {
     const config = await configRepository.getConfig();
     console.log("config", config);
-    
-    
-    const shortcutService = new ElectronSettingsService(mainWindow, db);
-    
+    const shortcutService = new ElectronSettingsService(mainWindow);
+
     if (!config?.shortcut) {
       console.log("No shortcut found");
       return;
@@ -29,6 +24,4 @@ export const setupShortcut = async (
     console.error("Failed to get config:", error);
     return;
   }
-
-  
 };

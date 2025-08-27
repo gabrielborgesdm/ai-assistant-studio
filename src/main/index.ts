@@ -7,14 +7,14 @@ import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 
 import { setupAssistantsController } from "@main/features/assistants/assistants.controller";
 import { initDB } from "@main/features/database/db.config";
-import { setupTray } from "@main/features/electron/tray.config";
-import { setupWindowConfig } from "@main/features/electron/window.config";
+import { setupTray } from "@main/features/electron/config/tray.config";
+import { setupWindowConfig } from "@main/features/electron/config/window.config";
 import { setupFileController } from "@main/features/file/file.controller";
 import { setupOllamaController } from "@main/features/ollama/ollama.controller";
-import { setupShortcut } from "@main/features/electron/shortcut.config";
-import { setupStartup } from "@main/features/electron/startup.config";
+import { setupShortcut } from "@main/features/electron/config/shortcut.config";
+import { setupStartup } from "@main/features/electron/config/startup.config";
 import { setupElectronSettingsController } from "@main/features/electron/electron-settings.controller";
-import { setupMenu } from "@main/features/electron/menu.config";
+import { setupMenu } from "@main/features/electron/config/menu.config";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -44,9 +44,9 @@ app.whenReady().then(async () => {
 
   // 🟡 Config setups
   setupTray(app, mainWindow);
-  setupShortcut(mainWindow, db);
-  setupStartup(mainWindow, db);
-  setupElectronSettingsController(db, mainWindow);
+  setupShortcut(mainWindow);
+  setupStartup(mainWindow);
+  setupElectronSettingsController(mainWindow);
 });
 
 app.on("window-all-closed", () => {

@@ -2,7 +2,7 @@ import { is } from "@electron-toolkit/utils";
 import icon from "@resources/logo.png?asset";
 import { BrowserWindow, shell } from "electron";
 import { join } from "path";
-import { ConfigRepository } from "@main/features/database/repository/config-repository";
+import { ConfigRepository } from "@main/features/electron/model/config.repository";
 
 let resizeTimeout: NodeJS.Timeout | null = null;
 

@@ -1,7 +1,7 @@
 
 // repositories/ConfigRepository.ts
-import { AppDataSource } from "../db.config";
-import { Config } from "../models/config";
+import { AppDataSource } from "@main/features/database/db.config";
+import { Config } from "@main/features/electron/model/config.model";
 
 export class ConfigRepository {
   private repo = AppDataSource.getRepository(Config);

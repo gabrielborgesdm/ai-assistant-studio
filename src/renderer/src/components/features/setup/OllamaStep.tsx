@@ -1,25 +1,25 @@
-import { Badge } from '@renderer/components/ui/badge'
-import { Button } from '@renderer/components/ui/button'
+import { Badge } from "@renderer/components/ui/badge";
+import { Button } from "@renderer/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@renderer/components/ui/card'
-import { CheckCircle, Circle, ExternalLink, RefreshCw } from 'lucide-react'
-import { ReactElement } from 'react'
+  CardTitle,
+} from "@renderer/components/ui/card";
+import { CheckCircle, Circle, ExternalLink, RefreshCw } from "lucide-react";
+import { ReactElement } from "react";
 
 export const OllamaStep = ({
   ollamaRunning,
   openOllamaWebsite,
   refetchRequirementsCheck,
-  isCheckingRequirements
+  isCheckingRequirements,
 }: {
-  ollamaRunning: boolean
-  openOllamaWebsite: () => void
-  refetchRequirementsCheck: (debounce?: boolean) => Promise<void>
-  isCheckingRequirements: boolean
+  ollamaRunning: boolean;
+  openOllamaWebsite: () => void;
+  refetchRequirementsCheck: (debounce?: boolean) => Promise<void>;
+  isCheckingRequirements: boolean;
 }): ReactElement => {
   return (
     <div className="max-w-xl mx-auto space-y-8 mb-8 w-full">
@@ -44,15 +44,18 @@ export const OllamaStep = ({
           </CardTitle>
           <CardDescription>
             {ollamaRunning
-              ? 'Great! Ollama is installed and ready to use'
-              : 'Ollama needs to be running to continue'}
+              ? "Great! Ollama is installed and ready to use"
+              : "Ollama needs to be running to continue"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {ollamaRunning ? (
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                <Badge
+                  variant="secondary"
+                  className="bg-green-100 text-green-800"
+                >
                   ✓ Running
                 </Badge>
               ) : (
@@ -73,9 +76,9 @@ export const OllamaStep = ({
                 disabled={isCheckingRequirements}
               >
                 <RefreshCw
-                  className={`h-4 w-4 mr-2 ${isCheckingRequirements ? 'animate-spin' : ''}`}
+                  className={`h-4 w-4 mr-2 ${isCheckingRequirements ? "animate-spin" : ""}`}
                 />
-                {isCheckingRequirements ? 'Checking...' : 'Check Again'}
+                {isCheckingRequirements ? "Checking..." : "Check Again"}
               </Button>
             </div>
           </div>
@@ -83,10 +86,11 @@ export const OllamaStep = ({
       </Card>
       <div className="p-4 border bg-slate-50 dark:bg-secondary rounded-lg">
         <p className="text-sm text-slate-600 dark:text-white">
-          <strong>Installation tip:</strong> After installing and executing Ollama, make sure to
-          click &quot;Check Again&quot; to verify the installation.
+          <strong>Installation tip:</strong> After installing and executing
+          Ollama, make sure to click &quot;Check Again&quot; to verify the
+          installation.
         </p>
       </div>
     </div>
-  )
-}
+  );
+};

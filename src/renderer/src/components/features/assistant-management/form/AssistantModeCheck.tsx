@@ -1,28 +1,29 @@
-import { Description } from '@renderer/components/shared/Description'
-import { InputError } from '@renderer/components/shared/form/InputError'
-import { Label } from '@renderer/components/ui/label'
-import { ReactElement } from 'react'
-import { Control, FieldErrors, useController } from 'react-hook-form'
+import { Description } from "@renderer/components/shared/Description";
+import { InputError } from "@renderer/components/shared/form/InputError";
+import { Label } from "@renderer/components/ui/label";
+import { ReactElement } from "react";
+import { Control, FieldErrors, useController } from "react-hook-form";
 
 export const AssistantModeCheck = ({
   control,
-  errors
+  errors,
 }: {
-  control: Control<any>
-  errors: FieldErrors
+  control: Control<any>;
+  errors: FieldErrors;
 }): ReactElement => {
   const { field } = useController({
-    name: 'ephemeral',
+    name: "ephemeral",
     control,
-    defaultValue: false
-  })
+    defaultValue: false,
+  });
 
   return (
     <div className="space-y-3">
       <Label>Assistant Mode</Label>
       <Description>
-        Choose how the assistant should behave. This setting determines whether it will engage in a
-        continuous conversation or respond only to the current input.
+        Choose how the assistant should behave. This setting determines whether
+        it will engage in a continuous conversation or respond only to the
+        current input.
       </Description>
       <div className="space-y-4">
         <label className="flex items-center space-x-2 p-4 border rounded-lg cursor-pointer">
@@ -34,11 +35,14 @@ export const AssistantModeCheck = ({
             onChange={() => field.onChange(false)}
           />
           <div>
-            <span className="font-medium">Conversational Mode (Chat-like Assistants)</span>
+            <span className="font-medium">
+              Conversational Mode (Chat-like Assistants)
+            </span>
             <p className="text-sm text-muted-foreground">
-              Ideal for chat-based assistants that remember past messages and maintain context
-              across multiple turns. <br />
-              e.g. software engineer assistant, story writer, or personal assistant.
+              Ideal for chat-based assistants that remember past messages and
+              maintain context across multiple turns. <br />
+              e.g. software engineer assistant, story writer, or personal
+              assistant.
             </p>
           </div>
         </label>
@@ -54,7 +58,8 @@ export const AssistantModeCheck = ({
           <div>
             <span className="font-medium">Task Mode (One-shot Prompting)</span>
             <p className="text-sm text-muted-foreground">
-              Best for assistants that respond to a single prompt without memory or context.
+              Best for assistants that respond to a single prompt without memory
+              or context.
               <br />
               e.g. proofreaders, translators, or summarizers.
             </p>
@@ -63,5 +68,5 @@ export const AssistantModeCheck = ({
       </div>
       <InputError error={errors.ephemeral?.message as string} />
     </div>
-  )
-}
+  );
+};

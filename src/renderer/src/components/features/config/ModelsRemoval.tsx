@@ -1,61 +1,61 @@
-import { AnimatedLoader } from '@renderer/components/shared/Loader'
-import { LoadingDots } from '@renderer/components/shared/LoadingDots'
-import { Button } from '@renderer/components/ui/button'
+import { AnimatedLoader } from "@renderer/components/shared/Loader";
+import { LoadingDots } from "@renderer/components/shared/LoadingDots";
+import { Button } from "@renderer/components/ui/button";
 import {
   Card,
   CardAction,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@renderer/components/ui/card'
+  CardTitle,
+} from "@renderer/components/ui/card";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@renderer/components/ui/table'
-import { cn } from '@renderer/lib/utils'
-import { RefreshCcw, Trash2 } from 'lucide-react'
-import { ReactElement, useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import requiredModels from '@global/resources/required-models.json'
+  TableRow,
+} from "@renderer/components/ui/table";
+import { cn } from "@renderer/lib/utils";
+import { RefreshCcw, Trash2 } from "lucide-react";
+import { ReactElement, useEffect, useState } from "react";
+import { toast } from "sonner";
+import requiredModels from "@global/resources/required-models.json";
 
 export const ModelsRemoval = (): ReactElement => {
-  const [installedModels, setInstalledModels] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [installedModels, setInstalledModels] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadModels = async (): Promise<void> => {
-    setIsLoading(true)
+    setIsLoading(true);
     // Wait for 1 second to simulate loading
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    const installedModels = await window.api.ollama.listModels()
-    console.log(installedModels)
-    setInstalledModels(installedModels)
-    setIsLoading(false)
-  }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const installedModels = await window.api.ollama.listModels();
+    console.log(installedModels);
+    setInstalledModels(installedModels);
+    setIsLoading(false);
+  };
 
   const isRequiredModel = (model: string): boolean => {
-    return requiredModels.some((requiredModel) => requiredModel.name === model)
-  }
+    return requiredModels.some((requiredModel) => requiredModel.name === model);
+  };
 
   const deleteModel = async (model: string): Promise<void> => {
-    setIsLoading(true)
-    const response = await window.api.ollama.deleteModel(model)
+    setIsLoading(true);
+    const response = await window.api.ollama.deleteModel(model);
     if (!response) {
-      toast.error('Failed to delete Ollama model', {
-        description: `Model ${model} could not be deleted`
-      })
+      toast.error("Failed to delete Ollama model", {
+        description: `Model ${model} could not be deleted`,
+      });
     }
 
-    loadModels()
-  }
+    loadModels();
+  };
 
   useEffect(() => {
-    loadModels()
-  }, [])
+    loadModels();
+  }, []);
 
   return (
     <Card>
@@ -70,7 +70,11 @@ export const ModelsRemoval = (): ReactElement => {
             title="Refresh"
             onClick={() => loadModels()}
           >
-            {isLoading ? <AnimatedLoader /> : <RefreshCcw className="h-4 w-4" />}
+            {isLoading ? (
+              <AnimatedLoader />
+            ) : (
+              <RefreshCcw className="h-4 w-4" />
+            )}
           </Button>
         </CardAction>
       </CardHeader>
@@ -102,13 +106,13 @@ export const ModelsRemoval = (): ReactElement => {
                   installedModels.map((model) => (
                     <TableRow key={model}>
                       <TableCell className="font-medium">
-                        {model} {isRequiredModel(model) ? '(Required)' : ''}
+                        {model} {isRequiredModel(model) ? "(Required)" : ""}
                       </TableCell>
                       <TableCell className="flex items-center gap-2">
                         <Button
-                          variant="destructive"
+                          variant="outline"
                           type="button"
-                          className={cn(isLoading && 'disabled')}
+                          className={cn(isLoading && "disabled")}
                           title="Delete model"
                           onClick={() => deleteModel(model)}
                           disabled={isLoading || isRequiredModel(model)}
@@ -125,5 +129,5 @@ export const ModelsRemoval = (): ReactElement => {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

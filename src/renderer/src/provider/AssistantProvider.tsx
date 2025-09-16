@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Assistant } from '@global/types/assistant'
-import { useManageModel } from '@renderer/components/features/model-status/use-manage-model'
+import { Assistant } from "@global/types/assistant";
+import { useManageModel } from "@renderer/components/features/model-status/use-manage-model";
 import {
   createContext,
   ReactElement,
@@ -8,72 +8,85 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState
-} from 'react'
+  useState,
+} from "react";
 
 interface AssistantContextType {
-  assistants: Assistant[]
-  activeAssistant: Assistant | undefined
-  loadAssistants: () => Promise<void>
-  setAssistants: (value: Assistant[]) => void
-  setActiveAssistant: (value: Assistant) => void
-  removeAssistant: (assistantId: string) => void
+  assistants: Assistant[];
+  activeAssistant: Assistant | undefined;
+  loadAssistants: () => Promise<void>;
+  setAssistants: (value: Assistant[]) => void;
+  setActiveAssistant: (value: Assistant) => void;
+  removeAssistant: (assistantId: string) => void;
 }
 
-const AssistantContext = createContext<AssistantContextType | undefined>(undefined)
+const AssistantContext = createContext<AssistantContextType | undefined>(
+  undefined,
+);
 
-export const AssistantProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [assistants, setAssistants] = useState<Assistant[]>([])
-  const [activeAssistant, setActiveAssistant] = useState<Assistant | undefined>(undefined)
-  const { saveModel } = useManageModel()
+export const AssistantProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement => {
+  const [assistants, setAssistants] = useState<Assistant[]>([]);
+  const [activeAssistant, setActiveAssistant] = useState<Assistant | undefined>(
+    undefined,
+  );
+  const { saveModel } = useManageModel();
 
   const loadAssistants = async (): Promise<void> => {
-    const assistants = await window.api.assistants.getAssistants()
-    setAssistants(assistants)
-  }
+    const assistants = await window.api.assistants.getAssistants();
+    console.log("Loaded assistants:", assistants);
+    setAssistants(assistants);
+  };
 
   const removeAssistant = (assistantId: string): void => {
     if (assistants.length === 1) {
-      throw new Error('Cannot remove the last assistant')
+      throw new Error("Cannot remove the last assistant");
     }
-    window.api.assistants.deleteAssistant(assistantId)
-    const filteredAssistants = assistants.filter((assistant) => assistant.id !== assistantId)
-    setAssistants(filteredAssistants)
-    setActiveAssistant(filteredAssistants[0])
-  }
+    window.api.assistants.deleteAssistant(assistantId);
+    const filteredAssistants = assistants.filter(
+      (assistant) => assistant.id !== assistantId,
+    );
+    setAssistants(filteredAssistants);
+    setActiveAssistant(filteredAssistants[0]);
+  };
 
   const updateActiveAssistant = (assistant: Assistant): void => {
-    setActiveAssistant(assistant)
-    localStorage.setItem('activeAssistant', assistant.id)
-  }
+    setActiveAssistant(assistant);
+    localStorage.setItem("activeAssistant", assistant.id);
+  };
 
   useEffect(() => {
-    loadAssistants()
-  }, [])
+    loadAssistants();
+  }, []);
 
   useEffect(() => {
     // set the first assistant as selected by default
     if (assistants.length > 0 && !activeAssistant) {
       if (import.meta.env.VITE_DEBUG_CLEANUP) {
-        localStorage.removeItem('activeAssistant')
+        localStorage.removeItem("activeAssistant");
       }
-      const activeAssistantId = localStorage.getItem('activeAssistant')
+      const activeAssistantId = localStorage.getItem("activeAssistant");
       if (activeAssistantId) {
-        const foundAssistant = assistants.find((assistant) => assistant.id === activeAssistantId)
+        const foundAssistant = assistants.find(
+          (assistant) => assistant.id === activeAssistantId,
+        );
         if (foundAssistant) {
-          setActiveAssistant(foundAssistant)
-          return
+          setActiveAssistant(foundAssistant);
+          return;
         }
       }
-      setActiveAssistant(assistants[0])
+      setActiveAssistant(assistants[0]);
     }
-  }, [assistants])
+  }, [assistants]);
 
   // Check if the assistant model is checked as installed
   useEffect(() => {
-    if (!activeAssistant) return
-    saveModel(activeAssistant.model)
-  }, [activeAssistant])
+    if (!activeAssistant) return;
+    saveModel(activeAssistant.model);
+  }, [activeAssistant]);
 
   const contextValue = useMemo(() => {
     return {
@@ -82,17 +95,23 @@ export const AssistantProvider = ({ children }: { children: ReactNode }): ReactE
       setAssistants,
       activeAssistant,
       setActiveAssistant: updateActiveAssistant,
-      removeAssistant
-    }
-  }, [assistants, activeAssistant])
+      removeAssistant,
+    };
+  }, [assistants, activeAssistant]);
 
-  return <AssistantContext.Provider value={contextValue}>{children}</AssistantContext.Provider>
-}
+  return (
+    <AssistantContext.Provider value={contextValue}>
+      {children}
+    </AssistantContext.Provider>
+  );
+};
 
 export const useAssistantContext = (): AssistantContextType => {
-  const context = useContext(AssistantContext)
+  const context = useContext(AssistantContext);
   if (!context) {
-    throw new Error('useAssistantContext must be used within a AssistantProvider')
+    throw new Error(
+      "useAssistantContext must be used within a AssistantProvider",
+    );
   }
-  return context
-}
+  return context;
+};

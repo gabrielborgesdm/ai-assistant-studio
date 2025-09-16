@@ -1,18 +1,18 @@
-import { AssistantData } from '@global/types/assistant'
-import { BackButton } from '@renderer/components/shared/BackButton'
+import { AssistantData } from "@global/types/assistant";
+import { BackButton } from "@renderer/components/shared/BackButton";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@renderer/components/ui/card'
-import { AssistantForm } from './AssistantForm'
+  CardTitle,
+} from "@renderer/components/ui/card";
+import { AssistantForm } from "./AssistantForm";
 
 export const AssistantManagement = ({
-  assistant
+  assistant,
 }: {
-  assistant?: AssistantData
+  assistant?: AssistantData;
 }): React.ReactElement => {
   return (
     <div className="min-h-screen w-full p-4 space-y-4 ">
@@ -21,7 +21,7 @@ export const AssistantManagement = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              {assistant ? `Edit ${assistant.title}` : 'Create AI Assistant'}
+              {assistant ? `Edit ${assistant.title}` : "Create AI Assistant"}
             </CardTitle>
             <CardDescription>
               Configure your AI assistant with custom settings and behavior
@@ -33,5 +33,5 @@ export const AssistantManagement = ({
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};

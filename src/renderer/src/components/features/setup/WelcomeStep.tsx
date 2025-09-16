@@ -1,7 +1,7 @@
-import { Logo } from '@renderer/components/shared/Logo'
-import { Card, CardContent } from '@renderer/components/ui/card'
-import { Settings, MessageSquare, Zap } from 'lucide-react'
-import { ReactElement } from 'react'
+import { Logo } from "@renderer/components/shared/Logo";
+import { Card, CardContent } from "@renderer/components/ui/card";
+import { Settings, MessageSquare, Zap } from "lucide-react";
+import { ReactElement } from "react";
 
 export const WelcomeStep = (): ReactElement => {
   return (
@@ -12,7 +12,8 @@ export const WelcomeStep = (): ReactElement => {
           Welcome to AI Assistant Studio
         </h1>
         <p className="text-xl text-slate-600 max-w-2xl mx-auto dark:text-white">
-          Create, customize, and chat with your own AI assistants powered by local language models
+          Create, customize, and chat with your own AI assistants powered by
+          local language models
         </p>
       </div>
 
@@ -22,8 +23,8 @@ export const WelcomeStep = (): ReactElement => {
             <Settings className="h-8 w-8 text-blue-600 mx-auto mb-3" />
             <h3 className="font-semibold mb-2">Smart Assistant Generation</h3>
             <p className="text-sm text-slate-600 dark:text-white">
-              Easily create intelligent, contextual assistants in seconds, powered by AI
-              auto-generation.
+              Easily create intelligent, contextual assistants in seconds,
+              powered by AI auto-generation.
             </p>
           </CardContent>
         </Card>
@@ -33,8 +34,8 @@ export const WelcomeStep = (): ReactElement => {
             <MessageSquare className="h-8 w-8 text-purple-600 mx-auto mb-3" />
             <h3 className="font-semibold mb-2">Fully Customizable</h3>
             <p className="text-sm text-slate-600 dark:text-white">
-              Tailor assistants for any task—from casual chats to focused jobs like proofreading or
-              email drafting.
+              Tailor assistants for any task—from casual chats to focused jobs
+              like proofreading or email drafting.
             </p>
           </CardContent>
         </Card>
@@ -44,7 +45,8 @@ export const WelcomeStep = (): ReactElement => {
             <Zap className="h-8 w-8 text-green-600 mx-auto mb-3" />
             <h3 className="font-semibold mb-2">Built for Privacy</h3>
             <p className="text-sm text-slate-600 dark:text-white">
-              Everything runs locally. No cloud. No tracking. Full control, even offline.
+              Everything runs locally. No cloud. No tracking. Full control, even
+              offline.
             </p>
           </CardContent>
         </Card>
@@ -52,10 +54,10 @@ export const WelcomeStep = (): ReactElement => {
 
       <div className="bg-slate-50 rounded-lg p-6 max-w-2xl mx-auto dark:bg-secondary">
         <p className="text-slate-700 dark:text-white">
-          <strong>Ready to get started?</strong> We&apos;ll help you set up Ollama and download the
-          essential models to power your AI assistants.
+          <strong>Ready to get started?</strong> We&apos;ll help you set up
+          Ollama and download the essential models to power your AI assistants.
         </p>
       </div>
     </div>
-  )
-}
+  );
+};

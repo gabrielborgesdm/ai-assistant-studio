@@ -1,11 +1,14 @@
-import defaultAssistants from '@global/resources/default-assistants.json'
-import { Assistant, AssistantHistory } from '@global/types/assistant'
-import { Config } from '@global/types/config'
-import { DBType } from '@main/features/database/db.type'
-import { app } from 'electron'
-import fs from 'fs/promises'
-import { JSONFilePreset } from 'lowdb/node'
-import path from 'path'
+import "reflect-metadata";
+import { DataSource } from "typeorm";
+
+import { Config } from "@main/features/electron/model/config.model";
+import { Assistant } from "@main/features/assistants/model/assistant.model";
+import { Conversation } from "@main/features/conversation/model/conversation.model";
+import { Message } from "@main/features/messages/model/messages.model";
+import { DatabaseSeeder } from "@main/features/database/seeders/database.seeder";
+import OllamaService from "@main/features/ollama/ollama.service";
+import { app } from "electron";
+import path from "path";
 
 /*
  * This file is responsible for initializing the database and handling
@@ -14,35 +17,35 @@ import path from 'path'
  * The database is stored in the user data directory of the app.
  */
 
-const initialData: { assistants: Assistant[]; history: AssistantHistory[]; config: Config } = {
-  assistants: defaultAssistants,
-  history: [],
-  config: {
-    window: {
-      width: 1024,
-      height: 768
-    },
-    shortcut: '',
-    runAtStartup: false
-  }
-}
+export const AppDataSource = new DataSource({
+  type: "better-sqlite3",
+  database: path.join(app.getPath("userData"), "app.db"),
+  synchronize: true,
+  entities: [Config, Assistant, Conversation, Message],
+});
 
-let db: DBType
+export async function initDB(): Promise<void> {
+  // --- SQL (TypeORM) init ---
+  if (!AppDataSource.isInitialized) {
+    await AppDataSource.initialize();
+    console.log(
+      "TypeORM initialized with entities:",
+      AppDataSource.entityMetadatas.map((e) => e.name),
+    );
 
-export async function initDB(): Promise<DBType> {
-  const file = path.join(app.getPath('userData'), 'db.json')
-  // for debug purposes, remove the db file if env var is set
-  if (process.env.VITE_DEBUG_CLEANUP) {
-    console.log('Removing database file for debug purposes')
+    // --- Run database seeders ---
+    const seeder = new DatabaseSeeder();
+    await seeder.seedAll();
+
+    // --- Update model download status ---
     try {
-      await fs.rm(file).then(() => console.log('Database file removed'))
+      const ollamaService = new OllamaService();
+      const installedModels = await ollamaService.listModels();
+      await seeder.updateModelStatuses(installedModels);
+      console.log("Model download status updated");
     } catch (error) {
-      console.error('Error removing database file:', error)
+      console.error("Failed to update model status (Ollama might not be running):", error);
     }
   }
 
-  db = await JSONFilePreset(file, initialData)
-  await db.read()
-
-  return db
 }

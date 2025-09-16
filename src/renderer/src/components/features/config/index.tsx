@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { ModelsRemoval } from '@renderer/components/features/config/ModelsRemoval'
-import { Shortcut } from '@renderer/components/features/config/Shortcut'
-import { Startup } from '@renderer/components/features/config/Startup'
-import { BackButton } from '@renderer/components/shared/BackButton'
-import { ReactElement } from 'react'
+import { ModelsRemoval } from "@renderer/components/features/config/ModelsRemoval";
+import { Shortcut } from "@renderer/components/features/config/Shortcut";
+import { Startup } from "@renderer/components/features/config/Startup";
+import { BackButton } from "@renderer/components/shared/BackButton";
+import { ReactElement } from "react";
 
 export const ConfigComponent = (): ReactElement => {
   return (
@@ -16,5 +16,5 @@ export const ConfigComponent = (): ReactElement => {
         <ModelsRemoval />
       </div>
     </div>
-  )
-}
+  );
+};

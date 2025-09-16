@@ -1,54 +1,67 @@
 /* eslint-disable react-refresh/only-export-components */
-import { InstalledModels, ModelDownload } from '@global/types/model'
-import { createContext, ReactElement, ReactNode, useContext, useMemo, useState } from 'react'
+import { InstalledModels, ModelDownload } from "@global/types/model";
+import {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 interface RequirementsContextType {
-  models: InstalledModels | undefined
-  ollamaRunning: boolean
-  isCheckingRequirements: boolean
-  updateModel: (model: ModelDownload) => void
-  updateModels: (models: InstalledModels) => void
-  getModelsFromLocalStorage: () => InstalledModels | undefined
-  setOllamaRunning: (ollamaRunning: boolean) => void
-  setIsCheckingRequirements: (isCheckingRequirements: boolean) => void
+  models: InstalledModels | undefined;
+  ollamaRunning: boolean;
+  isCheckingRequirements: boolean;
+  updateModel: (model: ModelDownload) => void;
+  updateModels: (models: InstalledModels) => void;
+  getModelsFromLocalStorage: () => InstalledModels | undefined;
+  setOllamaRunning: (ollamaRunning: boolean) => void;
+  setIsCheckingRequirements: (isCheckingRequirements: boolean) => void;
 }
 
-const RequirementsContext = createContext<RequirementsContextType | undefined>(undefined)
+const RequirementsContext = createContext<RequirementsContextType | undefined>(
+  undefined,
+);
 
-export const RequirementsProvider = ({ children }: { children: ReactNode }): ReactElement => {
+export const RequirementsProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement => {
   // these are the installed models
-  const [models, setModels] = useState<InstalledModels | undefined>(undefined)
+  const [models, setModels] = useState<InstalledModels | undefined>(undefined);
 
   // these are the available models from the ollama website that we can install
-  const [ollamaRunning, setOllamaRunning] = useState(false)
-  const [isCheckingRequirements, setIsCheckingRequirements] = useState(true)
+  const [ollamaRunning, setOllamaRunning] = useState(false);
+  const [isCheckingRequirements, setIsCheckingRequirements] = useState(true);
 
   const getModelsFromLocalStorage = (): InstalledModels | undefined => {
     if (import.meta.env.VITE_DEBUG_CLEANUP) {
-      console.log('Removing models from localStorage for debug purposes')
-      localStorage.removeItem('models')
+      console.log("Removing models from localStorage for debug purposes");
+      localStorage.removeItem("models");
     }
 
-    const modelsJson = localStorage.getItem('models')
+    const modelsJson = localStorage.getItem("models");
     if (modelsJson) {
-      return JSON.parse(modelsJson)
+      return JSON.parse(modelsJson);
     }
-    return undefined
-  }
+    return undefined;
+  };
 
   const updateModel = (payload: ModelDownload): void => {
-    console.log('calling update model:', payload)
-    const modelsCopy = { ...models }
-    modelsCopy[payload.name] = { ...modelsCopy[payload.name], ...payload }
-    localStorage.setItem('models', JSON.stringify(models))
-    setModels(modelsCopy)
-  }
+    console.log("calling update model:", payload);
+    const modelsCopy = { ...models };
+    modelsCopy[payload.name] = { ...modelsCopy[payload.name], ...payload };
+    localStorage.setItem("models", JSON.stringify(models));
+    setModels(modelsCopy);
+  };
 
   const updateModels = (models: InstalledModels): void => {
-    console.log('calling update models:', models)
-    localStorage.setItem('models', JSON.stringify(models))
-    setModels({ ...models })
-  }
+    console.log("calling update models:", models);
+    localStorage.setItem("models", JSON.stringify(models));
+    setModels({ ...models });
+  };
 
   const contextValue = useMemo(() => {
     return {
@@ -59,19 +72,23 @@ export const RequirementsProvider = ({ children }: { children: ReactNode }): Rea
       updateModels,
       getModelsFromLocalStorage,
       setOllamaRunning,
-      setIsCheckingRequirements
-    }
-  }, [models, ollamaRunning, isCheckingRequirements])
+      setIsCheckingRequirements,
+    };
+  }, [models, ollamaRunning, isCheckingRequirements]);
 
   return (
-    <RequirementsContext.Provider value={contextValue}>{children}</RequirementsContext.Provider>
-  )
-}
+    <RequirementsContext.Provider value={contextValue}>
+      {children}
+    </RequirementsContext.Provider>
+  );
+};
 
 export const useRequirementsContext = (): RequirementsContextType => {
-  const context = useContext(RequirementsContext)
+  const context = useContext(RequirementsContext);
   if (!context) {
-    throw new Error('useRequirementsContext must be used within a RequirementsProvider')
+    throw new Error(
+      "useRequirementsContext must be used within a RequirementsProvider",
+    );
   }
-  return context
-}
+  return context;
+};

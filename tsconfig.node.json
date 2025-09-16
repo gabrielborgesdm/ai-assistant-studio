@@ -7,10 +7,14 @@
     "src/main/**/*",
     "src/preload/**/*",
     "src/global/**/*",
+    "src/test/**/*",
     "resources/**/*"
   ],
   "compilerOptions": {
     "composite": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
     "types": [
       "electron-vite/node"
     ],
@@ -27,6 +31,9 @@
       ],
       "@resources/*": [
         "resources/*"
+      ],
+      "@test/*": [
+        "src/test/*"
       ]
     }
   }

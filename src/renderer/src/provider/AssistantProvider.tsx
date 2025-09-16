@@ -37,6 +37,7 @@ export const AssistantProvider = ({
 
   const loadAssistants = async (): Promise<void> => {
     const assistants = await window.api.assistants.getAssistants();
+    console.log("Loaded assistants:", assistants);
     setAssistants(assistants);
   };
 

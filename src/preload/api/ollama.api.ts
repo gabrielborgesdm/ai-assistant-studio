@@ -1,6 +1,4 @@
 import {
-  ChatEvent,
-  ChatEventReply,
   DeleteModelEvent,
   DownloadModelEvent,
   getDownloadModelEventReply,
@@ -15,17 +13,6 @@ import { ipcRenderer } from "electron";
 // It uses Electron's IPC (Inter-Process Communication) to communicate with the main process
 
 export const ollamaApi = {
-  streamOllamaChatResponse: (action, history, callback) => {
-    ipcRenderer.removeAllListeners(ChatEventReply); // Remove any previous listeners to avoid duplicates
-    console.log("calling streamOllamaChatResponse");
-    ipcRenderer.send(ChatEvent, action, history);
-
-    const listener = (_event: Electron.IpcRendererEvent, result): void => {
-      callback(result);
-    };
-
-    ipcRenderer.on(ChatEventReply, listener);
-  },
   downloadModel: (model, callback) => {
     const eventReply = getDownloadModelEventReply(model);
     ipcRenderer.removeAllListeners(eventReply); // Remove any previous listeners to avoid duplicates

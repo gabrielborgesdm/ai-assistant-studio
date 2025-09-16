@@ -15,7 +15,6 @@ export const AssistantManagementPage = (): React.ReactElement => {
       assistant.id = undefined;
       assistant.title += " (Copy)";
     }
-    console.log("assistant", assistant);
     return assistant;
   }, [pageProps?.assistant, pageProps?.duplicate]);
 

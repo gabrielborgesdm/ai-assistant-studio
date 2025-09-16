@@ -8,8 +8,8 @@ import { RequirementsProvider } from "@/provider/RequirementsProvider";
 import {
   Assistant,
   AssistantFormData,
-  AssistantHistory,
-  AssistantMessage,
+  Conversation,
+  Message,
 } from "@global/types/assistant";
 import { Config } from "@global/types/config";
 import { ModelDownload, OllamaModel } from "@global/types/model";
@@ -18,6 +18,7 @@ import { ReactElement } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { ConfigPage } from "@/components/pages/config";
 import { AssistantProvider } from "@/provider/AssistantProvider";
+import { LlmMessageStreamResponse } from "@global/types/llm";
 
 /**
  * Global window object to expose API methods and data
@@ -27,11 +28,6 @@ declare global {
   interface Window {
     api: {
       ollama: {
-        streamOllamaChatResponse: (
-          assistant: Assistant,
-          history: AssistantHistory,
-          callback: (response) => void,
-        ) => Promise<void>;
         checkOllamaRunning: () => Promise<boolean>;
         downloadModel: (
           model: ModelDownload,
@@ -42,21 +38,45 @@ declare global {
         warmupOllama: (model: string) => Promise<void>;
         deleteModel: (model: string) => Promise<boolean>;
       };
+      llm: {
+        streamLlmChat: (
+          assistantId: string,
+          conversation: Conversation | null,
+          message: string,
+          images: string[] | undefined,
+          callback: (response: LlmMessageStreamResponse) => void,
+        ) => Promise<void>;
+        streamLlmAutoGenerate: (
+          templateAssistantId: string,
+          configuration: Record<string, any>,
+          previousMessages: any[],
+          callback: (response: LlmMessageStreamResponse) => void,
+        ) => Promise<void>;
+      };
       assistants: {
         getAssistants: () => Promise<Assistant[]>;
-        getHistory: (
-          assistantId: string,
-        ) => Promise<AssistantHistory | undefined>;
         addAssistantMessage: (
           assistantId: string,
-          messages: AssistantMessage[],
-        ) => Promise<AssistantHistory>;
+          messages: Message[],
+        ) => Promise<Conversation | null>;
         saveAssistant: (
           assistantData: AssistantFormData,
           assistantId: string | undefined,
         ) => Promise<Assistant>;
-        clearHistory: (assistantId: string) => Promise<void>;
         deleteAssistant: (assistantId: string) => Promise<void>;
+      };
+      conversation: {
+        getConversation: (
+          assistantId: string,
+          conversationId?: string,
+        ) => Promise<Conversation | null>;
+        saveConversation: (
+          assistantId: string,
+          conversationId: string | undefined,
+          messages?: Message[],
+        ) => Promise<Conversation | null>;
+        clearConversationMessages: (conversationId: string) => Promise<void>;
+        getAllConversations: (assistantId: string) => Promise<Conversation[]>;
       };
       file: {
         getDirectoryPath: () => Promise<string | undefined>;

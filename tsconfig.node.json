@@ -7,6 +7,7 @@
     "src/main/**/*",
     "src/preload/**/*",
     "src/global/**/*",
+    "src/test/**/*",
     "resources/**/*"
   ],
   "compilerOptions": {
@@ -30,6 +31,9 @@
       ],
       "@resources/*": [
         "resources/*"
+      ],
+      "@test/*": [
+        "src/test/*"
       ]
     }
   }

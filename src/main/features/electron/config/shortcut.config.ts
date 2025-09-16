@@ -12,7 +12,6 @@ export const setupShortcut = async (
   const configRepository = new ConfigRepository();
   try {
     const config = await configRepository.getConfig();
-    console.log("config", config);
     const shortcutService = new ElectronSettingsService(mainWindow);
 
     if (!config?.shortcut) {

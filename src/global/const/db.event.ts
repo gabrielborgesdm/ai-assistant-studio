@@ -9,3 +9,5 @@ export const ClearHistoryEvent = "clear-history";
 export const SaveAssistantEvent = "save-assistant";
 
 export const DeleteAssistantEvent = "delete-assistant";
+
+export const RefreshModelStatusEvent = "refresh-model-status";

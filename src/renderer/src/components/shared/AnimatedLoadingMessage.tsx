@@ -1,95 +1,44 @@
+"use client";
+
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import { ReactElement } from "react";
 
-const AnimatedLoadingMessage = (): ReactElement => {
-  const text = "Generating";
-  const [showDots, setShowDots] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(
-      () => {
-        setShowDots(true);
-      },
-      text.length * 100 + 400,
-    ); // delay after character animation finishes
-    return () => clearTimeout(timeout);
-  }, []);
-
-  const textVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.05,
-      },
-    },
-  } as const;
-
-  const charVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 200,
-      },
-    },
-  } as const;
-
-  const dotVariants = {
-    hidden: { scale: 0 },
-    visible: {
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20,
-        repeat: Infinity,
-        repeatType: "mirror",
-        duration: 0.5,
-      },
-    },
-  } as const;
-
-  return (
-    <motion.div
-      style={{ display: "flex", alignItems: "baseline" }}
-      variants={textVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {text.split("").map((char, index) => (
-        <motion.span key={index} variants={charVariants}>
-          {char}
-        </motion.span>
-      ))}
-      {showDots && (
-        <motion.div style={{ display: "flex", marginLeft: "0.5rem" }}>
-          {[...Array(3)].map((_, i) => (
-            <motion.span
-              key={i}
-              style={{
-                width: "0.3rem",
-                height: "0.3rem",
-                backgroundColor: "#333",
-                borderRadius: "50%",
-                margin: "0 0.2rem",
-              }}
-              variants={dotVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{
-                delay: i * 0.2,
-                ...dotVariants.visible.transition,
-              }}
-            />
-          ))}
-        </motion.div>
-      )}
-    </motion.div>
-  );
+type Props = {
+  text?: string;
+  className?: string;
 };
 
-export default AnimatedLoadingMessage;
+export default function AnimatedLoadingMessage({
+  text = "Generating",
+  className = "",
+}: Props): ReactElement {
+
+
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={`inline-flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 ${className}`}
+    >
+      {/* Label + dots */}
+      <span className="tracking-wide">{text}</span>
+      <span className="inline-flex w-4 justify-between pl-0.5 align-bottom items-baseline justify-self-end self-end pb-1">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="h-[0.25em] w-[0.25em] rounded-full bg-slate-500/70 dark:bg-slate-300/80"
+            initial={{ scale: 0.6, opacity: 0.4 }}
+            animate={{ scale: [0.6, 1, 0.6], opacity: [0.4, 1, 0.4] }}
+            transition={{
+              duration: 1,
+              delay: i * 0.12,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </span>
+    </div>
+  );
+}

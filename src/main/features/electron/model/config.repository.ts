@@ -24,15 +24,22 @@ export class ConfigRepository {
         windowHeight: config.windowHeight ?? 600,
         shortcut: config.shortcut ?? "Ctrl+Shift+X",
         runAtStartup: config.runAtStartup ?? false,
+        databaseSeeded: config.databaseSeeded ?? false,
       });
-      console.log("saveConfig", existing);
     } else {
       // update existing config
       this.repo.merge(existing, config);
-      console.log("saveConfig", existing);
     }
 
-    console.log("saveConfig", existing);
     return this.repo.save(existing);
+  }
+
+  async isDatabaseSeeded(): Promise<boolean> {
+    const config = await this.getConfig();
+    return config?.databaseSeeded ?? false;
+  }
+
+  async markDatabaseAsSeeded(): Promise<void> {
+    await this.saveConfig({ databaseSeeded: true });
   }
 }

@@ -1,10 +1,6 @@
 import { ModelDownload } from "@global/types/model";
 import { EventCancel, EventReply } from "@global/utils/event.utils";
 
-export const ChatEvent = "ollama-chat";
-export const ChatEventReply = EventReply(ChatEvent);
-export const ChatEventCancel = EventCancel(ChatEvent);
-
 export const OllamaIsInstalledEvent = "ollama-is-installed";
 
 export const DownloadModelEvent = "ollama-download-model";

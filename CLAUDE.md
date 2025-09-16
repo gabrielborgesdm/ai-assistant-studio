@@ -10,32 +10,32 @@ AI Assistant Studio is an Electron-based desktop application that enables users 
 
 ```bash
 # Install dependencies
-yarn
+npm run
 
 # Start development server
-yarn dev
+npm run dev
 
 # Run linting
-yarn lint
+npm run lint
 
 # Format code
-yarn format
+npm run format
 
 # Type checking
-yarn typecheck          # Run both node and web type checks
-yarn typecheck:node     # Type check main/preload processes
-yarn typecheck:web      # Type check renderer process
+npm run typecheck          # Run both node and web type checks
+npm run typecheck:node     # Type check main/preload processes
+npm run typecheck:web      # Type check renderer process
 
 # Build for production
-yarn build              # Full build with type checking
+npm run build              # Full build with type checking
 
 # Platform-specific builds
-yarn build:win          # Windows build
-yarn build:mac          # macOS build
-yarn build:linux        # Linux build
+npm run build:win          # Windows build
+npm run build:mac          # macOS build
+npm run build:linux        # Linux build
 
 # Testing
-yarn test               # Run Vitest tests
+npm run test               # Run Vitest tests
 ```
 
 ## Architecture

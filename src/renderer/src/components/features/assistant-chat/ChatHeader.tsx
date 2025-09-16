@@ -1,5 +1,5 @@
 import { AssistantDropdown } from "@/components/features/assistant-chat/AssistantDropdown";
-import { Assistant, AssistantHistory } from "@global/types/assistant";
+import { Assistant, Conversation } from "@global/types/assistant";
 import { Button } from "@renderer/components/ui/button";
 import { cn } from "@renderer/lib/utils";
 import { BrushCleaning, Pause } from "lucide-react";
@@ -12,7 +12,7 @@ interface ChatHeaderProps {
   handleClearHistory: () => void;
   handleCancelMessageRequest: () => void;
   isNavigationDisabled?: boolean;
-  history: AssistantHistory | undefined;
+  conversation?: Conversation | null;
 }
 
 export const ChatHeader = ({
@@ -21,10 +21,10 @@ export const ChatHeader = ({
   HeaderButton,
   handleClearHistory,
   handleCancelMessageRequest,
-  history,
+  conversation,
   isNavigationDisabled,
 }: ChatHeaderProps): React.ReactElement => {
-  const hasMessages = history?.messages && history.messages.length > 0;
+  const hasMessages = conversation?.messages && conversation.messages.length > 0;
 
   return (
     <header className="flex items-center justify-between p-4 border-b">
@@ -52,7 +52,7 @@ export const ChatHeader = ({
             className={cn(!hasMessages && "disabled")}
             disabled={!hasMessages}
             onClick={handleClearHistory}
-            title="Clear chat history"
+            title="Clear chat conversation"
           >
             <BrushCleaning />
           </Button>

@@ -52,10 +52,7 @@ export const setupWindowConfig = async (
       const [width, height] = mainWindow.getSize();
       if (!width || !height) return;
 
-      console.log("saveConfig", {
-        windowWidth: width,
-        windowHeight: height,
-      });
+      
       await configRepository.saveConfig({
         windowWidth: width,
         windowHeight: height,

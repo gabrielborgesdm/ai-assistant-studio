@@ -1,14 +1,6 @@
-import {
-  Assistant,
-  AssistantHistory,
-  MessageRole,
-} from "@global/types/assistant";
+import { Assistant } from "@global/types/assistant";
 import { ReactElement, useEffect, useMemo, useState } from "react";
-import {
-  AssistantMessageFactory,
-  HistoryFactory,
-} from "@global/factories/assistant.factory";
-import { OllamaMessageStreamResponse } from "@global/types/ollama";
+import { LlmMessageStreamResponse } from "@global/types/llm";
 import { Button } from "@renderer/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { Control, FieldError, TriggerConfig, useWatch } from "react-hook-form";
@@ -35,9 +27,7 @@ export const GenerateBehaviourButton = ({
   setValue,
   fieldName,
 }: GenerateBehaviourButtonProps): ReactElement => {
-  const [history, setHistory] = useState<AssistantHistory>(
-    HistoryFactory(autoGenerateAssistant.id),
-  );
+  const [previousMessages, setPreviousMessages] = useState<any[]>([]);
   const title = useWatch({ control, name: "title" });
   const description = useWatch({ control, name: "description" });
   const ephemeral = useWatch({ control, name: "ephemeral" });
@@ -70,15 +60,15 @@ export const GenerateBehaviourButton = ({
     return configuration;
   }, [title, description, ephemeral, systemBehaviour]);
 
-  // Reset the history when the title or description changes
-  useEffect(() => {
-    setHistory({ ...history, messages: [] });
-  }, [title, description]);
-
   // Update the field value when the internal value state changes
   useEffect(() => {
     setValue(fieldName, fieldValue);
-  }, [fieldValue]);
+  }, [fieldValue, fieldName, setValue]);
+
+  // Reset previous messages when configuration changes
+  useEffect(() => {
+    setPreviousMessages([]);
+  }, [title, description, ephemeral, systemBehaviour]);
 
   const handleGenerate = async (): Promise<void> => {
     // Make sure the title is not empty
@@ -98,29 +88,11 @@ export const GenerateBehaviourButton = ({
     setFieldValue("");
     clearErrors("title");
 
-    // If the user didn't click on the auto generate button before, we need to add the system behaviour to the history
-    if (history.messages.length === 0) {
-      let behaviourPrompt = autoGenerateAssistant.systemBehaviour as string;
-      behaviourPrompt = behaviourPrompt.replace(
-        "{{configuration}}",
-        JSON.stringify(configuration, null, 2),
-      );
-      history.messages.push(
-        AssistantMessageFactory(MessageRole.SYSTEM, behaviourPrompt),
-      );
-    }
-    // Add the user prompt to the history. This will make the assistant generate another response considering the previous responses
-    history.messages.push(
-      AssistantMessageFactory(
-        MessageRole.USER,
-        autoGenerateAssistant.prompt as string,
-      ),
-    );
-
-    window.api.ollama.streamOllamaChatResponse(
-      autoGenerateAssistant,
-      history,
-      async (res: OllamaMessageStreamResponse) => {
+    window.api.llm.streamLlmAutoGenerate(
+      autoGenerateAssistant.id,
+      configuration,
+      previousMessages,
+      async (res: LlmMessageStreamResponse) => {
         if (res.response) {
           setFieldValue((value) => value + res.response);
         }
@@ -136,6 +108,12 @@ export const GenerateBehaviourButton = ({
 
         if (res.done) {
           setIsGenerating(false);
+          // Add the generated response to previous messages for iterative generation
+          setPreviousMessages(prev => [
+            ...prev,
+            { role: "user", content: autoGenerateAssistant.prompt },
+            { role: "assistant", content: fieldValue }
+          ]);
         }
       },
     );

@@ -1,8 +1,8 @@
 import {
   AssistantData,
   AssistantFormData,
-  AssistantHistory,
-  AssistantMessage,
+  Conversation,
+  Message,
   MessageRole,
 } from "@global/types/assistant";
 
@@ -17,19 +17,22 @@ export const AssistantDataFactory = (
 };
 
 export const HistoryFactory = (
-  assistantId: string,
-  messages: AssistantMessage[] = [],
-): AssistantHistory => ({
-  assistantId,
+  id: string,
+  messages: Message[] = [],
+): Conversation => ({
+  id,
   messages,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  description: "",
 });
 
 export const AssistantMessageFactory = (
   role: MessageRole,
   content: string,
   images?: string[] | undefined,
-): AssistantMessage => {
-  const message: AssistantMessage = {
+): Message => {
+  const message: Message = {
     role,
     content,
   };

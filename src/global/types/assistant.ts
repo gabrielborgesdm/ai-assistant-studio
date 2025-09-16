@@ -17,26 +17,37 @@ export interface Assistant {
 
 export type AssistantData = Omit<Assistant, "id"> & { id?: string | undefined };
 
-export enum MessageRole {
-  SYSTEM = "system",
-  USER = "user",
-  ASSISTANT = "assistant",
+export const MessageRole = {
+  SYSTEM: "system",
+  USER: "user",
+  ASSISTANT: "assistant",
 
   // Custom_ roles are filtered out in the ollama input, but used for other purposes
   // like displaying a message in the UI
-  CUSTOM_UI = "custom_ui",
-  CUSTOM_ERROR = "custom_error",
+  CUSTOM_UI: "custom_ui",
+  CUSTOM_ERROR: "custom_error",
 }
 
-export interface AssistantMessage {
+// Define the type based on the MessageRole object values
+export type MessageRole = typeof MessageRole[keyof typeof MessageRole];
+
+export interface Message {
   role: MessageRole;
   content: string;
   images?: string[];
 }
 
-export interface AssistantHistory {
+export interface Conversation {
+  id: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+  description: string;
+}
+
+export interface ConversationData {
   assistantId: string;
-  messages: AssistantMessage[];
+  messages: Message[];
 }
 
 // Define the custom field schema

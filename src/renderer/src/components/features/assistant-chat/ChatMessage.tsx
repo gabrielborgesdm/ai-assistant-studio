@@ -3,7 +3,7 @@ import {
   ChatBubbleAvatar,
   ChatBubbleMessage,
 } from "@/components/ui/chat/chat-bubble";
-import { AssistantMessage, MessageRole } from "@global/types/assistant";
+import { Message, MessageRole } from "@global/types/assistant";
 import { isCustomRole } from "@global/utils/role.utils";
 import { ImagesDisplay } from "@renderer/components/features/image/ImagesDisplay";
 import { CopyButton } from "@renderer/components/shared/CopyButton";
@@ -12,7 +12,7 @@ import { cn } from "@renderer/lib/utils";
 import { ReactElement } from "react";
 
 interface ChatMessageProps {
-  message: AssistantMessage;
+  message: Message;
   className?: string;
   handleCopy: (text: string) => void;
   shouldShowCopy?: boolean;
@@ -46,7 +46,7 @@ export const ChatMessage = ({
   // Only show the loading if there's no content generated yet
   const showLoadingIcon = (
     isLoading: boolean,
-    message: AssistantMessage,
+    message: Message,
   ): boolean => {
     return (
       isLoading &&
@@ -62,7 +62,7 @@ export const ChatMessage = ({
         variant={getVariant(message.role)}
         className={`my-2 ${className} select-text`}
       >
-        {shouldShowAvatar && (
+        {shouldShowAvatar && getVariant(message.role) === "sent" && (
           <ChatBubbleAvatar
             className={cn("select-none", {
               invisible: isLoading,

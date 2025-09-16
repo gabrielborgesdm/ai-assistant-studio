@@ -32,7 +32,6 @@ export const GlobalProvider = ({
   useEffect(() => {
     const loadConfig = async (): Promise<void> => {
       const config = await window.api.config.getConfig();
-      console.log("config", config);
       setConfig(config);
     };
     loadConfig();

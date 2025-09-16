@@ -113,6 +113,8 @@ export const useHandleForm = (assistant?: AssistantData): UseHandleForm => {
       return false;
     }
 
+    // Clear the error if validation passes
+    clearErrors("title");
     return true;
   };
 

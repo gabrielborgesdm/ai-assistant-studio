@@ -22,7 +22,7 @@ export const ChatComponent = ({
     onRemoveImage,
     onAddImage,
     onClickAttachFile,
-    history,
+    conversation,
     textInput,
     setTextInput,
     isLoading,
@@ -46,7 +46,7 @@ export const ChatComponent = ({
           >
             <ChatHeader
               assistant={assistant}
-              history={history}
+              conversation={conversation}
               isLoading={isLoading}
               handleClearHistory={handleClearHistory}
               handleCancelMessageRequest={handleCancelMessageRequest}
@@ -55,7 +55,7 @@ export const ChatComponent = ({
             />
             <ChatBody
               assistant={assistant}
-              history={history}
+              conversation={conversation}
               currentAssistantMessage={currentAssistantMessage}
               isLoading={isLoading}
               shouldShowAvatar={shouldShowAvatar}

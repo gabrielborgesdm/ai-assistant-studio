@@ -1,33 +1,22 @@
-import { DBType } from "@main/features/database/db.type";
-import { DeleteAssistantEvent } from "@global/const/db.event";
-import { ipcMain } from "electron";
 import {
-  AddAssistantMessageEvent,
-  ClearHistoryEvent,
-  GetAssistantsEvent,
+  DeleteAssistantEvent, GetAssistantsEvent,
   GetHistoryEvent,
-  SaveAssistantEvent,
+  RefreshModelStatusEvent,
+  SaveAssistantEvent
 } from "@global/const/db.event";
+import { AssistantFormData } from "@global/types/assistant";
 import AssistantService from "@main/features/assistants/assistants.service";
-import { AssistantFormData, AssistantMessage } from "@global/types/assistant";
+import ConversationService from "@main/features/conversation/conversation.service";
+import { ipcMain } from "electron";
 
-export const setupAssistantsController = (db: DBType): void => {
-  const assistantService = new AssistantService(db);
+export const setupAssistantsController = (): void => {
+  const assistantService = new AssistantService();
+  const conversationService = new ConversationService();
 
   ipcMain.handle(GetAssistantsEvent, () => assistantService.getAssistants());
 
   ipcMain.handle(GetHistoryEvent, (_event, assistantId) =>
-    assistantService.getHistory(assistantId),
-  );
-
-  ipcMain.handle(
-    AddAssistantMessageEvent,
-    (_event, assistantId: string, messages: AssistantMessage[]) =>
-      assistantService.addAssistantMessage(assistantId, messages),
-  );
-
-  ipcMain.handle(ClearHistoryEvent, (_event, assistantId: string) =>
-    assistantService.clearHistory(assistantId),
+    conversationService.getConversation(assistantId),
   );
 
   ipcMain.handle(
@@ -41,5 +30,9 @@ export const setupAssistantsController = (db: DBType): void => {
 
   ipcMain.handle(DeleteAssistantEvent, (_event, assistantId: string) =>
     assistantService.deleteAssistant(assistantId),
+  );
+
+  ipcMain.handle(RefreshModelStatusEvent, () =>
+    assistantService.refreshModelDownloadStatus(),
   );
 };

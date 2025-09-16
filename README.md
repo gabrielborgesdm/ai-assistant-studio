@@ -88,30 +88,30 @@ This project wouldn’t be possible without:
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v16 or newer)
-- [Yarn](https://yarnpkg.com/)
+- [Npm](https://npmjs.com/)
 - [Ollama](https://ollama.com/) — required for running local models
 
 ### Install Dependencies
 
 ```bash
-yarn
+npm i
 ```
 
 ### Start in Development Mode
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 ### Build for Production
 
 ```bash
 # For Windows
-yarn build:win
+npm run build:win
 
 # For macOS
-yarn build:mac
+npm run build:mac
 
 # For Linux
-yarn build:linux
+npm run build:linux
 ```

@@ -1,8 +1,14 @@
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
+import path from "path";
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@test": path.resolve(__dirname, "src/test"),
+    },
+  },
   test: {
     // Use the 'jsdom' environment to simulate a browser environment for testing
     environment: "jsdom",

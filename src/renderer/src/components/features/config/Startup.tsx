@@ -24,7 +24,7 @@ export const Startup = (): ReactElement => {
     setConfig({ ...config, runAtStartup: isRegistered });
   };
 
-  if (!isLinux) return <></>;
+  if (isLinux) return <></>;
 
   return (
     <Card>

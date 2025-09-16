@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  ChatEvent,
-  ChatEventCancel,
   DeleteModelEvent,
   DownloadModelEvent,
   getDownloadModelEventCancel,
@@ -9,37 +7,14 @@ import {
   ListModelsEvent,
   OllamaIsInstalledEvent,
   SearchOnlineModelsEvent,
-  WarmupOllamaEvent,
+  WarmupOllamaEvent
 } from "@global/const/ollama.event";
-import { Assistant, AssistantHistory } from "@global/types/assistant";
 import { ModelDownload } from "@global/types/model";
-import OllamaService from "@main/features/ollama/ollama.service";
 import { ipcMain } from "electron";
+import OllamaService from "@main/features/ollama/ollama.service";
 
 export const setupOllamaController = (): void => {
   const ollamaService = new OllamaService();
-  ipcMain.on(
-    ChatEvent,
-    async (event, assistant: Assistant, history: AssistantHistory) => {
-      // Initialize the abort controller
-      const abort = new AbortController();
-
-      // Listen for the cancel event
-      ipcMain.once(ChatEventCancel, () => {
-        console.log("Received cancel request from renderer");
-        abort.abort();
-      });
-      console.log("Received streamOllamaChatResponse request from renderer");
-
-      // Call the function to stream the response passing the abort controller
-      await ollamaService.streamOllamaChatResponse(
-        assistant,
-        history,
-        event,
-        abort,
-      );
-    },
-  );
 
   // I need to be able to run this in parallel according to the model name and cancel it if the user requests it
   ipcMain.on(DownloadModelEvent, async (event, model: ModelDownload) => {

@@ -17,4 +17,7 @@ export class Config {
 
   @Column("boolean", { default: false })
   runAtStartup!: boolean; // ✅ add !
+
+  @Column("boolean", { default: false })
+  databaseSeeded!: boolean;
 }

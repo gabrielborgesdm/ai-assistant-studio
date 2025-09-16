@@ -56,11 +56,7 @@ export const ChatForm = ({
   }, [isLoading]);
 
   const checkShouldShowDownloadingCard = (): void => {
-    console.log("Checking should show downloading card");
-    console.log("isModelInstalled", isModelInstalled(assistant.model));
-    console.log("isCheckingRequirements", isCheckingRequirements);
-    console.log("isLoading", isLoading);
-    console.log("assistant.model", assistant.model);
+
     if (
       !isLoading &&
       !isModelInstalled(assistant.model) &&

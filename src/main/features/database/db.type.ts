@@ -1,14 +1,12 @@
-import { Assistant, AssistantHistory } from '@global/types/assistant'
-import { Low } from 'lowdb/lib'
-import { Config } from '@global/types/config'
+import { Assistant, Conversation } from "@global/types/assistant";
+import { Low } from "lowdb/lib";
 
 // Define the database schema
 export interface DBSchema {
-  assistants: Assistant[]
+  assistants: Assistant[];
   // Store messages directly in the history, keyed by assistantId
-  history: AssistantHistory[]
-  config: Config
+  history: Conversation[];
 }
 
 // Define the DB interface that includes both data and LowDB methods
-export type DBType = Low<DBSchema>
+export type DBType = Low<DBSchema>;

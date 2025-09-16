@@ -1,19 +1,18 @@
-import { OllamaModel as OllamaModelType } from 'ollama-models-search'
+import { OllamaModel as OllamaModelType } from "ollama-models-search";
 export interface ModelDownload {
-  name: string
-  size?: string
-  info?: string
-  installed: boolean
-  required?: boolean
+  name: string;
+  size?: string;
+  info?: string;
+  installed: boolean;
+  required?: boolean;
 }
 
 export interface OllamaModel extends OllamaModelType {
-  id?: number
-  recommended?: boolean
-  installedVersions?: string[]
-
+  id?: number;
+  recommended?: boolean;
+  installedVersions?: string[];
 }
 
 export interface InstalledModels {
-  [key: string]: ModelDownload
+  [key: string]: ModelDownload;
 }

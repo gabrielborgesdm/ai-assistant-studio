@@ -1,80 +1,84 @@
-import { globalShortcut, BrowserWindow } from 'electron'
-import { DBType } from '@main/features/database/db.type'
-import { app } from 'electron'
-import { Config } from '@global/types/config'
+import { Config } from "@global/types/config";
+import { ConfigRepository } from "@main/features/electron/model/config.repository";
+import { app, BrowserWindow, globalShortcut } from "electron";
 
 export default class ElectronSettingsService {
-  mainWindow: BrowserWindow
-  db: DBType
+  mainWindow: BrowserWindow;
+  configRepository: ConfigRepository;
 
-  constructor(mainWindow: BrowserWindow, db: DBType) {
-    this.mainWindow = mainWindow
-    this.db = db
+  constructor(mainWindow: BrowserWindow) {
+    this.mainWindow = mainWindow;
+    this.configRepository = new ConfigRepository();
   }
 
   registerShortcut(accelerator: string | undefined): string | undefined {
     // Unregister all shortcuts
-    globalShortcut.unregisterAll()
+    console.log("Unregistering all shortcuts");
+    globalShortcut.unregisterAll();
 
-    console.log(`Registering shortcut: ${accelerator}`)
+    console.log(`Registering shortcut: ${accelerator}`);
 
     try {
-      this.db.data!.config.shortcut = accelerator || ''
-      this.db.write()
-      console.log(`Shortcut registered: ${accelerator}`)
+      this.configRepository.saveConfig({ shortcut: accelerator });
+      console.log(`Shortcut registered: ${accelerator}`);
     } catch (error) {
-      console.error('Failed to update shortcut config:', error)
+      console.error("Failed to update shortcut config:", error);
     }
 
-    if (!accelerator) return
+    if (!accelerator) return;
 
     const success = globalShortcut.register(accelerator, () => {
-      this.toggleWindow()
-    })
+      this.toggleWindow();
+    });
 
     if (!success) {
-      console.error(`Failed to register shortcut: ${accelerator}`)
-      return
+      console.error(`Failed to register shortcut: ${accelerator}`);
+      return;
     }
 
-    return accelerator
+    return accelerator;
   }
 
   registerOpenAtStartup(runAtStartup: boolean): boolean {
-    console.log(`Registering open at startup: ${runAtStartup}`)
+    console.log(`Registering open at startup: ${runAtStartup}`);
 
-    
     try {
-      this.db.data!.config.runAtStartup = runAtStartup
-      this.db.write()
-      
-      app.setLoginItemSettings({
-        openAtLogin: runAtStartup,
-        args: ['--hidden']
-      })
+      this.configRepository.saveConfig({ runAtStartup });
+      console.log(`Open at startup registered: ${runAtStartup}`);
     } catch (error) {
-      console.error('Failed to update runAtStartup config:', error)
+      console.error("Failed to update runAtStartup config:", error);
     }
 
-    return runAtStartup
+    try {
+      app.setLoginItemSettings({
+        openAtLogin: runAtStartup,
+        args: ["--hidden"],
+      });
+    } catch (error) {
+      console.error("Failed to update runAtStartup config:", error);
+    }
+
+    return runAtStartup;
   }
 
   async getConfig(): Promise<Config | undefined> {
-    await this.db.read()
-    return this.db.data?.config
+    const config = await this.configRepository.getConfig();
+    if (!config) return await this.configRepository.saveConfig({});
+
+    return config;
   }
 
   async getOs(): Promise<string> {
-    return process.platform
+    return process.platform;
   }
 
   toggleWindow(): void {
-    if (!this.mainWindow) return
+    if (!this.mainWindow) return;
     if (this.mainWindow.isVisible()) {
-      this.mainWindow.hide()
+      this.mainWindow.hide();
     } else {
-      this.mainWindow.show()
-      this.mainWindow.focus()
+      this.mainWindow.show();
+      this.mainWindow.focus();
     }
   }
 }

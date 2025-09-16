@@ -1,17 +1,20 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { AnimatedLoader } from '@renderer/components/shared/Loader'
-import { useTheme } from '@renderer/provider/ThemeProvider'
-import { ArrowRight, Moon } from 'lucide-react'
-import { ReactElement } from 'react'
-import { OllamaStep } from '@/components/features/setup/OllamaStep'
-import { RequiredModelsStep } from '@/components/features/setup/RequiredModelsStep'
-import { SetupStep, useHandleSetup } from '@/components/features/setup/use-handle-setup'
-import { WelcomeStep } from '@/components/features/setup/WelcomeStep'
+import { Button } from "@/components/ui/button";
+import { AnimatedLoader } from "@renderer/components/shared/Loader";
+import { useTheme } from "@renderer/provider/ThemeProvider";
+import { ArrowRight, Moon } from "lucide-react";
+import { ReactElement } from "react";
+import { OllamaStep } from "@/components/features/setup/OllamaStep";
+import { RequiredModelsStep } from "@/components/features/setup/RequiredModelsStep";
+import {
+  SetupStep,
+  useHandleSetup,
+} from "@/components/features/setup/use-handle-setup";
+import { WelcomeStep } from "@/components/features/setup/WelcomeStep";
 
 export const SetupComponent = (): ReactElement => {
-  const { toggleTheme } = useTheme()
+  const { toggleTheme } = useTheme();
 
   const {
     ollamaRunning,
@@ -22,8 +25,8 @@ export const SetupComponent = (): ReactElement => {
     refetchRequirementsCheck,
     openOllamaWebsite,
     shouldContinueButtonBeEnabled,
-    handleContinue
-  } = useHandleSetup()
+    handleContinue,
+  } = useHandleSetup();
 
   // The first load when oppening the application
   if (!hadInitialLoad || !currentStep) {
@@ -31,7 +34,7 @@ export const SetupComponent = (): ReactElement => {
       <div className="flex flex-1 flex-col items-center justify-center bg-slate-50 dark:bg-secondary text-foreground ">
         <AnimatedLoader />
       </div>
-    )
+    );
   }
 
   return (
@@ -53,7 +56,9 @@ export const SetupComponent = (): ReactElement => {
           isCheckingRequirements={isCheckingRequirements}
         />
       )}
-      {currentStep === SetupStep.RequiredModels && <RequiredModelsStep models={models} />}
+      {currentStep === SetupStep.RequiredModels && (
+        <RequiredModelsStep models={models} />
+      )}
       <div className="flex items-center justify-center gap-4 w-[320px]">
         <Button
           size="lg"
@@ -66,5 +71,5 @@ export const SetupComponent = (): ReactElement => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};

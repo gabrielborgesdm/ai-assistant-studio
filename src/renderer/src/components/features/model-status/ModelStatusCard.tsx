@@ -1,26 +1,26 @@
-import { useManageModel } from '@/components/features/model-status/use-manage-model'
-import { DownloadModelEvent } from '@global/const/ollama.event'
-import { ModelDownload } from '@global/types/model'
-import { CopyButton } from '@renderer/components/shared/CopyButton'
-import { LoadingDots } from '@renderer/components/shared/LoadingDots'
-import { LoadingText } from '@renderer/components/shared/LoadingText'
-import { Badge } from '@renderer/components/ui/badge'
-import { Button } from '@renderer/components/ui/button'
-import { Progress } from '@renderer/components/ui/progress'
-import { useHandleCopy } from '@renderer/hooks/use-handle-copy'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Download } from 'lucide-react'
-import { ReactElement, useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { useManageModel } from "@/components/features/model-status/use-manage-model";
+import { DownloadModelEvent } from "@global/const/ollama.event";
+import { ModelDownload } from "@global/types/model";
+import { CopyButton } from "@renderer/components/shared/CopyButton";
+import { LoadingDots } from "@renderer/components/shared/LoadingDots";
+import { LoadingText } from "@renderer/components/shared/LoadingText";
+import { Badge } from "@renderer/components/ui/badge";
+import { Button } from "@renderer/components/ui/button";
+import { Progress } from "@renderer/components/ui/progress";
+import { useHandleCopy } from "@renderer/hooks/use-handle-copy";
+import { AnimatePresence, motion } from "framer-motion";
+import { Download } from "lucide-react";
+import { ReactElement, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface ModelStatusCardProps {
-  model: ModelDownload
-  shouldShowCheckButton?: boolean
-  shouldRenderWhenDownloaded?: boolean
-  className?: string
-  description?: string
-  onStartedDownloading?: () => void
-  onFinishedDownloading?: () => void
+  model: ModelDownload;
+  shouldShowCheckButton?: boolean;
+  shouldRenderWhenDownloaded?: boolean;
+  className?: string;
+  description?: string;
+  onStartedDownloading?: () => void;
+  onFinishedDownloading?: () => void;
 }
 export const ModelStatusCard = ({
   model,
@@ -28,61 +28,61 @@ export const ModelStatusCard = ({
   className,
   description,
   onStartedDownloading,
-  onFinishedDownloading
+  onFinishedDownloading,
 }: ModelStatusCardProps): ReactElement => {
-  const [isDownloading, setIsDownloading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const { handleCopy } = useHandleCopy()
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const { handleCopy } = useHandleCopy();
 
-  const { handleFinishedDownloading } = useManageModel()
+  const { handleFinishedDownloading } = useManageModel();
 
   const downloadModel = async (): Promise<void> => {
-    setIsDownloading(true)
+    setIsDownloading(true);
     if (onStartedDownloading) {
-      onStartedDownloading()
+      onStartedDownloading();
     }
     await window.api.ollama.downloadModel(model, (result) => {
       // console.log('Download model result', result)
       if (result.error) {
-        setProgress(0)
-        setIsDownloading(false)
-        console.error('Error downloading model:', model.name, result.error)
-        if (result.error !== 'canceled') {
-          toast('Error downloading model', {
+        setProgress(0);
+        setIsDownloading(false);
+        console.error("Error downloading model:", model.name, result.error);
+        if (result.error !== "canceled") {
+          toast("Error downloading model", {
             description: result.error,
-            action: <CopyButton onClick={() => handleCopy(result.error)} />
-          })
+            action: <CopyButton onClick={() => handleCopy(result.error)} />,
+          });
         }
-        return
+        return;
       }
       if (result.done) {
         // Timeout to debounce the animation
         setTimeout(async () => {
           // If shouldRenderWhenDownloaded is set to false, no need to update the ui when finished downloading
           // because the component will be unmounted anyways
-          await handleFinishedDownloading(model.name)
-          onFinishedDownloading?.()
+          await handleFinishedDownloading(model.name);
+          onFinishedDownloading?.();
           if (!shouldRenderWhenDownloaded) {
-            return
+            return;
           }
-        }, 1000)
+        }, 1000);
       } else {
-        setProgress(result.progress)
+        setProgress(result.progress);
       }
-    })
-  }
+    });
+  };
 
   const cancelDownload = (model: ModelDownload): void => {
-    window.api.cancel(DownloadModelEvent + model.name)
-    setIsDownloading(false)
-    onFinishedDownloading?.()
-  }
+    window.api.cancel(DownloadModelEvent + model.name);
+    setIsDownloading(false);
+    onFinishedDownloading?.();
+  };
 
   useEffect(() => {
     if (model.installed) {
-      setIsDownloading(false)
+      setIsDownloading(false);
     }
-  }, [model.installed])
+  }, [model.installed]);
 
   const renderDownloadingComponent = (): ReactElement => {
     return (
@@ -92,7 +92,7 @@ export const ModelStatusCard = ({
             <LoadingText />
           ) : (
             <span>
-              {' '}
+              {" "}
               Downloading
               <LoadingDots />
             </span>
@@ -106,10 +106,10 @@ export const ModelStatusCard = ({
           </Button>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
-  if (model.installed && !shouldRenderWhenDownloaded) return <></>
+  if (model.installed && !shouldRenderWhenDownloaded) return <></>;
 
   return (
     <AnimatePresence>
@@ -126,16 +126,24 @@ export const ModelStatusCard = ({
             className="flex items-center justify-between gap-3"
           >
             <div className="w-full">
-              <h4 title={model.name} className={`truncate overflow-hidden  font-medium `}>
+              <h4
+                title={model.name}
+                className={`truncate overflow-hidden  font-medium `}
+              >
                 {model.name}
               </h4>
 
               {!!model.size && <p className="text-sm">{model.size}</p>}
-              {!!description && <p className="text-sm text-muted-foreground">{description}</p>}
+              {!!description && (
+                <p className="text-sm text-muted-foreground">{description}</p>
+              )}
             </div>
 
             {model.installed ? (
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
+              <Badge
+                variant="secondary"
+                className="bg-green-100 text-green-800"
+              >
                 Installed
               </Badge>
             ) : (
@@ -148,5 +156,5 @@ export const ModelStatusCard = ({
         )}
       </div>
     </AnimatePresence>
-  )
-}
+  );
+};

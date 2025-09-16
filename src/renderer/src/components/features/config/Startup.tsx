@@ -1,36 +1,40 @@
-import { FormGroup } from '@renderer/components/shared/form/FormGroup'
-import { FormSection } from '@renderer/components/shared/form/FormSection'
+import { FormGroup } from "@renderer/components/shared/form/FormGroup";
+import { FormSection } from "@renderer/components/shared/form/FormSection";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@renderer/components/ui/card'
-import { Input } from '@renderer/components/ui/input'
-import { Label } from '@renderer/components/ui/label'
-import { useGlobalContext } from '@renderer/provider/GlobalProvider'
-import { ReactElement, useMemo } from 'react'
+  CardTitle,
+} from "@renderer/components/ui/card";
+import { Input } from "@renderer/components/ui/input";
+import { Label } from "@renderer/components/ui/label";
+import { useGlobalContext } from "@renderer/provider/GlobalProvider";
+import { ReactElement, useMemo } from "react";
 
 export const Startup = (): ReactElement => {
-  const { os, config, setConfig } = useGlobalContext()
+  const { os, config, setConfig } = useGlobalContext();
 
-  const isLinux = useMemo(() => os === 'linux', [os])
+  const isLinux = useMemo(() => os === "linux", [os]);
   const handleRunAtStartupChange = async (checked: boolean): Promise<void> => {
-    if (!config) return
+    if (!config) return;
 
-    const isRegistered = await window.api.config.registerStartup(checked)
-    setConfig({ ...config, runAtStartup: isRegistered })
-  }
+    const isRegistered = await window.api.config.registerStartup(checked);
+    setConfig({ ...config, runAtStartup: isRegistered });
+  };
 
-  if (!isLinux) return <></>
+  if (isLinux) return <></>;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">Startup Execution</CardTitle>
-        <CardDescription>Enable or disable the application to run at startup</CardDescription>
+        <CardTitle className="flex items-center gap-2">
+          Startup Execution
+        </CardTitle>
+        <CardDescription>
+          Enable or disable the application to run at startup
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <FormGroup>
@@ -59,5 +63,5 @@ export const Startup = (): ReactElement => {
         </CardFooter>
       )}
     </Card>
-  )
-}
+  );
+};

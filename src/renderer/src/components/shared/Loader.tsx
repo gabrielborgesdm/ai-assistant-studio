@@ -1,6 +1,10 @@
-import { Loader } from 'lucide-react'
-import { ReactElement } from 'react'
+import { Loader } from "lucide-react";
+import { ReactElement } from "react";
 
-export const AnimatedLoader = ({ className }: { className?: string }): ReactElement => (
+export const AnimatedLoader = ({
+  className,
+}: {
+  className?: string;
+}): ReactElement => (
   <Loader className={`animate-spin [animation-duration:2.5s] ${className}`} />
-)
+);

@@ -1,31 +1,33 @@
-import { Button } from '@renderer/components/ui/button'
-import { cn } from '@renderer/lib/utils'
-import { X } from 'lucide-react'
-import { ReactElement, useState } from 'react'
-import { FullscreenImage } from './ImageFullscreen'
+import { Button } from "@renderer/components/ui/button";
+import { cn } from "@renderer/lib/utils";
+import { X } from "lucide-react";
+import { ReactElement, useState } from "react";
+import { FullscreenImage } from "./ImageFullscreen";
 
 export const ImagesDisplay = ({
   images,
   onRemoveImage,
   shouldShowRemoveButton = true,
-  className
+  className,
 }: {
-  images: File[] | string[]
+  images: File[] | string[];
 
-  onRemoveImage?: (image: File) => void
-  shouldShowRemoveButton?: boolean
-  className?: string
+  onRemoveImage?: (image: File) => void;
+  shouldShowRemoveButton?: boolean;
+  className?: string;
 }): ReactElement => {
-  const [fullscreenImage, setFullscreenImage] = useState<string | undefined>(undefined)
+  const [fullscreenImage, setFullscreenImage] = useState<string | undefined>(
+    undefined,
+  );
 
-  if (images.length === 0) return <></>
+  if (images.length === 0) return <></>;
 
   return (
     <>
       <div
         className={cn(
-          'py-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 items-center max-w-[98%]',
-          className
+          "py-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 items-center max-w-[98%]",
+          className,
         )}
       >
         {images.map((image, index) => (
@@ -33,7 +35,7 @@ export const ImagesDisplay = ({
             <img
               key={index}
               src={
-                typeof image === 'string'
+                typeof image === "string"
                   ? `data:image/png;base64,${image}`
                   : URL.createObjectURL(image)
               }
@@ -56,7 +58,10 @@ export const ImagesDisplay = ({
         ))}
       </div>
 
-      <FullscreenImage src={fullscreenImage} onClose={() => setFullscreenImage(undefined)} />
+      <FullscreenImage
+        src={fullscreenImage}
+        onClose={() => setFullscreenImage(undefined)}
+      />
     </>
-  )
-}
+  );
+};

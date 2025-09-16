@@ -1,30 +1,31 @@
-import { AnimatedLoader } from '@/components/shared/Loader'
-import { ChatInput } from '@/components/ui/chat/chat-input'
-import { ModelFactory } from '@global/factories/model.factory'
-import { Assistant } from '@global/types/assistant'
-import { ChatImageDropzone } from '@renderer/components/features/image/ImageDropzone'
-import { ImagesDisplay } from '@renderer/components/features/image/ImagesDisplay'
-import { ModelStatusCard } from '@renderer/components/features/model-status/ModelStatusCard'
-import { useManageModel } from '@renderer/components/features/model-status/use-manage-model'
-import { Button } from '@renderer/components/ui/button'
-import { usePasteOnRightClick } from '@renderer/hooks/use-paste'
-import { cn } from '@renderer/lib/utils'
-import { useGlobalContext } from '@renderer/provider/GlobalProvider'
-import { useRequirementsContext } from '@renderer/provider/RequirementsProvider'
-import { Image, SendHorizonal } from 'lucide-react'
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { AnimatedLoader } from "@/components/shared/Loader";
+import { ChatInput } from "@/components/ui/chat/chat-input";
+import { ModelFactory } from "@global/factories/model.factory";
+import { Assistant } from "@global/types/assistant";
+import { ChatImageDropzone } from "@renderer/components/features/image/ImageDropzone";
+import { ImagesDisplay } from "@renderer/components/features/image/ImagesDisplay";
+import { ModelStatusCard } from "@renderer/components/features/model-status/ModelStatusCard";
+import { useManageModel } from "@renderer/components/features/model-status/use-manage-model";
+import { Button } from "@renderer/components/ui/button";
+import { usePasteOnRightClick } from "@renderer/hooks/use-paste";
+import { cn } from "@renderer/lib/utils";
+import { useGlobalContext } from "@renderer/provider/GlobalProvider";
+import { useRequirementsContext } from "@renderer/provider/RequirementsProvider";
+import { Image, SendHorizonal } from "lucide-react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 interface ChatFormProps {
-  assistant: Assistant
-  images: File[]
-  onRemoveImage: (image: File) => void
-  onAddImage: (image: File) => void
-  textInput: string
-  setTextInput: (value: string) => void
-  isLoading: boolean
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
-  onClickAttachFile: () => void
+  assistant: Assistant;
+  images: File[];
+  onRemoveImage: (image: File) => void;
+  onAddImage: (image: File) => void;
+  textInput: string;
+  setTextInput: (value: string) => void;
+  isLoading: boolean;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClickAttachFile: () => void;
 }
+
 export const ChatForm = ({
   assistant,
   textInput,
@@ -34,41 +35,47 @@ export const ChatForm = ({
   onClickAttachFile,
   images,
   onRemoveImage,
-  onAddImage
+  onAddImage,
 }: ChatFormProps): ReactElement => {
-  const inputRef = useRef<HTMLTextAreaElement>(null)
-  usePasteOnRightClick(inputRef, setTextInput)
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  usePasteOnRightClick(inputRef, setTextInput);
 
-  const { isModelInstalled } = useManageModel()
-  const { isCheckingRequirements } = useRequirementsContext()
+  const { isModelInstalled } = useManageModel();
+  const { isCheckingRequirements } = useRequirementsContext();
 
-  const { setIsNavigationDisabled } = useGlobalContext()
-  const [shouldShowDownloadingCard, setShouldShowDownloadingCard] = useState(false)
+  const { setIsNavigationDisabled } = useGlobalContext();
+  const [shouldShowDownloadingCard, setShouldShowDownloadingCard] =
+    useState(false);
 
   useEffect(() => {
     if (!isLoading) {
       if (inputRef.current) {
-        inputRef.current.focus()
+        inputRef.current.focus();
       }
     }
-  }, [isLoading])
+  }, [isLoading]);
 
   const checkShouldShowDownloadingCard = (): void => {
-    console.log('Checking should show downloading card')
-    console.log('isModelInstalled', isModelInstalled(assistant.model))
-    console.log('isCheckingRequirements', isCheckingRequirements)
-    console.log('isLoading', isLoading)
-    console.log('assistant.model', assistant.model)
-    if (!isLoading && !isModelInstalled(assistant.model) && !isCheckingRequirements) {
-      setShouldShowDownloadingCard(true)
+
+    if (
+      !isLoading &&
+      !isModelInstalled(assistant.model) &&
+      !isCheckingRequirements
+    ) {
+      setShouldShowDownloadingCard(true);
     } else {
-      setShouldShowDownloadingCard(false)
+      setShouldShowDownloadingCard(false);
     }
-  }
+  };
 
   useEffect(() => {
-    checkShouldShowDownloadingCard()
-  }, [isLoading, isModelInstalled(assistant.model), isCheckingRequirements, assistant.model])
+    checkShouldShowDownloadingCard();
+  }, [
+    isLoading,
+    isModelInstalled(assistant.model),
+    isCheckingRequirements,
+    assistant.model,
+  ]);
 
   if (shouldShowDownloadingCard)
     return (
@@ -79,19 +86,22 @@ export const ChatForm = ({
         shouldRenderWhenDownloaded={false}
         model={ModelFactory({ name: assistant.model })}
         onStartedDownloading={() => {
-          setIsNavigationDisabled(true)
+          setIsNavigationDisabled(true);
         }}
         onFinishedDownloading={() => {
-          console.log('Finished downloading model')
-          setIsNavigationDisabled(false)
-          checkShouldShowDownloadingCard()
+          console.log("Finished downloading model");
+          setIsNavigationDisabled(false);
+          checkShouldShowDownloadingCard();
         }}
       />
-    )
+    );
 
   return (
     <form onSubmit={handleSubmit} className="border-t shadow max-w-full">
-      <ChatImageDropzone onAddImage={onAddImage} enabled={assistant.allowImage && !isLoading}>
+      <ChatImageDropzone
+        onAddImage={onAddImage}
+        enabled={assistant.allowImage && !isLoading}
+      >
         <ImagesDisplay images={images} onRemoveImage={onRemoveImage} />
         <ChatInput
           placeholder="Type your message here..."
@@ -99,13 +109,13 @@ export const ChatForm = ({
           disabled={isLoading}
           ref={inputRef}
           onKeyDown={(e) => {
-            if (e.shiftKey && e.key === 'Enter') {
-              setTextInput(textInput + '\n')
-              inputRef.current?.focus()
-              return
+            if (e.shiftKey && e.key === "Enter") {
+              setTextInput(textInput + "\n");
+              inputRef.current?.focus();
+              return;
             }
-            if (e.key === 'Enter') {
-              handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>)
+            if (e.key === "Enter") {
+              handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
             }
           }}
           onChange={(e) => setTextInput(e.target.value)}
@@ -118,7 +128,7 @@ export const ChatForm = ({
               variant="ghost"
               size="icon"
               title="Attach Image"
-              className={cn(isLoading && 'disabled')}
+              className={cn(isLoading && "disabled")}
               disabled={isLoading}
               onClick={onClickAttachFile}
             >
@@ -140,5 +150,5 @@ export const ChatForm = ({
         </div>
       </ChatImageDropzone>
     </form>
-  )
-}
+  );
+};

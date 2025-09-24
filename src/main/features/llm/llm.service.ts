@@ -276,19 +276,34 @@ export default class LlmService {
     return finalInput;
   }
 
-  async generateConversationTitle(firstMessage: string, model: string): Promise<string> {
+  async generateConversationTitle(firstMessage: string, assistant: Assistant): Promise<string> {
     try {
       const llm = new ChatOllama({
-        model: model,
+        model: assistant.model,
+        baseUrl: CONFIG.OLLAMA_HOST,
         temperature: 0.3,
         maxRetries: 1,
       });
 
-      const titlePrompt = `Generate a concise 3-6 word title for a conversation that starts with this message. Only return the title, nothing else.
+      const titlePrompt = `Generate a concise, descriptive title (3-6 words) for a conversation with this AI assistant.
 
-Message: "${firstMessage}"
+Assistant: ${assistant.title}
+Description: ${assistant.description || 'General purpose assistant'}
 
-Title:`;
+User's first message: "${firstMessage}"
+
+Create a title that captures:
+1. The main topic or task from the user's message
+2. How it relates to this assistant's purpose
+3. Keep it professional and clear
+
+Examples of good titles:
+- "Code Review for React App"
+- "SQL Query Optimization Help"
+- "Marketing Strategy Discussion"
+- "Python Debug Session"
+
+Return only the title, no quotes or extra text:`;
 
       const response = await llm.invoke([new HumanMessage(titlePrompt)]);
 
@@ -309,5 +324,4 @@ Title:`;
     }
   }
 }
-
 

@@ -114,7 +114,7 @@ export class ConversationRepository {
             try {
               const title = await this.llmService.generateConversationTitle(
                 messages[0].content,
-                assistant.model
+                assistant
               );
               await this.updateConversation(conversation!.id, { description: title });
               console.log(`Generated title for conversation ${conversation!.id}: ${title}`);

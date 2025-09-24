@@ -78,6 +78,8 @@ declare global {
           shouldForceNew?: boolean,
         ) => Promise<Conversation | null>;
         clearConversationMessages: (conversationId: string) => Promise<void>;
+        deleteConversation: (conversationId: string) => Promise<void>;
+        updateConversationTitle: (conversationId: string, title: string) => Promise<void>;
         getAllConversations: (assistantId: string) => Promise<Conversation[]>;
       };
       file: {

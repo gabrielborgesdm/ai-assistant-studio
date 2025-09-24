@@ -22,7 +22,7 @@ Models are pulled in real-time from the Ollama website, so you always see the la
 You can connect assistants to your local files for smarter, more relevant responses. Just head to the assistant’s Advanced settings and choose a folder.
 
 💬 **Keep Conversations Organized**:
-Keep your interactions organized with persistent history and support for multiple assistants.
+Each assistant maintains its own conversation history with automatic title generation based on your first message. Switch between different conversations or start fresh anytime while keeping your chat history organized and searchable.
 
 🔒 **Local-Only by Design**:
 No servers, no cloud. Everything runs on your device and stays private.
@@ -68,7 +68,7 @@ After generating the initial assistant, I also **adjust the system instructions*
 - ✅ Streamed markdown rendering with code block highlighting
 - ✅ Welcome/setup onboarding screen
 - ✅ Contextual search over local markdown files using Langchain
-- 🔜 Planned: Multiple simultaneous chat sessions per assistant
+- ✅ Planned: Multiple simultaneous chat sessions per assistant
 - 🔜 Planned: Support for ChatGPT and other cloud model backends
 
 ## 📚 Tech Stack & Shoutouts

@@ -18,6 +18,7 @@ import { ReactElement } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { ConfigPage } from "@/components/pages/config";
 import { AssistantProvider } from "@/provider/AssistantProvider";
+import { ConversationProvider } from "@/provider/ConversationProvider";
 import { LlmMessageStreamResponse } from "@global/types/llm";
 
 /**
@@ -74,6 +75,7 @@ declare global {
           assistantId: string,
           conversationId: string | undefined,
           messages?: Message[],
+          shouldForceNew?: boolean,
         ) => Promise<Conversation | null>;
         clearConversationMessages: (conversationId: string) => Promise<void>;
         getAllConversations: (assistantId: string) => Promise<Conversation[]>;
@@ -103,14 +105,16 @@ export default function App(): ReactElement {
           <SidebarProvider defaultOpen>
             <RequirementsProvider>
               <AssistantProvider>
-                <SidebarComponent />
-                <main className="flex flex-row w-full">
-                  {/* The Setup Page is the initial page */}
-                  <SetupPage />
-                  <ChatPage />
-                  <AssistantManagementPage />
-                  <ConfigPage />
-                </main>
+                <ConversationProvider>
+                  <SidebarComponent />
+                  <main className="flex flex-row w-full">
+                    {/* The Setup Page is the initial page */}
+                    <SetupPage />
+                    <ChatPage />
+                    <AssistantManagementPage />
+                    <ConfigPage />
+                  </main>
+                </ConversationProvider>
               </AssistantProvider>
             </RequirementsProvider>
           </SidebarProvider>

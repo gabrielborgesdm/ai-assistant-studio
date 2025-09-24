@@ -2,6 +2,8 @@ import {
   GetConversationEvent,
   SaveConversationEvent,
   ClearConversationMessagesEvent,
+  DeleteConversationEvent,
+  UpdateConversationTitleEvent,
   GetAllConversationsEvent,
 } from "@global/const/conversation.event";
 import { Message } from "@global/types/assistant";
@@ -23,19 +25,31 @@ export const setupConversationController = (): void => {
       _event,
       assistantId: string,
       conversationId: string | undefined,
-      messages?: Message[]
-    ) => conversationService.saveConversation(assistantId, conversationId, messages)
+      messages?: Message[],
+      forceNew?: boolean
+    ) => conversationService.saveConversation(assistantId, conversationId, messages, forceNew)
   );
 
   ipcMain.handle(
     ClearConversationMessagesEvent,
     (_event, conversationId: string) =>
-      conversationService.clearConversationMessages(conversationId)
+      conversationService.deleteConversation(conversationId)
+  );
+  ipcMain.handle(
+    DeleteConversationEvent,
+    (_event, conversationId: string) =>
+      conversationService.deleteConversation(conversationId)
+  );
+
+  ipcMain.handle(
+    UpdateConversationTitleEvent,
+    (_event, conversationId: string, title: string) =>
+      conversationService.updateConversationTitle(conversationId, title)
   );
 
   ipcMain.handle(
     GetAllConversationsEvent,
     (_event, assistantId: string) =>
-      conversationService.conversationRepository.getAllAssistantConversations(assistantId)
+      conversationService.getAllConversations(assistantId)
   );
 };

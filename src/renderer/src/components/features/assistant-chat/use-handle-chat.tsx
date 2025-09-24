@@ -10,6 +10,7 @@ import { fileToBase64 } from "@global/utils/file.utils";
 import { Page } from "@renderer/pages";
 import { useGlobalContext } from "@renderer/provider/GlobalProvider";
 import { usePageContext } from "@renderer/provider/PageProvider";
+import { useConversationContext } from "@renderer/provider/ConversationProvider";
 import { FormEvent, useEffect, useState } from "react";
 import { useManageModel } from "../model-status/use-manage-model";
 import { AssistantMessageFactory } from "@global/factories/assistant.factory";
@@ -29,7 +30,7 @@ interface useHandleChatProps {
   canceled: boolean;
   setCanceled: (canceled: boolean) => void;
   setCurrentAssistantMessage: (message: string | undefined) => void;
-  handleClearHistory: () => void;
+  handleNewChat: () => void;
   handleCancelMessageRequest: () => void;
   handleSubmit: (e: FormEvent) => Promise<void>;
   isNavigationDisabled: boolean;
@@ -39,6 +40,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   const { checkRequirementsAreMet, checkOllamaRunning } = useManageModel();
   const { setActivePage } = usePageContext();
   const { setIsNavigationDisabled, isNavigationDisabled } = useGlobalContext();
+  const { refreshConversations, selectedConversationId, selectConversation } = useConversationContext();
   const [conversation, setConversation] = useState<Conversation | null>(
     null,
   );
@@ -53,19 +55,19 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   const [images, setImages] = useState<File[]>([]);
 
   /**
-   * Clear the assistant history
-   * Call the API to clear the history for the selected assistant while also updating the state
-   * Also clear the current assistant message to an empty string
+   * Start a new chat conversation
+   * Clear the current conversation state to start fresh while preserving all existing conversations
    */
-  const handleClearHistory = async (): Promise<void> => {
-    if (!assistant || !conversation?.id) {
-      return;
-    }
+  const handleNewChat = async (): Promise<void> => {
+    console.log("Starting new chat for assistant:", assistant.id);
 
-    console.log("Clearing history for assistant:", assistant.id);
-    await window.api.conversation.clearConversationMessages(conversation?.id);
+    // Clear current conversation state
     setConversation(null);
+    selectConversation(null); // Deselect any selected conversation
     reset();
+
+    // No need to call API or refresh conversations - we're just starting fresh
+    // Existing conversations remain in history
   };
 
   const reset = (): void => {
@@ -91,6 +93,10 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     setIsLoading(true);
     const base64Images = await getBase64Images();
 
+    // Determine if we should force a new conversation
+    // This happens when no conversation is selected (user clicked "New Chat")
+    const shouldForceNew = !selectedConversationId && !conversation?.id;
+
     // save conversation with user message
     const newConversation = await window.api.conversation.saveConversation(
       assistant.id,
@@ -98,9 +104,17 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
       [
         AssistantMessageFactory(MessageRole.USER, textInput, base64Images),
       ],
+      shouldForceNew
     );
-    console.log("New conversation:", newConversation);
     setConversation(newConversation);
+
+    // If this is a new conversation, select it and refresh sidebar
+    if (newConversation && !selectedConversationId) {
+      console.log("New conversation created, selecting and refreshing sidebar...");
+      selectConversation(newConversation.id);
+      // Immediately refresh conversations to show new conversation in sidebar
+      await refreshConversations();
+    }
 
     reset();
 
@@ -141,6 +155,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     window.api.cancel(ChatEvent);
     setCanceled(true);
     setIsLoading(false);
+    setIsDone(true);
   };
 
   const handleIsDone = async (): Promise<void> => {
@@ -165,8 +180,30 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
       );
       console.log("New conversation:", newConversation);
       setConversation(newConversation);
-    }
 
+      // Always refresh conversations when assistant response is saved
+      console.log("Assistant response saved, refreshing conversations...");
+      await refreshConversations();
+
+      // Check for updated conversation title after a short delay
+      // This allows time for the async title generation to complete
+      setTimeout(async () => {
+        try {
+          const updatedConversation = await window.api.conversation.getConversation(
+            assistant.id,
+            newConversation?.id
+          );
+          if (updatedConversation && updatedConversation.description !== newConversation?.description) {
+            console.log("Updated conversation title:", updatedConversation.description);
+            setConversation(updatedConversation);
+            // Refresh conversations in sidebar to show updated title
+            await refreshConversations();
+          }
+        } catch (error) {
+          console.error("Failed to check for conversation title update:", error);
+        }
+      }, 2000);
+    }
 
     reset();
     setIsDone(false);
@@ -214,11 +251,17 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
   };
 
   const fetchConversation = async (): Promise<void> => {
-    const updatedConversation = await window.api.conversation.getConversation(
-      assistant.id,
-      conversation?.id,
-    );
-    setConversation(updatedConversation || null);
+    // Only fetch if we have a specific conversation selected
+    if (selectedConversationId) {
+      const updatedConversation = await window.api.conversation.getConversation(
+        assistant.id,
+        selectedConversationId,
+      );
+      setConversation(updatedConversation || null);
+    } else {
+      // No specific conversation selected - this is "new chat" mode
+      setConversation(null);
+    }
   };
 
   // makes sure the chat is ready to go
@@ -239,6 +282,11 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     readyUpChat();
   }, [assistant]);
 
+  // Load selected conversation when it changes
+  useEffect(() => {
+    fetchConversation();
+  }, [selectedConversationId]);
+
   useEffect(() => {
     setIsNavigationDisabled(isLoading);
   }, [isLoading]);
@@ -254,7 +302,7 @@ export const useHandleChat = (assistant: Assistant): useHandleChatProps => {
     setCurrentAssistantMessage,
     canceled,
     setCanceled,
-    handleClearHistory,
+    handleNewChat,
     handleCancelMessageRequest,
     handleSubmit,
     images,

@@ -2,14 +2,14 @@ import { AssistantDropdown } from "@/components/features/assistant-chat/Assistan
 import { Assistant, Conversation } from "@global/types/assistant";
 import { Button } from "@renderer/components/ui/button";
 import { cn } from "@renderer/lib/utils";
-import { BrushCleaning, Pause } from "lucide-react";
+import { MessageSquarePlus, Pause } from "lucide-react";
 import { ReactElement } from "react";
 
 interface ChatHeaderProps {
   assistant: Assistant;
   isLoading: boolean;
   HeaderButton?: ReactElement;
-  handleClearHistory: () => void;
+  handleNewChat: () => void;
   handleCancelMessageRequest: () => void;
   isNavigationDisabled?: boolean;
   conversation?: Conversation | null;
@@ -19,7 +19,7 @@ export const ChatHeader = ({
   assistant,
   isLoading,
   HeaderButton,
-  handleClearHistory,
+  handleNewChat,
   handleCancelMessageRequest,
   conversation,
   isNavigationDisabled,
@@ -30,9 +30,21 @@ export const ChatHeader = ({
     <header className="flex items-center justify-between p-4 border-b">
       <div className="flex gap-2 items-center">
         {!!HeaderButton && HeaderButton}
-        <span title={assistant?.description} aria-label="Description">
-          <h2 className="text-lg font-bold cursor-help">{assistant?.title}</h2>
-        </span>
+        <div className="flex flex-col">
+          <span title={assistant?.description} aria-label="Description">
+            <h2 className="text-lg font-bold cursor-help">{assistant?.title}</h2>
+          </span>
+          {!hasMessages && (
+            <span className="text-sm text-muted-foreground">
+              Start a new conversation
+            </span>
+          )}
+          {hasMessages && (
+            <span className="text-sm text-muted-foreground">
+              {conversation?.description}
+            </span>
+          )}
+        </div>
       </div>
       <div>
         {isLoading ? (
@@ -49,12 +61,10 @@ export const ChatHeader = ({
           <Button
             variant="ghost"
             size="icon"
-            className={cn(!hasMessages && "disabled")}
-            disabled={!hasMessages}
-            onClick={handleClearHistory}
-            title="Clear chat conversation"
+            onClick={handleNewChat}
+            title="Start a new conversation"
           >
-            <BrushCleaning />
+            <MessageSquarePlus />
           </Button>
         )}
         <AssistantDropdown

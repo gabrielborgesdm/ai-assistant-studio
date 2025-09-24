@@ -3,9 +3,15 @@ import { Conversation } from "@main/features/conversation/model/conversation.mod
 import { AppDataSource } from "@main/features/database/db.config";
 import { Message } from "@main/features/messages/model/messages.model";
 import { Message as MessageData } from "@global/types/assistant";
+import LlmService from "@main/features/llm/llm.service";
 
 export class ConversationRepository {
   private repo = AppDataSource.getRepository(Conversation);
+  private llmService: LlmService;
+
+  constructor() {
+    this.llmService = new LlmService();
+  }
 
 
   async getConversation(id: string): Promise<Conversation | null> {
@@ -41,7 +47,7 @@ export class ConversationRepository {
     return result.affected !== 0;
   }
 
-  async createOrUpdateConversation(assistantId: string, conversationId: string | undefined, messages?: MessageData[]): Promise<Conversation | null> {
+  async createOrUpdateConversation(assistantId: string, conversationId: string | undefined, messages?: MessageData[], forceNew: boolean = false): Promise<Conversation | null> {
     return await this.repo.manager.transaction(async manager => {
       const assistantRepo = manager.getRepository(Assistant);
       const conversationRepo = manager.getRepository(Conversation);
@@ -55,21 +61,23 @@ export class ConversationRepository {
 
       // Find or create conversation for this assistant
       let conversation: Conversation | null = null;
+      let isNewConversation = false;
 
-      if (conversationId) {
+      if (forceNew) {
+        // When forcing new conversation, don't look for existing ones
+        conversation = null;
+      } else if (conversationId) {
         conversation = await conversationRepo.findOne({
           where: { id: conversationId },
           relations: ["messages", "assistant"],
         });
       } else {
-        // for now we don't have history, so we just get the first
+        // Only look for existing conversation if not forcing new
         conversation = await conversationRepo.findOne({
           where: { assistant: { id: assistantId } },
           order: { createdAt: "DESC" },
         });
       }
-
-
 
       if (!conversation) {
         // Create a new conversation if none exists
@@ -78,6 +86,7 @@ export class ConversationRepository {
           description: "",
         });
         conversation = await conversationRepo.save(conversation);
+        isNewConversation = true;
       }
 
       // Update conversation messages
@@ -92,6 +101,28 @@ export class ConversationRepository {
           })
         );
         await messageRepo.save(messageEntities);
+
+        // Check if this is the first user message in a new conversation
+        const isFirstUserMessage = isNewConversation &&
+          messages.length === 1 &&
+          messages[0].role === 'user' &&
+          messages[0].content?.trim();
+
+        if (isFirstUserMessage) {
+          // Generate title asynchronously (don't await to avoid blocking)
+          setImmediate(async () => {
+            try {
+              const title = await this.llmService.generateConversationTitle(
+                messages[0].content,
+                assistant.model
+              );
+              await this.updateConversation(conversation!.id, { description: title });
+              console.log(`Generated title for conversation ${conversation!.id}: ${title}`);
+            } catch (error) {
+              console.error('Failed to generate conversation title:', error);
+            }
+          });
+        }
       }
 
       // Return the updated conversation with messages

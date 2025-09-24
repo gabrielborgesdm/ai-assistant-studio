@@ -275,6 +275,39 @@ export default class LlmService {
 
     return finalInput;
   }
+
+  async generateConversationTitle(firstMessage: string, model: string): Promise<string> {
+    try {
+      const llm = new ChatOllama({
+        model: model,
+        temperature: 0.3,
+        maxTokens: 20,
+      });
+
+      const titlePrompt = `Generate a concise 3-6 word title for a conversation that starts with this message. Only return the title, nothing else.
+
+Message: "${firstMessage}"
+
+Title:`;
+
+      const response = await llm.invoke([new HumanMessage(titlePrompt)]);
+
+      let title = response.content.toString().trim();
+
+      if (title.startsWith('"') && title.endsWith('"')) {
+        title = title.slice(1, -1);
+      }
+
+      if (title.length > 50) {
+        title = title.substring(0, 50).trim();
+      }
+
+      return title || "New Conversation";
+    } catch (error) {
+      console.error("Failed to generate conversation title:", error);
+      return "New Conversation";
+    }
+  }
 }
 
 

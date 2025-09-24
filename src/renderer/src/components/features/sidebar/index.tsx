@@ -16,12 +16,14 @@ import { useAssistantContext } from "@renderer/provider/AssistantProvider";
 import { useGlobalContext } from "@renderer/provider/GlobalProvider";
 import { usePageContext } from "@renderer/provider/PageProvider";
 import { useTheme } from "@renderer/provider/ThemeProvider";
-import { Bot, Moon, Settings, Sun } from "lucide-react";
+import { useConversationContext } from "@renderer/provider/ConversationProvider";
+import { Bot, History, Moon, Plus, PlusCircleIcon, PlusSquareIcon, Settings, Sun } from "lucide-react";
 
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } =
     useAssistantContext();
 
+  const { conversations, selectedConversationId, selectConversation } = useConversationContext();
   const { isDark, toggleTheme } = useTheme();
   const { setActivePage, activePage, pageProps } = usePageContext();
   const { isNavigationDisabled } = useGlobalContext();
@@ -36,6 +38,8 @@ export const SidebarComponent = (): React.ReactElement => {
     );
     if (selectedAssistant) {
       setActiveAssistant(selectedAssistant);
+      // Clear conversation selection to start a new conversation
+      selectConversation(null);
     }
     if (activePage !== Page.Chat) {
       setActivePage(Page.Chat);
@@ -101,13 +105,68 @@ export const SidebarComponent = (): React.ReactElement => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* <SidebarGroup>
-          <SidebarGroupLabel className="flex gap-1 items-center">
-            <History />
-            Chat History
-          </SidebarGroupLabel>
-          <SidebarGroupContent></SidebarGroupContent>
-        </SidebarGroup> */}
+        {activeAssistant && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="flex gap-1 items-center">
+              <History />
+              <span className="align-middle">Conversations</span>
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* New Chat option */}
+                <SidebarMenuItem
+                  className={cn("cursor-pointer", {
+                    disabled: isNavigationDisabled,
+                  })}
+                >
+                  <SidebarMenuButton
+                    tooltip="Start a new conversation"
+                    isActive={selectedConversationId === null}
+                    onClick={() => {
+                      if (isNavigationDisabled) return;
+                      selectConversation(null);
+                      if (activePage !== Page.Chat) {
+                        setActivePage(Page.Chat);
+                      }
+                      checkShouldToggleMenu();
+                    }}
+                  >
+                    <span className=" p-0 flex gap-1 items-center justify-between font-semibold text-xs">
+                      <PlusSquareIcon className="h-4 w-4" />New Conversation
+                    </span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                {/* Existing conversations */}
+                {conversations.map((conversation) => (
+                  <SidebarMenuItem
+                    key={conversation.id}
+                    className={cn("cursor-pointer", {
+                      disabled: isNavigationDisabled,
+                    })}
+                  >
+                    <SidebarMenuButton
+                      tooltip={conversation.description || "New Conversation"}
+                      isActive={selectedConversationId === conversation.id}
+                      onClick={() => {
+                        if (isNavigationDisabled) return;
+                        selectConversation(conversation.id);
+                        if (activePage !== Page.Chat) {
+                          setActivePage(Page.Chat);
+                        }
+                        checkShouldToggleMenu();
+                      }}
+                    >
+                      <span className="truncate">
+                        {conversation.description || "New Conversation"}
+                      </span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

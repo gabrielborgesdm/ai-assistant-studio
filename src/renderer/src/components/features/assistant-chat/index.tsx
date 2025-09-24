@@ -27,7 +27,7 @@ export const ChatComponent = ({
     setTextInput,
     isLoading,
     currentAssistantMessage,
-    handleClearHistory,
+    handleNewChat,
     handleCancelMessageRequest,
     handleSubmit,
     isNavigationDisabled,
@@ -48,7 +48,7 @@ export const ChatComponent = ({
               assistant={assistant}
               conversation={conversation}
               isLoading={isLoading}
-              handleClearHistory={handleClearHistory}
+              handleNewChat={handleNewChat}
               handleCancelMessageRequest={handleCancelMessageRequest}
               HeaderButton={HeaderButton}
               isNavigationDisabled={isNavigationDisabled}

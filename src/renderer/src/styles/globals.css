@@ -101,20 +101,26 @@ body,
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 
   ::-webkit-scrollbar {
-    @apply w-1 h-2;
+    @apply w-[2px];
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-muted;
+    @apply bg-transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground;
-    border-radius: 0.5rem 0.5rem 0 0; /* top-left, top-right, bottom-right, bottom-left */
+    @apply bg-sidebar-border rounded-full;
+    transition: background-color 0.2s ease;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-sidebar-foreground/30;
   }
 }

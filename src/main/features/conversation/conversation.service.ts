@@ -1,11 +1,14 @@
 import { Conversation, Message } from "@global/types/assistant";
 import { ConversationRepository } from "@main/features/conversation/model/conversation.repository";
+import LlmService from "@main/features/llm/llm.service";
 
 export default class ConversationService {
   conversationRepository: ConversationRepository;
+  llmService: LlmService;
 
   constructor() {
     this.conversationRepository = new ConversationRepository();
+    this.llmService = new LlmService();
   }
 
   getConversation = async (assistantId: string, conversationId?: string): Promise<Conversation | null> => {
@@ -13,18 +16,27 @@ export default class ConversationService {
       return this.conversationRepository.getConversation(conversationId);
     }
 
-    const conversations = await this.conversationRepository.getAllAssistantConversations(assistantId);
-    console.log("Conversations:", conversations);
-    return conversations.length > 0 ? conversations[0] : null;
+    // If no specific conversation ID provided, return null to allow new conversation creation
+    // The frontend will handle loading specific conversations via selectedConversationId
+    return null;
   };
 
-  saveConversation = async (assistantId: string, conversationId: string | undefined, messages?: Message[]): Promise<Conversation | null> => {
-    return this.conversationRepository.createOrUpdateConversation(assistantId, conversationId, messages);
+  saveConversation = async (assistantId: string, conversationId: string | undefined, messages?: Message[], forceNew: boolean = false): Promise<Conversation | null> => {
+    return this.conversationRepository.createOrUpdateConversation(assistantId, conversationId, messages, forceNew);
   };
 
   clearConversationMessages = async (conversationId: string): Promise<void> => {
     console.log("Clearing history for conversationId:", conversationId);
 
     await this.conversationRepository.deleteConversation(conversationId);
+  };
+
+
+  updateConversationTitle = async (conversationId: string, title: string): Promise<Conversation | null> => {
+    return this.conversationRepository.updateConversation(conversationId, { description: title });
+  };
+
+  getAllConversations = async (assistantId: string): Promise<Conversation[]> => {
+    return this.conversationRepository.getAllAssistantConversations(assistantId);
   };
 }

@@ -10,15 +10,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { ConversationDropdown } from "@renderer/components/features/conversation/ConversationDropdown";
+import { Button } from "@renderer/components/ui/button";
 import { cn } from "@renderer/lib/utils";
 import { Page } from "@renderer/pages";
 import { useAssistantContext } from "@renderer/provider/AssistantProvider";
+import { useConversationContext } from "@renderer/provider/ConversationProvider";
 import { useGlobalContext } from "@renderer/provider/GlobalProvider";
 import { usePageContext } from "@renderer/provider/PageProvider";
 import { useTheme } from "@renderer/provider/ThemeProvider";
-import { useConversationContext } from "@renderer/provider/ConversationProvider";
-import { ConversationDropdown } from "@renderer/components/features/conversation/ConversationDropdown";
-import { Bot, History, Moon, PlusSquareIcon, Settings, Sun } from "lucide-react";
+import { Bot, MessageSquare, Moon, PlusSquareIcon, Settings, Sun } from "lucide-react";
 
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } =
@@ -108,68 +109,74 @@ export const SidebarComponent = (): React.ReactElement => {
         </SidebarGroup>
         {activeAssistant && (
           <SidebarGroup>
-            <SidebarGroupLabel className="flex gap-1 items-center">
-              <History />
-              <span className="align-middle">Conversations</span>
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {/* New Chat option */}
-                <SidebarMenuItem
-                  className={cn("cursor-pointer", {
-                    disabled: isNavigationDisabled,
-                  })}
-                >
-                  <SidebarMenuButton
-                    tooltip="Start a new conversation"
-                    isActive={selectedConversationId === null}
-                    onClick={() => {
-                      if (isNavigationDisabled) return;
-                      selectConversation(null);
-                      if (activePage !== Page.Chat) {
-                        setActivePage(Page.Chat);
-                      }
-                      checkShouldToggleMenu();
-                    }}
-                  >
-                    <span className=" p-0 flex gap-1 items-center justify-between font-semibold text-xs">
-                      <PlusSquareIcon className="h-4 w-4" />New Conversation
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+            <SidebarGroupLabel className="flex gap-2 items-center justify-between px-2 py-1.5">
+              <div className="flex gap-2 items-center text-xs font-medium text-muted-foreground">
+                <MessageSquare className="h-3.5 w-3.5" />
+                <span>History</span>
+              </div>
+              {!!selectedConversationId && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (isNavigationDisabled) return;
+                    selectConversation(null);
+                    if (activePage !== Page.Chat) {
+                      setActivePage(Page.Chat);
+                    }
+                    checkShouldToggleMenu();
+                  }}
+                  className={cn(
+                    "h-4 w-4 rounded  transition-opacity flex items-center justify-center",
 
-                {/* Existing conversations */}
+                  )}
+                  disabled={isNavigationDisabled}
+                  title="New conversation"
+                >
+                  <PlusSquareIcon className="h-3 w-3" />
+                </Button>
+              )}
+            </SidebarGroupLabel>
+            <SidebarGroupContent className="px-1">
+              <SidebarMenu>
                 {conversations.map((conversation) => (
-                  <SidebarMenuItem
-                    key={conversation.id}
-                    className={cn("cursor-pointer group relative", {
-                      disabled: isNavigationDisabled,
-                    })}
-                  >
-                    <SidebarMenuButton
-                      tooltip={conversation.description || "New Conversation"}
-                      isActive={selectedConversationId === conversation.id}
-                      onClick={() => {
-                        if (isNavigationDisabled) return;
-                        selectConversation(conversation.id);
-                        if (activePage !== Page.Chat) {
-                          setActivePage(Page.Chat);
-                        }
-                        checkShouldToggleMenu();
-                      }}
-                      className="w-full pr-8"
-                    >
-                      <span className="truncate">
-                        {conversation.description || "New Conversation"}
-                      </span>
-                    </SidebarMenuButton>
-                    <div className="absolute right-1 top-1/2 -translate-y-1/2">
-                      <ConversationDropdown
-                        conversation={conversation}
+                  <SidebarMenuItem key={conversation.id}>
+                    <div className={cn(
+                      "group relative flex items-center rounded hover:bg-accent/50 transition-colors",
+                      {
+                        "bg-accent": selectedConversationId === conversation.id,
+                      }
+                    )}>
+                      <button
+                        onClick={() => {
+                          if (isNavigationDisabled) return;
+                          selectConversation(conversation.id);
+                          if (activePage !== Page.Chat) {
+                            setActivePage(Page.Chat);
+                          }
+                          checkShouldToggleMenu();
+                        }}
+                        className={cn(
+                          "flex-1 text-left px-2 py-1.5 text-xs truncate transition-colors",
+                          {
+                            "text-accent-foreground": selectedConversationId === conversation.id,
+                            "text-muted-foreground hover:text-foreground": selectedConversationId !== conversation.id,
+                            "opacity-50": isNavigationDisabled,
+                          }
+                        )}
+                        title={conversation.description || "New Conversation"}
                         disabled={isNavigationDisabled}
-                        onDelete={deleteConversation}
-                        onRename={renameConversation}
-                      />
+                      >
+                        {conversation.description || "New Conversation"}
+                      </button>
+                      <div className="opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity pr-1">
+                        <ConversationDropdown
+                          conversation={conversation}
+                          disabled={isNavigationDisabled}
+                          onDelete={deleteConversation}
+                          onRename={renameConversation}
+                        />
+                      </div>
                     </div>
                   </SidebarMenuItem>
                 ))}

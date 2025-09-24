@@ -56,34 +56,34 @@ export const AssistantDropdown = ({
   return (
     <>
       <DropdownMenu>
-      <DropdownMenuTrigger asChild title="Options" disabled={disabled}>
-        <Button
-          variant="ghost"
-          size="icon"
-          disabled={disabled}
-          className={cn(disabled && "disabled")}
-        >
-          <MoreVertical className="h-5 w-5" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem onClick={handleEdit} disabled={disabled}>
-          <Edit className="mr-2 h-4 w-4" />
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDuplicate} disabled={disabled}>
-          <CopyPlus className="mr-2 h-4 w-4" />
-          Duplicate
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setShowDeleteDialog(true)}
-          disabled={disabled}
-          className="text-red-600 focus:text-red-600"
-        >
-          <SquareX className="mr-2 h-4 w-4" />
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+        <DropdownMenuTrigger asChild title="Options" disabled={disabled}>
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={disabled}
+            className={cn(disabled && "disabled")}
+          >
+            <MoreVertical className="h-5 w-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuItem onClick={handleEdit} disabled={disabled}>
+            <Edit className="mr-2 h-4 w-4" />
+            Edit Assistant
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDuplicate} disabled={disabled}>
+            <CopyPlus className="mr-2 h-4 w-4" />
+            Duplicate Assistant
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setShowDeleteDialog(true)}
+            disabled={disabled}
+            className="text-red-600 focus:text-red-600"
+          >
+            <SquareX className="mr-2 h-4 w-4" />
+            Delete Assistant
+          </DropdownMenuItem>
+        </DropdownMenuContent>
       </DropdownMenu>
 
       <ConfirmationDialog

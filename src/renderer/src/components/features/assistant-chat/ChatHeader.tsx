@@ -1,8 +1,7 @@
 import { AssistantDropdown } from "@/components/features/assistant-chat/AssistantDropdown";
 import { Assistant, Conversation } from "@global/types/assistant";
 import { Button } from "@renderer/components/ui/button";
-import { cn } from "@renderer/lib/utils";
-import { MessageSquarePlus, Pause } from "lucide-react";
+import { Pause, PlusSquareIcon } from "lucide-react";
 import { ReactElement } from "react";
 
 interface ChatHeaderProps {
@@ -64,7 +63,7 @@ export const ChatHeader = ({
             onClick={handleNewChat}
             title="Start a new conversation"
           >
-            <MessageSquarePlus />
+            <PlusSquareIcon />
           </Button>
         )}
         <AssistantDropdown

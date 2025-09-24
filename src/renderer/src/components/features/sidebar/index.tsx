@@ -17,13 +17,14 @@ import { useGlobalContext } from "@renderer/provider/GlobalProvider";
 import { usePageContext } from "@renderer/provider/PageProvider";
 import { useTheme } from "@renderer/provider/ThemeProvider";
 import { useConversationContext } from "@renderer/provider/ConversationProvider";
-import { Bot, History, Moon, Plus, PlusCircleIcon, PlusSquareIcon, Settings, Sun } from "lucide-react";
+import { ConversationDropdown } from "@renderer/components/features/conversation/ConversationDropdown";
+import { Bot, History, Moon, PlusSquareIcon, Settings, Sun } from "lucide-react";
 
 export const SidebarComponent = (): React.ReactElement => {
   const { assistants, activeAssistant, setActiveAssistant } =
     useAssistantContext();
 
-  const { conversations, selectedConversationId, selectConversation } = useConversationContext();
+  const { conversations, selectedConversationId, selectConversation, deleteConversation, renameConversation } = useConversationContext();
   const { isDark, toggleTheme } = useTheme();
   const { setActivePage, activePage, pageProps } = usePageContext();
   const { isNavigationDisabled } = useGlobalContext();
@@ -141,7 +142,7 @@ export const SidebarComponent = (): React.ReactElement => {
                 {conversations.map((conversation) => (
                   <SidebarMenuItem
                     key={conversation.id}
-                    className={cn("cursor-pointer", {
+                    className={cn("cursor-pointer group relative", {
                       disabled: isNavigationDisabled,
                     })}
                   >
@@ -156,11 +157,20 @@ export const SidebarComponent = (): React.ReactElement => {
                         }
                         checkShouldToggleMenu();
                       }}
+                      className="w-full pr-8"
                     >
                       <span className="truncate">
                         {conversation.description || "New Conversation"}
                       </span>
                     </SidebarMenuButton>
+                    <div className="absolute right-1 top-1/2 -translate-y-1/2">
+                      <ConversationDropdown
+                        conversation={conversation}
+                        disabled={isNavigationDisabled}
+                        onDelete={deleteConversation}
+                        onRename={renameConversation}
+                      />
+                    </div>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>

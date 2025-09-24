@@ -18,6 +18,8 @@ interface ConversationContextType {
   refreshConversations: () => Promise<void>;
   setConversations: (conversations: Conversation[]) => void;
   selectConversation: (conversationId: string | null) => void;
+  deleteConversation: (conversationId: string) => Promise<void>;
+  renameConversation: (conversationId: string, newTitle: string) => Promise<void>;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(
@@ -56,6 +58,35 @@ export const ConversationProvider = ({
     setSelectedConversationId(conversationId);
   };
 
+  const deleteConversation = async (conversationId: string): Promise<void> => {
+    try {
+      await window.api.conversation.deleteConversation(conversationId);
+
+      // If the deleted conversation was selected, clear the selection
+      if (selectedConversationId === conversationId) {
+        setSelectedConversationId(null);
+      }
+
+      // Refresh the conversations list
+      await refreshConversations();
+    } catch (error) {
+      console.error("Failed to delete conversation:", error);
+      throw error;
+    }
+  };
+
+  const renameConversation = async (conversationId: string, newTitle: string): Promise<void> => {
+    try {
+      await window.api.conversation.updateConversationTitle(conversationId, newTitle);
+
+      // Refresh the conversations list to show the updated title
+      await refreshConversations();
+    } catch (error) {
+      console.error("Failed to rename conversation:", error);
+      throw error;
+    }
+  };
+
   // Load conversations when active assistant changes
   useEffect(() => {
     if (activeAssistant) {
@@ -75,6 +106,8 @@ export const ConversationProvider = ({
       refreshConversations,
       setConversations,
       selectConversation,
+      deleteConversation,
+      renameConversation,
     };
   }, [conversations, selectedConversationId, activeAssistant]);
 

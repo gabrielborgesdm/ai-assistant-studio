@@ -281,7 +281,7 @@ export default class LlmService {
       const llm = new ChatOllama({
         model: model,
         temperature: 0.3,
-        maxTokens: 20,
+        maxRetries: 1,
       });
 
       const titlePrompt = `Generate a concise 3-6 word title for a conversation that starts with this message. Only return the title, nothing else.

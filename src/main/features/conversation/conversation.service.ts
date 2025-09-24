@@ -11,7 +11,7 @@ export default class ConversationService {
     this.llmService = new LlmService();
   }
 
-  getConversation = async (assistantId: string, conversationId?: string): Promise<Conversation | null> => {
+  getConversation = async (_assistantId: string, conversationId?: string): Promise<Conversation | null> => {
     if (conversationId) {
       return this.conversationRepository.getConversation(conversationId);
     }
@@ -25,8 +25,8 @@ export default class ConversationService {
     return this.conversationRepository.createOrUpdateConversation(assistantId, conversationId, messages, forceNew);
   };
 
-  clearConversationMessages = async (conversationId: string): Promise<void> => {
-    console.log("Clearing history for conversationId:", conversationId);
+  deleteConversation = async (conversationId: string): Promise<void> => {
+    console.log("Deleting conversation:", conversationId);
 
     await this.conversationRepository.deleteConversation(conversationId);
   };
